@@ -1,0 +1,58 @@
+#include "newserverdialog.h"
+#include "ui_newserverdialog.h"
+
+NewServerDialog::NewServerDialog(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::NewServerDialog)
+{
+    ui->setupUi(this);
+    ui->okButton->setEnabled(false);
+    ui->label->setEnabled(false);
+
+    QPalette mainPall;
+    mainPall.setColor (this->backgroundRole (), QColor(255, 255, 255, 255));
+
+    this->setPalette (mainPall);
+}
+
+NewServerDialog::~NewServerDialog()
+{
+    delete ui;
+}
+
+void NewServerDialog::on_serverAdressEdit_textChanged(const QString &arg1)
+{
+    if(!ui->serverPortEdit->text().isEmpty() && !ui->serverAdressEdit->text().isEmpty())
+    {
+        ui->okButton->setEnabled(true);
+        ui->label->setEnabled(true);
+    }
+    else
+    {
+        ui->okButton->setEnabled(false);
+        ui->label->setEnabled(false);
+    }
+}
+
+void NewServerDialog::on_serverPortEdit_textChanged(const QString &arg1)
+{
+    if(!ui->serverPortEdit->text().isEmpty() && !ui->serverAdressEdit->text().isEmpty())
+    {
+        ui->okButton->setEnabled(true);
+        ui->label->setEnabled(true);
+    }
+    else
+    {
+        ui->okButton->setEnabled(false);
+        ui->label->setEnabled(false);
+    }
+}
+
+void NewServerDialog::on_okButton_clicked()
+{
+    // Reading IP and Port,
+    //
+
+
+    close();
+}

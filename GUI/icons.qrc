@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>../Resources/Icons/acquisition.png</file>
+        <file>../Resources/Icons/blank.png</file>
+        <file>../Resources/Icons/check.png</file>
+        <file>../Resources/Icons/defrag.png</file>
+        <file>../Resources/Icons/Gorillaz.png</file>
+        <file>../Resources/Icons/Hardware ad alt.png</file>
+        <file>../Resources/Icons/Home alt.png</file>
+        <file>../Resources/Icons/pixadex.png</file>
+        <file>../Resources/Icons/sherlock.png</file>
+        <file>../Resources/Icons/softwareupdate.png</file>
+        <file>../Resources/Icons/winrar.png</file>
+        <file>../Resources/Icons/Part.bmp</file>
+    </qresource>
+</RCC>
