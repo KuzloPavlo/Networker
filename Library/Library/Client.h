@@ -13,11 +13,15 @@
 class Client
 {
 public:
+	Client();
+	~Client();
 	void readServer();
 	void readClient();
 	void connectToServer();
 	void connectToClient();
 private:
+	int m_countConnectedClients;
+	bool m_clientWorking;
 	DWORD __stdcall threatListen(void *arg);
 	DWORD __stdcall threadServer(void *arg);
 	DWORD __stdcall threadClient(void *arg);
