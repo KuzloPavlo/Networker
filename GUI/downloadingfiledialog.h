@@ -18,6 +18,8 @@ public:
 private slots:
     void on_selectPathBut_clicked();
 
+    void on_okButton_clicked();
+
 private:
     Ui::DownloadingFileDialog *ui;
 };

@@ -4,7 +4,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), m_pNewServerDialog(new NewServerDialog(this)),
     m_pNewFileDialog(new DownloadingFileDialog(this)),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow), m_pClient(new Client())
 {
     ui->setupUi(this);
 
@@ -41,7 +41,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // 0,127,255,100
 
- //   Status* newStatus = new Status(this);
+    // Status* newStatus = new Status(this);
+
+     m_pClient->setCallBackFunctions(MainWindow::display);
 
 
 
@@ -56,6 +58,17 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+
+void MainWindow::display(const std::string str)
+{
+   // ui->textDisplay->setText(str);
+    char strstr[100];
+
+     std::strcpy(strstr, str.c_str());
+
+     qDebug() << strstr;
 }
 
 
@@ -82,4 +95,9 @@ void MainWindow::on_addServerBut_clicked()
 void MainWindow::on_createFileBut_clicked()
 {
    m_pNewFileDialog->show();
+}
+
+void MainWindow::on_sendButton_clicked()
+{
+    m_pClient->show(ui->textinput->toPlainText().toStdString());
 }

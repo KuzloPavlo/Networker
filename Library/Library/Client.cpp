@@ -2,11 +2,12 @@
 
 Client::Client() : m_countConnectedClients(0), m_clientWorking(true)
 {
+	m_mutexUserInteface = CreateMutex(NULL, FALSE, NULL);
 }
 
 Client::~Client()
 {
-	m_clientWorking = false;
+	this->m_clientWorking = false;
 }
 
 DWORD __stdcall Client::threatListen(void *arg)
@@ -76,7 +77,7 @@ freeaddrinfo(result);
 	{
 		Sleep(1000);
 		
-		if (!m_clientWorking)
+		if (!this->m_clientWorking)
 		{
 			break;
 		}
@@ -109,38 +110,82 @@ DWORD __stdcall Client::threadServer(void *arg)
 DWORD __stdcall Client::threadClient(void *arg)
 {
 	SOCKET clientSocket = (SOCKET)arg;
-	char reseiveBuffer[4096];
-	wchar_t nextBlokSize;
-	int returnResult;
-	int requestType;
+	char receiveBuffer[4096] = { 0 };
+	char sendBuffer[4096] = { 0 };
+	int receiveSize = 0;
+	int sendSize = 0;
+	int returnResult = 0;
 
 	while (true)
 	{
 		Sleep(1000);
 
-		if (!m_clientWorking)
+		if (!this->m_clientWorking)
 		{
 			break;
 		}
 
 		returnResult = 0;
-		returnResult = recv(clientSocket, reseiveBuffer, 4096, 0);
+		returnResult = recv(clientSocket, receiveBuffer, 4096, 0);
 		
 		if (returnResult == 0)
 		{
 			// обеспечить обработку ошибки
 			continue;
 		}
-		else if (returnResult == SOCKET_ERROR)
+
+		if (returnResult == SOCKET_ERROR)
 		{
 			// обеспечить обработку ошибки
 			continue;
 		}
 
+		if (returnResult > (sizeof(char) * 2))
+		{
+			char* p = (char*)&receiveSize;
+			*p = receiveBuffer[0];
+			p++;
+			*p = receiveBuffer[1];
+
+			if (receiveSize == returnResult - (sizeof(char) * 2))
+			{
+				p++;
+				readClient(p, receiveSize, sendBuffer);
+			}
+			
+		}
 	}
 
 	// освободить все ресурсы
 	// установить событие о том что поток закончил свою работу  
 
 	return 0;
+}
+
+int Client::readClient(char * const reseiveBuffer, const int& receiveSize, const char* sendBuffer)
+{
+	char* pBuffer = reseiveBuffer;
+	char requestType = pBuffer[0];
+	
+	switch (static_cast<MessageTypes>(requestType))
+	{
+	case MessageTypes::message:
+		
+		break;
+
+	default:
+		break;
+	}
+
+	return 1;
+}
+
+void Client::setCallBackFunctions(void(*display)(const std::string str))
+{
+	this->display = display;
+}
+
+void Client::show(const std::string str)
+{
+	display(str);
 }

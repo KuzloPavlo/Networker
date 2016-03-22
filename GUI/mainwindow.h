@@ -6,6 +6,8 @@
 #include <downloadingfiledialog.h>
 #include <status.h>
 #include <QMainWindow>
+#include "Client.h"
+#include "string.h"
 
 namespace Ui {
 class MainWindow;
@@ -27,8 +29,14 @@ private slots:
 
     void on_createFileBut_clicked();
 
+    void on_sendButton_clicked();
+
+    //functions for learning
+   static void display(const std::string str);
 private:
     Ui::MainWindow *ui;
+    Client *m_pClient;
     NewServerDialog *m_pNewServerDialog;
     DownloadingFileDialog *m_pNewFileDialog;
+
 };
