@@ -1,1 +1,1 @@
-It's a second test.
+test
