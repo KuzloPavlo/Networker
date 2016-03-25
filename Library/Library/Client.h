@@ -7,6 +7,13 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <iphlpapi.h>
+#include "MessageTypes.h"
+#include <string>
+#include <functional>
+#include <thread>
+#include <chrono>
+#include <mutex>
+#include <iostream>
 
 #pragma comment(lib, "Ws2_32.lib")
 
@@ -16,13 +23,17 @@ public:
 	Client();
 	~Client();
 	void readServer();
-	void readClient();
-	void connectToServer();
-	void connectToClient();
+	int readClient(char * const reseiveBuffer, const int& receiveSize, const char* sendBuffer);
+	void connectToServer(const std::string& IPaddress, const std::string& port);
+	void connectToClient(const std::string& IPaddress, const std::string& port);
+
+	std::function<void(const std::string& str)>display;
 private:
+//	SOCKET m_listenSocket;
 	int m_countConnectedClients;
 	bool m_clientWorking;
-	DWORD __stdcall threatListen(void *arg);
-	DWORD __stdcall threadServer(void *arg);
-	DWORD __stdcall threadClient(void *arg);
+	std::mutex m_mutexUserInteface;               //Only one thread is working with the interface
+	void threadListen();
+	void threadServer(const std::string& IPaddress, const std::string& port);
+	void threadClient(void *arg);
 };

@@ -1,12 +1,16 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), m_pNewServerDialog(new NewServerDialog(this)),
     m_pNewFileDialog(new DownloadingFileDialog(this)),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow), m_pClient(new Client())
 {
     ui->setupUi(this);
+
+    qRegisterMetaType<std::string>();
 
     QPalette mainPall;
     mainPall.setColor (this->backgroundRole (), QColor(255, 255, 255, 255));
@@ -41,15 +45,23 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // 0,127,255,100
 
- //   Status* newStatus = new Status(this);
+    // Status* newStatus = new Status(this);
 
+    m_pClient->display = std::bind(&MainWindow::signalDisplay, this, std::placeholders::_1);
 
-
-
+    connect(this,
+            SIGNAL(signalDisplay(const std::string&)),
+            this,
+            SLOT(slotDisplay(const std::string&)));
 
     //-----------------------------------------------------------+
     // Section for experements                                   |
     //-----------------------------------------------------------+
+
+    connect(m_pNewServerDialog,
+            SIGNAL(signalConnectToServer(std::string,std::string)),
+            this,
+            SLOT(slotConnectToServer(std::string,std::string)));
 
 }
 
@@ -59,6 +71,17 @@ MainWindow::~MainWindow()
 }
 
 
+void MainWindow::slotDisplay(const std::string& str)
+{
+    char strstr[100];
+    std::strcpy(strstr, str.c_str());
+    this->ui->textDisplay->append(strstr);
+}
+
+void MainWindow::slotConnectToServer(const std::string &IPaddress, const std::string &port)
+{
+    m_pClient->connectToServer(IPaddress, port);
+}
 
 void MainWindow::on_searchBut_clicked()
 {
@@ -81,5 +104,10 @@ void MainWindow::on_addServerBut_clicked()
 
 void MainWindow::on_createFileBut_clicked()
 {
-   m_pNewFileDialog->show();
+    m_pNewFileDialog->show();
+}
+
+void MainWindow::on_sendButton_clicked()
+{
+    m_pClient->display(ui->textinput->toPlainText().toStdString());
 }

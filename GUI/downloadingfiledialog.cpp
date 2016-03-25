@@ -5,7 +5,10 @@ DownloadingFileDialog::DownloadingFileDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DownloadingFileDialog)
 {
+
     ui->setupUi(this);
+    ui->okButton->setEnabled(false);
+    ui->createLabel->setEnabled(false);
 }
 
 DownloadingFileDialog::~DownloadingFileDialog()
@@ -16,5 +19,10 @@ DownloadingFileDialog::~DownloadingFileDialog()
 void DownloadingFileDialog::on_selectPathBut_clicked()
 {
     QString fileWay = QFileDialog::getOpenFileName(this,"Create Torrent", "","");
-    qDebug() << fileWay;
+    ui->sourceSelection->setText(fileWay);
+}
+
+void DownloadingFileDialog::on_okButton_clicked()
+{
+   // if(!ui->sourceSelection->text().isEmpty())
 }
