@@ -50,9 +50,11 @@ void NewServerDialog::on_serverPortEdit_textChanged(const QString &arg1)
 
 void NewServerDialog::on_okButton_clicked()
 {
-    // Reading IP and Port,
-    //
 
+    emit signalConnectToServer(
+                ui->serverAdressEdit->text().toStdString(),
+                ui->serverPortEdit->text().toStdString()
+                );
 
     close();
 }

@@ -8,6 +8,8 @@
 #include <QMainWindow>
 #include "Client.h"
 #include "string.h"
+#include <functional>
+Q_DECLARE_METATYPE(std::string)
 
 namespace Ui {
 class MainWindow;
@@ -31,12 +33,18 @@ private slots:
 
     void on_sendButton_clicked();
 
-    //functions for learning
-   static void display(const std::string str);
+    void slotDisplay(const std::string& str);
+
+    void slotConnectToServer(const std::string& IPaddress, const std::string& port);
+
+signals:
+
+    void signalDisplay(const std::string& str);
+
 private:
+
     Ui::MainWindow *ui;
     Client *m_pClient;
     NewServerDialog *m_pNewServerDialog;
     DownloadingFileDialog *m_pNewFileDialog;
-
 };

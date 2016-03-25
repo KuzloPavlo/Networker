@@ -15,6 +15,8 @@ public:
 
 signals:
 
+    void signalConnectToServer(const std::string& IPaddress, const std::string& port);
+
 private slots:
     void on_okButton_clicked();
 

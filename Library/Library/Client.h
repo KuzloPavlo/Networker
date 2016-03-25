@@ -9,6 +9,11 @@
 #include <iphlpapi.h>
 #include "MessageTypes.h"
 #include <string>
+#include <functional>
+#include <thread>
+#include <chrono>
+#include <mutex>
+#include <iostream>
 
 #pragma comment(lib, "Ws2_32.lib")
 
@@ -19,18 +24,16 @@ public:
 	~Client();
 	void readServer();
 	int readClient(char * const reseiveBuffer, const int& receiveSize, const char* sendBuffer);
-	void connectToServer();
-	void connectToClient();
+	void connectToServer(const std::string& IPaddress, const std::string& port);
+	void connectToClient(const std::string& IPaddress, const std::string& port);
 
-	// Temp functionn for learning
-	void setCallBackFunctions(void(*display)(const std::string str));
-	void show(const std::string str);
+	std::function<void(const std::string& str)>display;
 private:
-	void(*display)(const std::string str);
+//	SOCKET m_listenSocket;
 	int m_countConnectedClients;
 	bool m_clientWorking;
-	HANDLE m_mutexUserInteface;               //Only one thread is working with the interface
-	DWORD __stdcall threatListen(void *arg);
-	DWORD __stdcall threadServer(void *arg);
-	DWORD __stdcall threadClient(void *arg);
+	std::mutex m_mutexUserInteface;               //Only one thread is working with the interface
+	void threadListen();
+	void threadServer(const std::string& IPaddress, const std::string& port);
+	void threadClient(void *arg);
 };
