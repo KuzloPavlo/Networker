@@ -58,3 +58,5 @@ void NewServerDialog::on_okButton_clicked()
 
     close();
 }
+
+

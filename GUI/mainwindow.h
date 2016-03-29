@@ -7,8 +7,9 @@
 #include <status.h>
 #include <QMainWindow>
 #include "Client.h"
-#include "string.h"
+#include <string>
 #include <functional>
+#include <memory>
 Q_DECLARE_METATYPE(std::string)
 
 namespace Ui {
@@ -37,9 +38,15 @@ private slots:
 
     void slotConnectToServer(const std::string& IPaddress, const std::string& port);
 
+    void slotCreateNewDownloadingFile(
+            const QString& location,
+            const QString& description);
+
 signals:
 
     void signalDisplay(const std::string& str);
+
+    void showNewFileStatus();
 
 private:
 
@@ -47,4 +54,5 @@ private:
     Client *m_pClient;
     NewServerDialog *m_pNewServerDialog;
     DownloadingFileDialog *m_pNewFileDialog;
+    std::string changeLocationStyle(const QString& QtStyleLocation);
 };

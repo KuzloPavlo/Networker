@@ -26,6 +26,7 @@ public:
 	int readClient(char * const reseiveBuffer, const int& receiveSize, const char* sendBuffer);
 	void connectToServer(const std::string& IPaddress, const std::string& port);
 	void connectToClient(const std::string& IPaddress, const std::string& port);
+	void createNewDownloadingFile( std::string location,  std::string description);
 
 	std::function<void(const std::string& str)>display;
 private:

@@ -2,6 +2,7 @@
 #include <QDialog>
 #include <QFileDialog>
 #include <QDebug>
+#include <string>
 
 namespace Ui {
 class DownloadingFileDialog;
@@ -19,6 +20,16 @@ private slots:
     void on_selectPathBut_clicked();
 
     void on_okButton_clicked();
+
+    void on_sourceSelection_textChanged(const QString &arg1);
+
+    void on_description_textChanged();
+
+signals:
+
+    void signalCreateNewDownloadingFile(
+            const QString& location,
+            const QString& description);
 
 private:
     Ui::DownloadingFileDialog *ui;

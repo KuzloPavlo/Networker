@@ -63,6 +63,11 @@ MainWindow::MainWindow(QWidget *parent) :
             this,
             SLOT(slotConnectToServer(std::string,std::string)));
 
+    connect(m_pNewFileDialog,
+            SIGNAL(signalCreateNewDownloadingFile(QString,QString)),
+            this,
+            SLOT(slotCreateNewDownloadingFile(QString,QString))
+            );
 }
 
 MainWindow::~MainWindow()
@@ -110,4 +115,33 @@ void MainWindow::on_createFileBut_clicked()
 void MainWindow::on_sendButton_clicked()
 {
     m_pClient->display(ui->textinput->toPlainText().toStdString());
+}
+
+
+std::string MainWindow::changeLocationStyle(const QString& QtStyleLocation)
+{
+    std::string windowsStyleLocation = QtStyleLocation.toStdString();
+    std::string winDivider = "\\";
+
+    while(true)
+    {
+        size_t i = windowsStyleLocation.find('/');
+
+        if(i == std::string::npos)
+        {
+            break;
+        }
+
+        windowsStyleLocation.replace(i,1,winDivider);
+    }
+    return windowsStyleLocation;
+}
+
+
+void MainWindow::slotCreateNewDownloadingFile(const QString &location, const QString &description)
+{
+    std::string windowsStyleLocation = changeLocationStyle(location);
+    std::string specification = description.toStdString();
+
+    m_pClient->createNewDownloadingFile(windowsStyleLocation,specification);
 }

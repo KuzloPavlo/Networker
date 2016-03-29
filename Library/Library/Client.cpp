@@ -156,7 +156,7 @@ void Client::threadServer(const std::string& IPaddress, const std::string& port)
 	m_mutexUserInteface.unlock();
 
 	SOCKET serverSocket = INVALID_SOCKET;
-	int iResult;
+	int iResult = 0;
 
 	if (iResult != 0)
 	{
@@ -333,5 +333,10 @@ void Client::connectToServer(const std::string& IPaddress, const std::string& po
 
 	std::thread serverThread(&Client::threadServer, this , IPaddress, port);
 	serverThread.detach();
+
+}
+
+void Client::createNewDownloadingFile(std::string location, std::string description)
+{
 
 }
