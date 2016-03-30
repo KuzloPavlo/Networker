@@ -296,10 +296,8 @@ void Client::threadClient(void *arg)
 			
 		}
 	}
-
 	// освободить все ресурсы
 	// установить событие о том что поток закончил свою работу  
-
 }
 
 int Client::readClient(char * const reseiveBuffer, const int& receiveSize, const char* sendBuffer)
@@ -333,10 +331,76 @@ void Client::connectToServer(const std::string& IPaddress, const std::string& po
 
 	std::thread serverThread(&Client::threadServer, this , IPaddress, port);
 	serverThread.detach();
-
 }
 
 void Client::createNewDownloadingFile(std::string location, std::string description)
 {
+	std::thread createingFile(&Client::threadCreateDownloadingFile, this, location, description);
+	createingFile.detach();
+}
 
+void Client::threadCreateDownloadingFile(std::string location, std::string description)
+{	
+	display("client:: new file1");
+	const int partSize = 2048;
+	char filePart[partSize] = { 0 };
+	std::hash<std::string> hashFunction;
+
+	DownloadingFile newFile;
+	strcpy(newFile.m_fileDescription, description.c_str());
+	strcpy(newFile.m_fileLocation, location.c_str());
+	newFile.m_fileStatus = FileStatus::creating;
+
+	std::string tempName;
+	tempName.assign(location, location.rfind("\\") + 1, location.size());
+	
+	strcpy(newFile.m_fileName, tempName.c_str());
+
+	newFile.m_fileHash = (newFile.m_fileHash) ^ hashFunction(tempName);
+
+	newFile.m_fileHash = (newFile.m_fileHash << 1) ^ hashFunction(description);
+
+	std::ifstream in(location,std::ios::in | std::ios::binary);
+	if (!in)
+	{
+		display("client:: new file2");
+		// обработать ошыбку
+		return;
+	}
+
+	display("client:: new file3");
+	
+	do
+	{
+		in.read(filePart, partSize);
+		newFile.m_numberParts++;
+		newFile.m_fileSize += in.gcount();
+		newFile.m_fileHash = (1/256) * (newFile.m_fileHash << 1) ^ hashFunction(filePart);
+
+	} while (!in.eof());
+
+	display(location);
+	display(tempName);
+	display(std::to_string(newFile.m_numberParts));
+	display(std::to_string(newFile.m_fileHash));
+
+	std::ofstream out(std::to_string(newFile.m_fileHash), std::ios::out | std::ios::binary);
+	if (!out)
+	{
+		display("client:: new file4");
+		// обработать ошыбку
+		return;
+	}
+
+	char* p =(char*) &newFile;
+	char* outBuffer = new char[sizeof(newFile)];
+	for (int i = 0; i < sizeof(newFile); i++)
+	{
+		outBuffer[i] = *p;
+		p++;
+	}
+
+	out.write(outBuffer, sizeof(newFile));
+
+	delete[]outBuffer;
 }
