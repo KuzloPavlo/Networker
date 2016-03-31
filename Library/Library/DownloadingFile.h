@@ -5,11 +5,11 @@
 
 struct DownloadingFile
 {
-	std::string m_fileHash;
-	std::string m_fileName;
-	std::string m_fileDescription;
-	std::string m_fileLocation;
-	int m_numberParts;
-	int m_fileSize;
+	long int m_fileHash = 0;
+	char m_fileName[MAX_PATH];
+	char m_fileDescription[4096];
+	char m_fileLocation[MAX_PATH];
+	int m_numberParts = 0;
+	int m_fileSize = 0;
 	FileStatus m_fileStatus;
 };

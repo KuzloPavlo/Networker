@@ -3,4 +3,5 @@
 enum MessageTypes
 {
 	message,
+	outgoingDistribution,
 };

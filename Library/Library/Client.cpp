@@ -149,14 +149,20 @@ freeaddrinfo(result);
 void Client::threadServer(const std::string& IPaddress, const std::string& port)
 {
 	std::this_thread::sleep_for(std::chrono::milliseconds(5000));	
+
+	//------------------------------------
 	m_mutexUserInteface.lock();
 	display("Server Thread Started");
 	display(IPaddress);
 	display(port);
 	m_mutexUserInteface.unlock();
+	//------------------------------------
 
 	SOCKET serverSocket = INVALID_SOCKET;
 	int iResult = 0;
+	char receiveBuffer[4096] = { 0 };	
+	int receiveSize = 0;
+	int returnResult = 0;
 
 	if (iResult != 0)
 	{
@@ -233,12 +239,13 @@ void Client::threadServer(const std::string& IPaddress, const std::string& port)
 
 	if (serverSocket == INVALID_SOCKET)
 	{
-
 		m_mutexUserInteface.lock();
 		display("Server Thread 7");
 		m_mutexUserInteface.unlock();
 		WSACleanup();
 	}
+
+	sendOutgoingDistribution(&serverSocket);
 
 	m_mutexUserInteface.lock();
 	display("Server Thread Connected");
@@ -358,8 +365,6 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 
 	newFile.m_fileHash = (newFile.m_fileHash) ^ hashFunction(tempName);
 
-	newFile.m_fileHash = (newFile.m_fileHash << 1) ^ hashFunction(description);
-
 	std::ifstream in(location,std::ios::in | std::ios::binary);
 	if (!in)
 	{
@@ -384,7 +389,7 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 	display(std::to_string(newFile.m_numberParts));
 	display(std::to_string(newFile.m_fileHash));
 
-	std::ofstream out(std::to_string(newFile.m_fileHash), std::ios::out | std::ios::binary);
+	std::ofstream out("OutgoingDistribution", std::ios::out | std::ios::app | std::ios::binary);
 	if (!out)
 	{
 		display("client:: new file4");
@@ -403,4 +408,71 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 	out.write(outBuffer, sizeof(newFile));
 
 	delete[]outBuffer;
+}
+
+void Client::sendOutgoingDistribution(SOCKET *serverSocket)
+{
+	int iResult = 0;
+	char sendBuffer[2048] = { 0 };
+	int sendSize = 0;
+	int fileSize = 0;
+	int messageTypeSize = 2;
+	int outDistributionSize = 2;
+
+	std::ifstream in("OutgoingDistribution", std::ios::in | std::ios::binary);
+	if (!in)
+	{
+		display("client:: new file4");
+		// îáðàáîòàòü îøûáêó
+		return;
+	}
+
+	std::filebuf* pbuf = in.rdbuf();
+	fileSize = pbuf->pubseekoff(0, std::ios::end, std::ios::in);
+	pbuf->pubseekoff(0, std::ios::in);
+
+	if (fileSize == 0)
+	{
+		return;
+	}
+
+	short int numberOutDistribution = fileSize / sizeof(DownloadingFile);
+
+	sendSize = messageTypeSize + outDistributionSize + fileSize;
+
+	char* p = (char*)& sendSize;
+	for (int i = 0; i < 4; i++)
+	{
+		sendBuffer[i] = *p;
+		p++;
+	}
+
+	MessageTypes requestType = MessageTypes::outgoingDistribution;
+	p = (char*)&requestType;
+	sendBuffer[4] = *p;
+	p++;
+	sendBuffer[5] = *p;
+
+	p = (char*)& numberOutDistribution;
+	sendBuffer[6] = *p;
+	p++;
+	sendBuffer[7] = *p;
+
+	iResult = send(*serverSocket, sendBuffer, 8, 0);
+	if (iResult == SOCKET_ERROR)
+	{ 
+		// ÎÁÐÀÁÎÒÀÉ
+		return;
+	}
+
+	while (in)
+	{
+		in.read(sendBuffer, 2048);
+		iResult = send(*serverSocket, sendBuffer, in.gcount(), 0);
+		if (iResult == SOCKET_ERROR)
+		{
+			// ÎÁÐÀÁÎÒÀÉ
+			return;
+		}
+	}
 }
