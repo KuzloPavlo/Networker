@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     qRegisterMetaType<std::string>();
+    qRegisterMetaType<DownloadingFile>();
 
     QPalette mainPall;
     mainPall.setColor (this->backgroundRole (), QColor(255, 255, 255, 255));
@@ -57,6 +58,15 @@ MainWindow::MainWindow(QWidget *parent) :
     //-----------------------------------------------------------+
     // Section for experements                                   |
     //-----------------------------------------------------------+
+
+    m_pClient->showFoundFile = std::bind(&MainWindow::signalShowFoundFile, this, std::placeholders::_1);
+
+    connect(this,
+            SIGNAL(signalShowFoundFile(const DownloadingFile&)),
+            this,
+            SLOT(slotShowFoundFile(const DownloadingFile&)));
+
+
 
     connect(m_pNewServerDialog,
             SIGNAL(signalConnectToServer(std::string,std::string)),
@@ -144,4 +154,22 @@ void MainWindow::slotCreateNewDownloadingFile(const QString &location, const QSt
     std::string specification = description.toStdString();
 
     m_pClient->createNewDownloadingFile(windowsStyleLocation,specification);
+}
+
+void MainWindow::slotAddNewDownloadingFile(const DownloadingFile& newFile)
+{
+
+}
+
+void MainWindow::on_searchEdit_returnPressed()
+{
+    if(!ui->searchEdit->text().isEmpty())
+    {
+        m_pClient->searchFile(ui->searchEdit->text().toStdString());
+    }
+}
+
+void MainWindow::slotShowFoundFile(const DownloadingFile& foundFile)
+{
+    emit slotDisplay(foundFile.m_fileName);
 }

@@ -25,7 +25,9 @@ HEADERS  += mainwindow.h \
     newserverdialog.h \
     downloadingfiledialog.h \
     status.h \
-    ../Library/Library/Client.h
+    ../Library/Library/Client.h \
+    ../Library/Library/DownloadingFile.h \
+    ../Library/Library/FileStatus.h
 
 
 

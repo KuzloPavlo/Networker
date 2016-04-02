@@ -247,6 +247,8 @@ void Client::threadServer(const std::string& IPaddress, const std::string& port)
 
 	sendOutgoingDistribution(&serverSocket);
 
+	reciveDistribution(&serverSocket);
+
 	m_mutexUserInteface.lock();
 	display("Server Thread Connected");
 	m_mutexUserInteface.unlock();
@@ -412,67 +414,235 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 
 void Client::sendOutgoingDistribution(SOCKET *serverSocket)
 {
+	DownloadingFile downloadingFile;
 	int iResult = 0;
-	char sendBuffer[2048] = { 0 };
-	int sendSize = 0;
 	int fileSize = 0;
-	int messageTypeSize = 2;
-	int outDistributionSize = 2;
+	int numberOutDistribution = 0;
+	char* buffer = nullptr;
 
 	std::ifstream in("OutgoingDistribution", std::ios::in | std::ios::binary);
 	if (!in)
 	{
 		display("client:: new file4");
-		// обработать ошыбку
 		return;
 	}
+		
+	in.seekg(0, in.end);
+	fileSize = in.tellg();
+	in.seekg(0, in.beg);
+	
+	numberOutDistribution = fileSize / sizeof(DownloadingFile);
 
-	std::filebuf* pbuf = in.rdbuf();
-	fileSize = pbuf->pubseekoff(0, std::ios::end, std::ios::in);
-	pbuf->pubseekoff(0, std::ios::in);
-
-	if (fileSize == 0)
-	{
-		return;
-	}
-
-	short int numberOutDistribution = fileSize / sizeof(DownloadingFile);
-
-	sendSize = messageTypeSize + outDistributionSize + fileSize;
-
-	char* p = (char*)& sendSize;
-	for (int i = 0; i < 4; i++)
-	{
-		sendBuffer[i] = *p;
-		p++;
-	}
-
-	MessageTypes requestType = MessageTypes::outgoingDistribution;
-	p = (char*)&requestType;
-	sendBuffer[4] = *p;
-	p++;
-	sendBuffer[5] = *p;
-
-	p = (char*)& numberOutDistribution;
-	sendBuffer[6] = *p;
-	p++;
-	sendBuffer[7] = *p;
-
-	iResult = send(*serverSocket, sendBuffer, 8, 0);
+	buffer = (char*)& numberOutDistribution;
+	
+	iResult = send(*serverSocket, buffer, 2, 0);
 	if (iResult == SOCKET_ERROR)
-	{ 
-		// ОБРАБОТАЙ
+	{
+		// обработай
 		return;
 	}
 
-	while (in)
+	display(std::to_string(numberOutDistribution));
+
+	buffer = (char*)& downloadingFile;
+
+	for (int i = 0; i <numberOutDistribution; i++)
 	{
-		in.read(sendBuffer, 2048);
-		iResult = send(*serverSocket, sendBuffer, in.gcount(), 0);
+		in.read(buffer, sizeof(DownloadingFile));
+
+		iResult = send(*serverSocket, buffer, sizeof(DownloadingFile), 0);
 		if (iResult == SOCKET_ERROR)
 		{
 			// ОБРАБОТАЙ
 			return;
 		}
 	}
+}
+
+void  Client::reciveDistribution(SOCKET *serverSocket)
+{
+	DownloadingFile downloadingFile;
+	int iResult = 0;
+	int fileSize = 0;
+	int numberDistribution = 0;
+	char* buffer = (char*)& numberDistribution;
+
+	std::ofstream out("Distribution", std::ios::out | std::ios::binary);
+	if(!out)
+	{	
+		// обработай
+		return;
+	}
+
+	iResult = recv(*serverSocket, buffer, 2, 0);
+	if (!iResult)
+	{
+		// обработай
+		return;
+	}
+	else if (iResult == SOCKET_ERROR)
+	{
+		// обработай
+		return;
+	}
+
+	//-----------------------------------------------
+	m_mutexUserInteface.lock();
+	display("number:");
+	display(std::to_string(numberDistribution));
+	m_mutexUserInteface.unlock();
+	//---------------------------------------------
+
+	buffer = (char*)& downloadingFile;
+
+	for (int i = 0; i < numberDistribution; i++)
+	{
+		iResult = recv(*serverSocket, buffer, sizeof(DownloadingFile), 0);
+		if (!iResult)
+		{
+			// обработай
+			break;
+		}
+		else if (iResult == SOCKET_ERROR)
+		{
+			// обработай
+			break;
+		}
+
+		//-----------------------------------------------------
+		m_mutexUserInteface.lock();
+		display(downloadingFile.m_fileDescription);
+		display(downloadingFile.m_fileName);
+		m_mutexUserInteface.unlock();
+		//----------------------------------------------------
+
+		out.write(buffer, sizeof(DownloadingFile));
+	}
+}
+
+void Client::searchFile(const std::string& tockenFile)
+{
+	std::thread searchingFile(&Client::threadSearchFile, this, tockenFile);
+	searchingFile.detach();
+}
+
+void Client::threadSearchFile(std::string tockenFile)
+{	
+	DownloadingFile foundFile;
+	char* buffer = (char*)& foundFile;
+
+	m_mutexDistribution.lock();
+	
+	std::ifstream in("Distribution", std::ios::in | std::ios::binary);
+	if (!in)
+	{
+		//
+		return;
+	}
+
+	m_mutexUserInteface.lock();
+
+	if(tockenFile == "*")
+	{
+		while (in)
+		{
+			in.read(buffer, sizeof(DownloadingFile));
+			showFoundFile(foundFile);
+		}
+	}
+
+	else if(tockenFile.size() == 5 && tockenFile[0] == '*')
+	{
+		while (in)
+		{
+			in.read(buffer, sizeof(DownloadingFile));
+			if (4 == getLargestCommonSubstring(tockenFile, foundFile.m_fileName))
+			{
+				showFoundFile(foundFile);
+			}
+		}
+	}
+
+	else if(tockenFile.size() == 2 && tockenFile[1] == '*')
+	{
+		while (in)
+		{
+			in.read(buffer, sizeof(DownloadingFile));
+			if (tockenFile[0] == foundFile.m_fileName[0])
+			{
+				showFoundFile(foundFile);
+			}
+		}
+	}
+
+	else if(tockenFile.size() == 3 && tockenFile[1] == '*')
+	{
+		while (in)
+		{
+			in.read(buffer, sizeof(DownloadingFile));
+			if (tockenFile[0] == foundFile.m_fileName[0] && tockenFile[2] == foundFile.m_fileName[strlen(foundFile.m_fileName)-5])
+			{
+				showFoundFile(foundFile);
+			}
+		}
+	}
+
+	else
+	{
+		while (in)
+		{
+			in.read(buffer, sizeof(DownloadingFile));
+			if (4 <= getLargestCommonSubstring(tockenFile, foundFile.m_fileDescription) ||
+				4 <= getLargestCommonSubstring(tockenFile, foundFile.m_fileName))
+			{
+				showFoundFile(foundFile);
+			}
+			
+		}
+	}
+	
+	m_mutexUserInteface.unlock();
+	m_mutexDistribution.unlock();
+}
+
+int Client::getLargestCommonSubstring(/*std::string & result,*/ const std::string & a, const std::string & b)
+{
+	const int a_size = a.size();
+	const int b_size = b.size();
+
+	typedef std::vector<int> solution;
+
+	const int solution_size = b_size + 1;
+	solution x(solution_size, 0), y(solution_size);
+
+	solution * previous = &x;
+	solution * current = &y;
+
+	int max_length = 0;
+	int result_index = 0;
+
+	for (int i = a_size - 1; i >= 0; i--) 
+	{
+		for (int j = b_size - 1; j >= 0; j--) 
+		{
+			int & current_match = (*current)[j];
+
+			if (a[i] != b[j]) 
+			{
+				current_match = 0;
+			}
+			else {
+				const int length = 1 + (*previous)[j + 1];
+				if (length > max_length) 
+				{
+					max_length = length;
+					result_index = i;
+				}
+				current_match = length;
+			}
+		}
+		swap(previous, current);
+	}
+	//result = a.substr(result_index, max_length);
+	return max_length;
 }

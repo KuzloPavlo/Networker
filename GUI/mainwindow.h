@@ -10,7 +10,9 @@
 #include <string>
 #include <functional>
 #include <memory>
+#include "FileStatus.h"
 Q_DECLARE_METATYPE(std::string)
+Q_DECLARE_METATYPE(DownloadingFile)
 
 namespace Ui {
 class MainWindow;
@@ -42,11 +44,27 @@ private slots:
             const QString& location,
             const QString& description);
 
+    void slotAddNewDownloadingFile(const DownloadingFile& newFile);
+
+    void slotShowFoundFile(const DownloadingFile& foundFile);
+
+    void on_searchEdit_returnPressed();
+
 signals:
 
     void signalDisplay(const std::string& str);
 
-    void showNewFileStatus();
+    void signalChangeFileStatus(
+            const std::string& fileHash,
+            const int& fleStatusPercents,
+            FileStatus fileStatus = FileStatus::downloading);
+
+    void signalAddNewDownloadingFile(const DownloadingFile& newFile);
+
+    void sigalshowNewFileStatus();
+
+    void signalShowFoundFile(const DownloadingFile& foundFile);
+
 
 private:
 
