@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1158</width>
-    <height>495</height>
+    <height>448</height>
    </rect>
   </property>
   <property name="baseSize">
@@ -237,7 +237,7 @@
           <item row="2" column="0" rowspan="3" colspan="4">
            <widget class="QStackedWidget" name="stackedWidgetLeft">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="page">
              <layout class="QGridLayout" name="gridLayout_7">
@@ -354,7 +354,68 @@
                  <number>0</number>
                 </property>
                 <item row="0" column="0">
-                 <widget class="QTableWidget" name="tableSearch"/>
+                 <widget class="QTableWidget" name="tableSearch">
+                  <property name="verticalScrollBarPolicy">
+                   <enum>Qt::ScrollBarAlwaysOff</enum>
+                  </property>
+                  <property name="horizontalScrollBarPolicy">
+                   <enum>Qt::ScrollBarAlwaysOff</enum>
+                  </property>
+                  <property name="sizeAdjustPolicy">
+                   <enum>QAbstractScrollArea::AdjustToContents</enum>
+                  </property>
+                  <property name="editTriggers">
+                   <set>QAbstractItemView::NoEditTriggers</set>
+                  </property>
+                  <property name="dragEnabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="sortingEnabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                  <property name="cornerButtonEnabled">
+                   <bool>true</bool>
+                  </property>
+                  <attribute name="horizontalHeaderVisible">
+                   <bool>false</bool>
+                  </attribute>
+                  <attribute name="verticalHeaderVisible">
+                   <bool>false</bool>
+                  </attribute>
+                  <row>
+                   <property name="text">
+                    <string>Новая строка</string>
+                   </property>
+                  </row>
+                  <row>
+                   <property name="text">
+                    <string>Новая строка</string>
+                   </property>
+                  </row>
+                  <row>
+                   <property name="text">
+                    <string>Новая строка</string>
+                   </property>
+                  </row>
+                  <row>
+                   <property name="text">
+                    <string>Новая строка</string>
+                   </property>
+                  </row>
+                  <row>
+                   <property name="text">
+                    <string>Новая строка</string>
+                   </property>
+                  </row>
+                  <column>
+                   <property name="text">
+                    <string>Новый столбец</string>
+                   </property>
+                  </column>
+                 </widget>
                 </item>
                </layout>
               </item>

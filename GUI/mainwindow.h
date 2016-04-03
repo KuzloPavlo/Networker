@@ -11,6 +11,7 @@
 #include <functional>
 #include <memory>
 #include "FileStatus.h"
+#include "foundedfileform.h"
 Q_DECLARE_METATYPE(std::string)
 Q_DECLARE_METATYPE(DownloadingFile)
 
@@ -49,6 +50,9 @@ private slots:
     void slotShowFoundFile(const DownloadingFile& foundFile);
 
     void on_searchEdit_returnPressed();
+
+
+  //  void on_MainWindow_toolButtonStyleChanged(const Qt::ToolButtonStyle &toolButtonStyle);
 
 signals:
 

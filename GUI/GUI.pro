@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     newserverdialog.cpp \
     downloadingfiledialog.cpp \
     status.cpp \
-    ../Library/Library/Client.cpp
+    ../Library/Library/Client.cpp \
+    foundedfileform.cpp
 
 
 
@@ -27,14 +28,16 @@ HEADERS  += mainwindow.h \
     status.h \
     ../Library/Library/Client.h \
     ../Library/Library/DownloadingFile.h \
-    ../Library/Library/FileStatus.h
+    ../Library/Library/FileStatus.h \
+    foundedfileform.h
 
 
 
 FORMS    += mainwindow.ui \
     newserverdialog.ui \
     downloadingfiledialog.ui \
-    status.ui
+    status.ui \
+    foundedfileform.ui
 
 RESOURCES += \
     icons.qrc
