@@ -12,6 +12,7 @@
 #include <memory>
 #include "FileStatus.h"
 #include "foundedfileform.h"
+#include "DownloadingFile.h"
 Q_DECLARE_METATYPE(std::string)
 Q_DECLARE_METATYPE(DownloadingFile)
 

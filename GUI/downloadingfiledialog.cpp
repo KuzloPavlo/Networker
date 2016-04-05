@@ -32,28 +32,16 @@ void DownloadingFileDialog::on_okButton_clicked()
 
 void DownloadingFileDialog::on_sourceSelection_textChanged(const QString &arg1)
 {
-    if(!arg1.isEmpty() && !ui->description->document()->isEmpty())
-    {
-        ui->okButton->setEnabled(true);
-        ui->createLabel->setEnabled(true);
-    }
-    else
-    {
-        ui->okButton->setEnabled(false);
-        ui->createLabel->setEnabled(false);
-    }
+    bool isFull = !arg1.isEmpty() && !ui->description->document()->isEmpty();
+
+    ui->okButton->setEnabled(isFull);
+    ui->createLabel->setEnabled(isFull);
 }
 
 void DownloadingFileDialog::on_description_textChanged()
 {
-    if(!ui->sourceSelection->text().isEmpty() && !ui->description->document()->isEmpty())
-    {
-        ui->okButton->setEnabled(true);
-        ui->createLabel->setEnabled(true);
-    }
-    else
-    {
-        ui->okButton->setEnabled(false);
-        ui->createLabel->setEnabled(false);
-    }
+    bool isFull = !ui->sourceSelection->text().isEmpty() && !ui->description->document()->isEmpty();
+
+    ui->okButton->setEnabled(isFull);
+    ui->createLabel->setEnabled(isFull);
 }

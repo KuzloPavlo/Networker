@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->tableSearch->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableSearch->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-
+    ui->tableSearch->setSelectionMode(QAbstractItemView::NoSelection);
     ui->searchEdit->setVisible(false);
 
     //-----------------------------------------------------------+
@@ -58,17 +58,6 @@ MainWindow::MainWindow(QWidget *parent) :
             this,
             SLOT(slotDisplay(const std::string&)));
 
-    ui->tableSearch->setCellWidget(0,0, new FoundedFileForm(ui->tableSearch, ui->tableSearch));
-     ui->tableSearch->setCellWidget(1,0, new FoundedFileForm(ui->tableSearch, ui->tableSearch));
-      ui->tableSearch->setCellWidget(2,0, new FoundedFileForm(ui->tableSearch, ui->tableSearch));
-       ui->tableSearch->setCellWidget(3,0, new FoundedFileForm(ui->tableSearch, ui->tableSearch));
-
-       ui->tableSearch->setSelectionMode(QAbstractItemView::NoSelection);
-     //  setSelectionMode(QAbstractItemView::NoSelection);
-
-
-
-   // ui->tableSearch->setCellWidget(0,0,new FoundedFileForm(this));
 
     //-----------------------------------------------------------+
     // Section for experements                                   |
@@ -180,11 +169,18 @@ void MainWindow::on_searchEdit_returnPressed()
 {
     if(!ui->searchEdit->text().isEmpty())
     {
+        ui->tableSearch->setRowCount(0);
         m_pClient->searchFile(ui->searchEdit->text().toStdString());
     }
 }
 
 void MainWindow::slotShowFoundFile(const DownloadingFile& foundFile)
 {
-    emit slotDisplay(foundFile.m_fileName);
+    std::string sizeFile = std::to_string(foundFile.m_fileSize);
+    ui->tableSearch->insertRow(ui->tableSearch->rowCount());
+    ui->tableSearch->setCellWidget(ui->tableSearch->rowCount()-1,0,
+                                   new FoundedFileForm(foundFile.m_fileName,
+                                                       foundFile.m_fileDescription,
+                                                       sizeFile.c_str(),
+                                                       ui->tableSearch,                                                      ui->tableSearch));
 }

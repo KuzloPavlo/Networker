@@ -237,7 +237,7 @@
           <item row="2" column="0" rowspan="3" colspan="4">
            <widget class="QStackedWidget" name="stackedWidgetLeft">
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="page">
              <layout class="QGridLayout" name="gridLayout_7">
@@ -385,31 +385,6 @@
                   <attribute name="verticalHeaderVisible">
                    <bool>false</bool>
                   </attribute>
-                  <row>
-                   <property name="text">
-                    <string>Новая строка</string>
-                   </property>
-                  </row>
-                  <row>
-                   <property name="text">
-                    <string>Новая строка</string>
-                   </property>
-                  </row>
-                  <row>
-                   <property name="text">
-                    <string>Новая строка</string>
-                   </property>
-                  </row>
-                  <row>
-                   <property name="text">
-                    <string>Новая строка</string>
-                   </property>
-                  </row>
-                  <row>
-                   <property name="text">
-                    <string>Новая строка</string>
-                   </property>
-                  </row>
                   <column>
                    <property name="text">
                     <string>Новый столбец</string>
