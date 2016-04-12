@@ -19,6 +19,13 @@
 #include "DownloadingFile.h"
 #include <fstream>
 #include <vector>
+#include <memory>
+#include "Listener.h"
+#include <cstdlib>
+#include <cstring>
+#include <boost/asio.hpp>
+#include "DownloadSession.h"
+#include "Downloader.h"
 
 #pragma comment(lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -30,27 +37,32 @@ class Client
 public:
 	Client();
 	~Client();
+	void connnect();
 	void readServer();
 	int readClient(char * const reseiveBuffer, const int& receiveSize, const char* sendBuffer);
 	void connectToServer(const std::string& IPaddress, const std::string& port);
 	void connectToClient(const std::string& IPaddress, const std::string& port);
-	void createNewDownloadingFile( std::string location,  std::string description);
+	void createNewDownloadingFile(std::string location, std::string description);
 	void searchFile(const std::string& tockenFile);
+	void downloadFile(const int& fileHash);
 
 	std::function<void(const std::string& str)>display;
 	std::function<void(const DownloadingFile& newFile)>addNewFile;
-	std::function<void(const DownloadingFile& fileStatus)>changeFileStatus;
-	std::function<void(const DownloadingFile& foundFile)>showFoundFile;
-	
+	std::function<void(const int& fileHash, FileStatus& fileStatus, float& filePercents)>changeFileStatus;
+	std::function<void(const FileInfo& foundFile)>showFoundFile;
+
 private:
 	int m_countConnectedClients;
 	bool m_clientWorking;
 	std::mutex m_mutexUserInteface;               //Only one thread is working with the interface
-	std::mutex m_mutexOutgoingDistribution;
-	std::mutex m_mutexDistribution;
+	std::shared_ptr<std::mutex>m_mutexOutgoingDistribution;
+	std::shared_ptr<std::mutex>m_mutexDistribution;
+	std::shared_ptr<std::mutex>m_mutexListParts;
+	std::shared_ptr<Listener> m_Listener;
 	void threadListen();
 	void threadServer(const std::string& IPaddress, const std::string& port);
 	void threadClient(void *arg);
+	void threadDownload(/*DownloadingFile downloadingFile*/);
 	void threadCreateDownloadingFile(std::string location, std::string description);
 	void threadSearchFile(std::string tockenFile);
 	void sendOutgoingDistribution(SOCKET *serverSocket);

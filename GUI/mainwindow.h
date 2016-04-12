@@ -15,6 +15,7 @@
 #include "DownloadingFile.h"
 Q_DECLARE_METATYPE(std::string)
 Q_DECLARE_METATYPE(DownloadingFile)
+Q_DECLARE_METATYPE(FileInfo)
 
 namespace Ui {
 class MainWindow;
@@ -48,7 +49,9 @@ private slots:
 
     void slotAddNewDownloadingFile(const DownloadingFile& newFile);
 
-    void slotShowFoundFile(const DownloadingFile& foundFile);
+    void slotShowFoundFile(const FileInfo& foundFile);
+
+   // void slotDownloadFile(const int& fileHash);
 
     void on_searchEdit_returnPressed();
 
@@ -68,7 +71,7 @@ signals:
 
     void sigalshowNewFileStatus();
 
-    void signalShowFoundFile(const DownloadingFile& foundFile);
+    void signalShowFoundFile(const FileInfo& foundFile);
 
 
 private:

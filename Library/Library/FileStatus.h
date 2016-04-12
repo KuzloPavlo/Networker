@@ -6,4 +6,6 @@ enum FileStatus
 	downloading,
 	distribution,
 	downloaded,
+	pause,
+	deleting,
 };

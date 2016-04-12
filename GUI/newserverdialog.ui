@@ -42,7 +42,7 @@
    <item row="3" column="0" colspan="3">
     <widget class="QLineEdit" name="serverPortEdit">
      <property name="text">
-      <string>3030</string>
+      <string>33333</string>
      </property>
      <property name="placeholderText">
       <string>Server Port</string>
@@ -81,7 +81,7 @@
    <item row="2" column="0" colspan="3">
     <widget class="QLineEdit" name="serverAdressEdit">
      <property name="text">
-      <string>127.0.0.1</string>
+      <string>192.168.0.101</string>
      </property>
      <property name="dragEnabled">
       <bool>false</bool>

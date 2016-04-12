@@ -51,3 +51,9 @@ void FoundedFileForm::on_SelectedButton_clicked()
     ui->DownloadButton->setVisible(false);
     m_parentTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
+
+void FoundedFileForm::on_DownloadButton_clicked()
+{
+    // в конструктор необходимо добавить еще хеш, и в сигнал его пихать
+    emit signalDownloadFile(0);
+}

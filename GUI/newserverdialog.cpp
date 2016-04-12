@@ -22,30 +22,18 @@ NewServerDialog::~NewServerDialog()
 
 void NewServerDialog::on_serverAdressEdit_textChanged(const QString &arg1)
 {
-    if(!ui->serverPortEdit->text().isEmpty() && !ui->serverAdressEdit->text().isEmpty())
-    {
-        ui->okButton->setEnabled(true);
-        ui->label->setEnabled(true);
-    }
-    else
-    {
-        ui->okButton->setEnabled(false);
-        ui->label->setEnabled(false);
-    }
+    bool isFull = !ui->serverPortEdit->text().isEmpty() && !ui->serverAdressEdit->text().isEmpty();
+
+    ui->okButton->setEnabled(isFull);
+    ui->label->setEnabled(isFull);
 }
 
 void NewServerDialog::on_serverPortEdit_textChanged(const QString &arg1)
 {
-    if(!ui->serverPortEdit->text().isEmpty() && !ui->serverAdressEdit->text().isEmpty())
-    {
-        ui->okButton->setEnabled(true);
-        ui->label->setEnabled(true);
-    }
-    else
-    {
-        ui->okButton->setEnabled(false);
-        ui->label->setEnabled(false);
-    }
+    bool isFull = !ui->serverPortEdit->text().isEmpty() && !ui->serverAdressEdit->text().isEmpty();
+
+    ui->okButton->setEnabled(isFull);
+    ui->label->setEnabled(isFull);
 }
 
 void NewServerDialog::on_okButton_clicked()

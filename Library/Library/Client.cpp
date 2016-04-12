@@ -1,4 +1,7 @@
 #include "Client.h"
+#include <fstream>
+
+using boost::asio::ip::tcp;
 
 Client::Client() : m_countConnectedClients(0), m_clientWorking(true)
 {
@@ -15,140 +18,58 @@ Client::~Client()
 
 void Client::threadListen()
 {
-	SOCKET listenSocket = INVALID_SOCKET;
-	SOCKET clientSocket = INVALID_SOCKET;
-	WSADATA wsaData;
-	int iResult;
-
-	//---------------
 	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-	m_mutexUserInteface.lock();
-	display("Listener Thread Started");
-	m_mutexUserInteface.unlock();
-	//------------------
-	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-
-	if (iResult != 0)
+	try
 	{
-		// обеспечить обработку ошибки
-//		return 1;
+		boost::asio::io_service io_service;
+		std::shared_ptr<Listener> listener(new Listener(io_service, 77777, this->m_mutexOutgoingDistribution));
+		this->m_Listener = listener;
+		m_mutexUserInteface.lock();
+		display("Listener Thread Started");
+		m_mutexUserInteface.unlock();
+		io_service.run();
 	}
-
-	struct addrinfo *result = NULL, *ptr = NULL, hints;
-
-	ZeroMemory(&hints, sizeof(hints));
-
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_protocol = IPPROTO_TCP;
-	hints.ai_flags = AI_PASSIVE;
-
-	iResult = getaddrinfo(NULL, "3030", &hints, &result);
-
-	if (iResult != 0)
+	catch (const std::exception& ex)
 	{
-		// обеспечить обработку ошибки
-		WSACleanup();
-	//	return 1;
+		m_mutexUserInteface.lock();
+		display("Listener Thread Not Started");
+		m_mutexUserInteface.unlock();
 	}
+}
 
-	listenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-	if (listenSocket == INVALID_SOCKET)
-	{
-		// обеспечить обработку ошибки
-		freeaddrinfo(result);
-		WSACleanup();
-		//return 1;
-	}
+void Client::downloadFile(const int& fileHash)
+{
+	std::thread downloadThread(&Client::threadDownload, this);
+	downloadThread.detach();
+}
+
+void Client::threadDownload(/*DownloadingFile downloadingFile*/)
+{
+	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 	
-
-	iResult = bind(listenSocket, result->ai_addr, (int)result->ai_addrlen);
-	if (iResult == SOCKET_ERROR)
-	{	
-		m_mutexUserInteface.lock();
-		display("listen thread SOCKET_ERROR");
-		m_mutexUserInteface.unlock();
+	try
+	{
+		boost::asio::io_service io_service;
+		std::shared_ptr<Downloader> downloader(new Downloader(io_service/*, downloadingFile*/, this->m_mutexListParts));
+		//downloader->changeFileStatus = this->changeFileStatus;
 		
-		freeaddrinfo(result);
-		closesocket(listenSocket);
-		WSACleanup();
-		return ;
+		//downloader->display = this->display;
+		//downloader->dosmth();
+		
+		io_service.run();
 	}
-
-	//----------------------------------
-	//----------------------------------
-	if (iResult == WSAEADDRINUSE)
+	catch (const std::exception& ex)
 	{
-		freeaddrinfo(result);
-		closesocket(listenSocket);
-		WSACleanup();
 		m_mutexUserInteface.lock();
-		display("Port is busy");
+		display("Client::threadDownloadNot ");
+		display(ex.what());
 		m_mutexUserInteface.unlock();
-		//return;
 	}
-	//----------------------------------
-	//----------------------------------
-
-	iResult = listen(listenSocket, 10);
-	if (iResult == SOCKET_ERROR)
-	{
-		// обеспечить обработку ошибки
-		closesocket(listenSocket);
-		WSACleanup();
-		//return 1;
-	}
-
-freeaddrinfo(result);
-
-	while (true)
-	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-		m_mutexUserInteface.lock();
-		if (!this->m_clientWorking)
-		{
-			m_mutexUserInteface.unlock();
-			break;
-		}
-		display("Listening");
-		m_mutexUserInteface.unlock();
-
-		clientSocket = INVALID_SOCKET;
-		clientSocket = accept(listenSocket, NULL, NULL);  // !от сюда можно выт€гивать IP клиента
-		if (clientSocket == INVALID_SOCKET)
-		{
-			m_mutexUserInteface.lock();
-			display("Listen Thread 1");
-			m_mutexUserInteface.unlock();
-			// обеспечить обработку ошибки
-			continue;
-		}
-
-		if (clientSocket == SOCKET_ERROR)
-		{
-			m_mutexUserInteface.lock();
-			display("Listen Thread 2");
-			m_mutexUserInteface.unlock();
-		}
-
-		m_mutexUserInteface.lock();
-		display("Listen Thread It is connect");
-		m_mutexUserInteface.unlock();
-		// здесь необходимо вызывать клиентский поток
-	}
-
-	closesocket(listenSocket);
-	closesocket(clientSocket);
-	WSACleanup();
-
-	// освободить все ресурсы
-	// установить событие о том что поток закончил свою работу  
 }
 
 void Client::threadServer(const std::string& IPaddress, const std::string& port)
 {
-	std::this_thread::sleep_for(std::chrono::milliseconds(5000));	
+	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 
 	//------------------------------------
 	m_mutexUserInteface.lock();
@@ -160,7 +81,7 @@ void Client::threadServer(const std::string& IPaddress, const std::string& port)
 
 	SOCKET serverSocket = INVALID_SOCKET;
 	int iResult = 0;
-	char receiveBuffer[4096] = { 0 };	
+	char receiveBuffer[4096] = { 0 };
 	int receiveSize = 0;
 	int returnResult = 0;
 
@@ -180,7 +101,7 @@ void Client::threadServer(const std::string& IPaddress, const std::string& port)
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;
-	
+
 	iResult = getaddrinfo(IPaddress.c_str(), port.c_str(), &hints, &result);
 
 	if (iResult != 0)
@@ -256,55 +177,55 @@ void Client::threadServer(const std::string& IPaddress, const std::string& port)
 
 void Client::threadClient(void *arg)
 {
-	SOCKET clientSocket = (SOCKET)arg;
-	char receiveBuffer[4096] = { 0 };
-	char sendBuffer[4096] = { 0 };
-	int receiveSize = 0;
-	int sendSize = 0;
-	int returnResult = 0;
-	//display("thread client");
-	while (true)
-	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(500));
+	//SOCKET clientSocket = (SOCKET)arg;
+	//char receiveBuffer[4096] = { 0 };
+	//char sendBuffer[4096] = { 0 };
+	//int receiveSize = 0;
+	//int sendSize = 0;
+	//int returnResult = 0;
+	////display("thread client");
+	//while (true)
+	//{
+	//	std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-		m_mutexUserInteface.lock();
-		if (!this->m_clientWorking)
-		{
-			m_mutexUserInteface.unlock();
-			break;
-		}
-		m_mutexUserInteface.unlock();
+	//	m_mutexUserInteface.lock();
+	//	if (!this->m_clientWorking)
+	//	{
+	//		m_mutexUserInteface.unlock();
+	//		break;
+	//	}
+	//	m_mutexUserInteface.unlock();
 
-		returnResult = 0;
-		returnResult = recv(clientSocket, receiveBuffer, 4096, 0);
-		
-		if (returnResult == 0)
-		{
-			// обеспечить обработку ошибки
-			continue;
-		}
+	//	returnResult = 0;
+	//	returnResult = recv(clientSocket, receiveBuffer, 4096, 0);
 
-		if (returnResult == SOCKET_ERROR)
-		{
-			// обеспечить обработку ошибки
-			continue;
-		}
+	//	if (returnResult == 0)
+	//	{
+	//		// обеспечить обработку ошибки
+	//		continue;
+	//	}
 
-		if (returnResult > (sizeof(char) * 2))
-		{
-			char* p = (char*)&receiveSize;
-			*p = receiveBuffer[0];
-			p++;
-			*p = receiveBuffer[1];
+	//	if (returnResult == SOCKET_ERROR)
+	//	{
+	//		// обеспечить обработку ошибки
+	//		continue;
+	//	}
 
-			if (receiveSize == returnResult - (sizeof(char) * 2))
-			{
-				p++;
-				readClient(p, receiveSize, sendBuffer);
-			}
-			
-		}
-	}
+	//	if (returnResult > (sizeof(char)* 2))
+	//	{
+	//		char* p = (char*)&receiveSize;
+	//		*p = receiveBuffer[0];
+	//		p++;
+	//		*p = receiveBuffer[1];
+
+	//		if (receiveSize == returnResult - (sizeof(char)* 2))
+	//		{
+	//			p++;
+	//			readClient(p, receiveSize, sendBuffer);
+	//		}
+
+	//	}
+	//}
 	// освободить все ресурсы
 	// установить событие о том что поток закончил свою работу  
 }
@@ -313,11 +234,11 @@ int Client::readClient(char * const reseiveBuffer, const int& receiveSize, const
 {
 	char* pBuffer = reseiveBuffer;
 	char requestType = pBuffer[0];
-	
+
 	switch (static_cast<MessageTypes>(requestType))
 	{
 	case MessageTypes::message:
-		
+
 		break;
 
 	default:
@@ -338,7 +259,7 @@ void Client::connectToServer(const std::string& IPaddress, const std::string& po
 	display("Connecting to server");
 	m_mutexUserInteface.unlock();
 
-	std::thread serverThread(&Client::threadServer, this , IPaddress, port);
+	std::thread serverThread(&Client::threadServer, this, IPaddress, port);
 	serverThread.detach();
 }
 
@@ -349,25 +270,25 @@ void Client::createNewDownloadingFile(std::string location, std::string descript
 }
 
 void Client::threadCreateDownloadingFile(std::string location, std::string description)
-{	
+{
 	display("client:: new file1");
 	const int partSize = 2048;
 	char filePart[partSize] = { 0 };
 	std::hash<std::string> hashFunction;
 
 	DownloadingFile newFile;
-	strcpy(newFile.m_fileDescription, description.c_str());
-	strcpy(newFile.m_fileLocation, location.c_str());
+	strcpy_s(newFile.m_fileInfo.m_fileDescription, description.c_str());
+	strcpy_s(newFile.m_fileLocation, location.c_str());
 	newFile.m_fileStatus = FileStatus::creating;
 
 	std::string tempName;
 	tempName.assign(location, location.rfind("\\") + 1, location.size());
-	
-	strcpy(newFile.m_fileName, tempName.c_str());
 
-	newFile.m_fileHash = (newFile.m_fileHash) ^ hashFunction(tempName);
+	strcpy_s(newFile.m_fileInfo.m_fileName, tempName.c_str());
 
-	std::ifstream in(location,std::ios::in | std::ios::binary);
+	newFile.m_fileInfo.m_fileHash = (newFile.m_fileInfo.m_fileHash) ^ hashFunction(tempName);
+
+	std::ifstream in(location, std::ios::in | std::ios::binary);
 	if (!in)
 	{
 		display("client:: new file2");
@@ -376,20 +297,20 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 	}
 
 	display("client:: new file3");
-	
+
 	do
 	{
 		in.read(filePart, partSize);
-		newFile.m_numberParts++;
-		newFile.m_fileSize += in.gcount();
-		newFile.m_fileHash = (1/256) * (newFile.m_fileHash << 1) ^ hashFunction(filePart);
+		newFile.m_fileInfo.m_numberParts++;
+		newFile.m_fileInfo.m_fileSize += in.gcount();
+		newFile.m_fileInfo.m_fileHash = (1 / 256) * (newFile.m_fileInfo.m_fileHash << 1) ^ hashFunction(filePart);
 
 	} while (!in.eof());
 
 	display(location);
 	display(tempName);
-	display(std::to_string(newFile.m_numberParts));
-	display(std::to_string(newFile.m_fileHash));
+	display(std::to_string(newFile.m_fileInfo.m_numberParts));
+	display(std::to_string(newFile.m_fileInfo.m_fileHash));
 
 	std::ofstream out("OutgoingDistribution", std::ios::out | std::ios::app | std::ios::binary);
 	if (!out)
@@ -399,7 +320,7 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 		return;
 	}
 
-	char* p =(char*) &newFile;
+	char* p = (char*)&newFile;
 	char* outBuffer = new char[sizeof(newFile)];
 	for (int i = 0; i < sizeof(newFile); i++)
 	{
@@ -415,6 +336,7 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 void Client::sendOutgoingDistribution(SOCKET *serverSocket)
 {
 	DownloadingFile downloadingFile;
+	FileInfo sendFile;
 	int iResult = 0;
 	int fileSize = 0;
 	int numberOutDistribution = 0;
@@ -426,15 +348,15 @@ void Client::sendOutgoingDistribution(SOCKET *serverSocket)
 		display("client:: new file4");
 		return;
 	}
-		
+
 	in.seekg(0, in.end);
 	fileSize = in.tellg();
 	in.seekg(0, in.beg);
-	
+
 	numberOutDistribution = fileSize / sizeof(DownloadingFile);
 
 	buffer = (char*)& numberOutDistribution;
-	
+
 	iResult = send(*serverSocket, buffer, 2, 0);
 	if (iResult == SOCKET_ERROR)
 	{
@@ -446,11 +368,12 @@ void Client::sendOutgoingDistribution(SOCKET *serverSocket)
 
 	buffer = (char*)& downloadingFile;
 
-	for (int i = 0; i <numberOutDistribution; i++)
+	for (int i = 0; i < numberOutDistribution; i++)
 	{
 		in.read(buffer, sizeof(DownloadingFile));
-
-		iResult = send(*serverSocket, buffer, sizeof(DownloadingFile), 0);
+		sendFile = downloadingFile.m_fileInfo;
+		buffer = (char*)& sendFile;
+		iResult = send(*serverSocket, buffer, sizeof(FileInfo), 0);
 		if (iResult == SOCKET_ERROR)
 		{
 			// ќЅ–јЅќ“ј…
@@ -459,17 +382,17 @@ void Client::sendOutgoingDistribution(SOCKET *serverSocket)
 	}
 }
 
-void  Client::reciveDistribution(SOCKET *serverSocket)
+void Client::reciveDistribution(SOCKET *serverSocket)
 {
-	DownloadingFile downloadingFile;
+	FileInfo downloadingFile;
 	int iResult = 0;
 	int fileSize = 0;
 	int numberDistribution = 0;
 	char* buffer = (char*)& numberDistribution;
 
 	std::ofstream out("Distribution", std::ios::out | std::ios::binary);
-	if(!out)
-	{	
+	if (!out)
+	{
 		// обработай
 		return;
 	}
@@ -497,7 +420,7 @@ void  Client::reciveDistribution(SOCKET *serverSocket)
 
 	for (int i = 0; i < numberDistribution; i++)
 	{
-		iResult = recv(*serverSocket, buffer, sizeof(DownloadingFile), 0);
+		iResult = recv(*serverSocket, buffer, sizeof(FileInfo), 0);
 		if (!iResult)
 		{
 			// обработай
@@ -516,7 +439,7 @@ void  Client::reciveDistribution(SOCKET *serverSocket)
 		m_mutexUserInteface.unlock();
 		//----------------------------------------------------
 
-		out.write(buffer, sizeof(DownloadingFile));
+		out.write(buffer, sizeof(FileInfo));
 	}
 }
 
@@ -527,35 +450,39 @@ void Client::searchFile(const std::string& tockenFile)
 }
 
 void Client::threadSearchFile(std::string tockenFile)
-{	
-	DownloadingFile foundFile;
+{
+	m_mutexUserInteface.lock();
+	display("Client::threadSearchFile");
+	m_mutexUserInteface.unlock();
+	FileInfo foundFile;
 	char* buffer = (char*)& foundFile;
 
-	m_mutexDistribution.lock();
-	
+	//m_mutexDistribution->lock();
+
 	std::ifstream in("Distribution", std::ios::in | std::ios::binary);
 	if (!in)
 	{
+		//m_mutexDistribution->unlock();
 		//
 		return;
 	}
 
 	m_mutexUserInteface.lock();
 
-	if(tockenFile == "*")
+	if (tockenFile == "*")
 	{
 		while (in)
 		{
-			in.read(buffer, sizeof(DownloadingFile));
+			in.read(buffer, sizeof(FileInfo));
 			showFoundFile(foundFile);
 		}
 	}
 
-	else if(tockenFile.size() == 5 && tockenFile[0] == '*')
+	else if (tockenFile.size() == 5 && tockenFile[0] == '*')
 	{
 		while (in)
 		{
-			in.read(buffer, sizeof(DownloadingFile));
+			in.read(buffer, sizeof(FileInfo));
 			if (4 == getLargestCommonSubstring(tockenFile, foundFile.m_fileName))
 			{
 				showFoundFile(foundFile);
@@ -563,11 +490,11 @@ void Client::threadSearchFile(std::string tockenFile)
 		}
 	}
 
-	else if(tockenFile.size() == 2 && tockenFile[1] == '*')
+	else if (tockenFile.size() == 2 && tockenFile[1] == '*')
 	{
 		while (in)
 		{
-			in.read(buffer, sizeof(DownloadingFile));
+			in.read(buffer, sizeof(FileInfo));
 			if (tockenFile[0] == foundFile.m_fileName[0])
 			{
 				showFoundFile(foundFile);
@@ -575,12 +502,12 @@ void Client::threadSearchFile(std::string tockenFile)
 		}
 	}
 
-	else if(tockenFile.size() == 3 && tockenFile[1] == '*')
+	else if (tockenFile.size() == 3 && tockenFile[1] == '*')
 	{
 		while (in)
 		{
-			in.read(buffer, sizeof(DownloadingFile));
-			if (tockenFile[0] == foundFile.m_fileName[0] && tockenFile[2] == foundFile.m_fileName[strlen(foundFile.m_fileName)-5])
+			in.read(buffer, sizeof(FileInfo));
+			if (tockenFile[0] == foundFile.m_fileName[0] && tockenFile[2] == foundFile.m_fileName[strlen(foundFile.m_fileName) - 5])
 			{
 				showFoundFile(foundFile);
 			}
@@ -591,18 +518,18 @@ void Client::threadSearchFile(std::string tockenFile)
 	{
 		while (in)
 		{
-			in.read(buffer, sizeof(DownloadingFile));
+			in.read(buffer, sizeof(FileInfo));
 			if (4 <= getLargestCommonSubstring(tockenFile, foundFile.m_fileDescription) ||
 				4 <= getLargestCommonSubstring(tockenFile, foundFile.m_fileName))
 			{
 				showFoundFile(foundFile);
 			}
-			
+
 		}
 	}
-	
+
 	m_mutexUserInteface.unlock();
-	m_mutexDistribution.unlock();
+	//m_mutexDistribution->unlock();
 }
 
 int Client::getLargestCommonSubstring(/*std::string & result,*/ const std::string & a, const std::string & b)
@@ -621,19 +548,19 @@ int Client::getLargestCommonSubstring(/*std::string & result,*/ const std::strin
 	int max_length = 0;
 	int result_index = 0;
 
-	for (int i = a_size - 1; i >= 0; i--) 
+	for (int i = a_size - 1; i >= 0; i--)
 	{
-		for (int j = b_size - 1; j >= 0; j--) 
+		for (int j = b_size - 1; j >= 0; j--)
 		{
 			int & current_match = (*current)[j];
 
-			if (a[i] != b[j]) 
+			if (a[i] != b[j])
 			{
 				current_match = 0;
 			}
 			else {
 				const int length = 1 + (*previous)[j + 1];
-				if (length > max_length) 
+				if (length > max_length)
 				{
 					max_length = length;
 					result_index = i;
@@ -645,4 +572,38 @@ int Client::getLargestCommonSubstring(/*std::string & result,*/ const std::strin
 	}
 	//result = a.substr(result_index, max_length);
 	return max_length;
+}
+
+void Client::connnect()
+{
+
+	enum { max_length = 1024 };
+
+	try
+	{
+		boost::asio::io_service io_service;
+
+		tcp::socket s(io_service);
+		tcp::resolver resolver(io_service);
+		boost::asio::connect(s, resolver.resolve({ "127.0.0.1", "77777" }));
+
+		std::cout << "Enter message: ";
+		char request[max_length];
+		std::cin.getline(request, max_length);
+		size_t request_length = std::strlen(request);
+		boost::asio::write(s, boost::asio::buffer(request, request_length));
+
+		char reply[max_length];
+		size_t reply_length = boost::asio::read(s,
+			boost::asio::buffer(reply, request_length));
+		std::cout << "Reply is: ";
+		std::cout.write(reply, reply_length);
+		std::cout << "\n";
+	}
+	catch (std::exception& e)
+	{
+		std::cerr << "Exception: " << e.what() << "\n";
+	}
+
+
 }

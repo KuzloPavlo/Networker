@@ -22,8 +22,11 @@ public:
 private slots:
     void on_SelectButton_clicked();
     void on_SelectedButton_clicked();
+    void on_DownloadButton_clicked();
+
 signals:
     void signalChangeChartSize();
+    void signalDownloadFile(const int& fileHash);
 private:
     QTableWidget* m_parentTable;
     Ui::FoundedFileForm *ui;

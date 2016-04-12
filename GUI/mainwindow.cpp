@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     qRegisterMetaType<std::string>();
     qRegisterMetaType<DownloadingFile>();
+    qRegisterMetaType<FileInfo>();
 
     QPalette mainPall;
     mainPall.setColor (this->backgroundRole (), QColor(255, 255, 255, 255));
@@ -66,9 +67,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_pClient->showFoundFile = std::bind(&MainWindow::signalShowFoundFile, this, std::placeholders::_1);
 
     connect(this,
-            SIGNAL(signalShowFoundFile(const DownloadingFile&)),
+            SIGNAL(signalShowFoundFile(const FileInfo&)),
             this,
-            SLOT(slotShowFoundFile(const DownloadingFile&)));
+            SLOT(slotShowFoundFile(const FileInfo&)));
 
 
 
@@ -82,6 +83,8 @@ MainWindow::MainWindow(QWidget *parent) :
             this,
             SLOT(slotCreateNewDownloadingFile(QString,QString))
             );
+
+
 }
 
 MainWindow::~MainWindow()
@@ -92,7 +95,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::slotDisplay(const std::string& str)
 {
-    char strstr[100];
+    char strstr[10000];
     std::strcpy(strstr, str.c_str());
     this->ui->textDisplay->append(strstr);
 }
@@ -128,7 +131,9 @@ void MainWindow::on_createFileBut_clicked()
 
 void MainWindow::on_sendButton_clicked()
 {
-    m_pClient->display(ui->textinput->toPlainText().toStdString());
+    //m_pClient->display(ui->textinput->toPlainText().toStdString());
+   // m_pClient->connnect();
+    m_pClient->downloadFile(0);
 }
 
 
@@ -156,7 +161,7 @@ void MainWindow::slotCreateNewDownloadingFile(const QString &location, const QSt
 {
     std::string windowsStyleLocation = changeLocationStyle(location);
     std::string specification = description.toStdString();
-
+    emit slotDisplay("slotCreateNewDownloadingFile");
     m_pClient->createNewDownloadingFile(windowsStyleLocation,specification);
 }
 
@@ -172,15 +177,23 @@ void MainWindow::on_searchEdit_returnPressed()
         ui->tableSearch->setRowCount(0);
         m_pClient->searchFile(ui->searchEdit->text().toStdString());
     }
+    else
+    {
+        ui->tableSearch->setRowCount(0);
+        m_pClient->searchFile("*");
+    }
 }
 
-void MainWindow::slotShowFoundFile(const DownloadingFile& foundFile)
+void MainWindow::slotShowFoundFile(const FileInfo& foundFile)
 {
+    emit slotDisplay(foundFile.m_fileName);
     std::string sizeFile = std::to_string(foundFile.m_fileSize);
     ui->tableSearch->insertRow(ui->tableSearch->rowCount());
     ui->tableSearch->setCellWidget(ui->tableSearch->rowCount()-1,0,
-                                   new FoundedFileForm(foundFile.m_fileName,
-                                                       foundFile.m_fileDescription,
-                                                       sizeFile.c_str(),
-                                                       ui->tableSearch,                                                      ui->tableSearch));
+                                   new FoundedFileForm(
+                                       foundFile.m_fileName,
+                                       foundFile.m_fileDescription,
+                                       sizeFile.c_str(),
+                                       ui->tableSearch,
+                                       ui->tableSearch));
 }
