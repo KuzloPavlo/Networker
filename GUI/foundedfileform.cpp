@@ -2,12 +2,10 @@
 #include "ui_foundedfileform.h"
 
 FoundedFileForm::FoundedFileForm(
-        const QString& fileName,
-        const QString& fileDescription,
-        const QString& fileSize,
+        const FileInfo& fileInfo,
         QTableWidget *parentTable,
         QWidget *parent) :
-    QWidget(parent), m_parentTable(parentTable),
+    QWidget(parent), m_parentTable(parentTable), m_fileInfo(fileInfo),
     ui(new Ui::FoundedFileForm)
 {
     ui->setupUi(this);
@@ -18,9 +16,10 @@ FoundedFileForm::FoundedFileForm(
     ui->Size->setVisible(false);
     ui->DownloadButton->setVisible(false);
 
-    ui->FoundFileName->setText(fileName);
-    ui->Description->setText(fileDescription);
-    ui->Size->setText(fileSize);
+    ui->FoundFileName->setText(fileInfo.m_fileName);
+    ui->Description->setText(fileInfo.m_fileDescription);
+    std::string sizeFile = std::to_string(fileInfo.m_fileSize);
+    ui->Size->setText(sizeFile.c_str());
 }
 
 FoundedFileForm::~FoundedFileForm()
@@ -55,5 +54,8 @@ void FoundedFileForm::on_SelectedButton_clicked()
 void FoundedFileForm::on_DownloadButton_clicked()
 {
     // в конструктор необходимо добавить еще хеш, и в сигнал его пихать
+    QString fileWay = QFileDialog::getExistingDirectory(this,"Downloading","");
+   // DownloadingFile
+  //  ui->sourceSelection->setText(fileWay);
     emit signalDownloadFile(0);
 }

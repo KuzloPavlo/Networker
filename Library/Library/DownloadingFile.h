@@ -18,4 +18,5 @@ struct DownloadingFile
 	FileInfo m_fileInfo;
 	char m_fileLocation[MAX_PATH];
 	FileStatus m_fileStatus;
+	int m_counterPercents = 0;
 };

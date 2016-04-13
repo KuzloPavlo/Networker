@@ -37,25 +37,30 @@ void Client::threadListen()
 	}
 }
 
-void Client::downloadFile(const int& fileHash)
+void Client::downloadFile(
+	const int& fileHash,
+	std::function<void(const int& fileHash,const FileStatus& fileStatus,const int& filePercents)>&changeFileStatus)
 {
-	std::thread downloadThread(&Client::threadDownload, this);
+	DownloadingFile dw;
+	std::thread downloadThread(&Client::threadDownload, this, dw, changeFileStatus);
 	downloadThread.detach();
 }
 
-void Client::threadDownload(/*DownloadingFile downloadingFile*/)
+void Client::threadDownload(
+	DownloadingFile& downloadingFile,
+	std::function<void(const int& fileHash, const FileStatus& fileStatus, const int& filePercents)>&changeFileStatus)
 {
 	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-	
+
 	try
 	{
 		boost::asio::io_service io_service;
-		std::shared_ptr<Downloader> downloader(new Downloader(io_service/*, downloadingFile*/, this->m_mutexListParts));
-		//downloader->changeFileStatus = this->changeFileStatus;
-		
-		//downloader->display = this->display;
-		//downloader->dosmth();
-		
+
+		std::shared_ptr<Downloader> downloader(new Downloader(io_service, downloadingFile, this->m_mutexListParts, changeFileStatus));
+
+		downloader->func(this->display);
+		downloader->dosmth();
+
 		io_service.run();
 	}
 	catch (const std::exception& ex)

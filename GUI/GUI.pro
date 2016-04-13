@@ -17,19 +17,25 @@ SOURCES += main.cpp\
     downloadingfiledialog.cpp \
     newserverdialog.cpp \
     foundedfileform.cpp \
-    status.cpp
+    status.cpp \
+    fileform.cpp \
+    descriptionform.cpp
 
 HEADERS  += mainwindow.h \
     downloadingfiledialog.h \
     newserverdialog.h \
     foundedfileform.h \
-    status.h
+    status.h \
+    fileform.h \
+    descriptionform.h
 
 FORMS    += mainwindow.ui \
     downloadingfiledialog.ui \
     newserverdialog.ui \
     foundedfileform.ui \
-    status.ui
+    status.ui \
+    fileform.ui \
+    descriptionform.ui
 
 RESOURCES += \
     icons.qrc

@@ -131,9 +131,8 @@ void MainWindow::on_createFileBut_clicked()
 
 void MainWindow::on_sendButton_clicked()
 {
-    //m_pClient->display(ui->textinput->toPlainText().toStdString());
-   // m_pClient->connnect();
-    m_pClient->downloadFile(0);
+    ui->tableDownloads->setSpan(0,0,1,ui->tableDownloads->columnCount());
+
 }
 
 
@@ -186,14 +185,12 @@ void MainWindow::on_searchEdit_returnPressed()
 
 void MainWindow::slotShowFoundFile(const FileInfo& foundFile)
 {
+    //------------------------------------
     emit slotDisplay(foundFile.m_fileName);
-    std::string sizeFile = std::to_string(foundFile.m_fileSize);
+    //------------------------------------------
+    FoundedFileForm* newForm = new FoundedFileForm(foundFile,ui->tableSearch, ui->tableSearch);
+    newForm->downloadFile = std::bind(&MainWindow::signalAddNewDownloadingFile,this, std::placeholders::_1);
+
     ui->tableSearch->insertRow(ui->tableSearch->rowCount());
-    ui->tableSearch->setCellWidget(ui->tableSearch->rowCount()-1,0,
-                                   new FoundedFileForm(
-                                       foundFile.m_fileName,
-                                       foundFile.m_fileDescription,
-                                       sizeFile.c_str(),
-                                       ui->tableSearch,
-                                       ui->tableSearch));
+    ui->tableSearch->setCellWidget(ui->tableSearch->rowCount()-1,0, newForm);
 }

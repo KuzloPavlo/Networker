@@ -44,11 +44,11 @@ public:
 	void connectToClient(const std::string& IPaddress, const std::string& port);
 	void createNewDownloadingFile(std::string location, std::string description);
 	void searchFile(const std::string& tockenFile);
-	void downloadFile(const int& fileHash);
+	void downloadFile(const int& fileHash, std::function<void(const int& fileHash,const FileStatus& fileStatus,const int& filePercents)>&changeFileStatus);
 
 	std::function<void(const std::string& str)>display;
-	std::function<void(const DownloadingFile& newFile)>addNewFile;
-	std::function<void(const int& fileHash, FileStatus& fileStatus, float& filePercents)>changeFileStatus;
+	//std::function<void(const DownloadingFile& newFile)>addNewFile;
+	//std::function<void(const int& fileHash, FileStatus& fileStatus, float& filePercents)>changeFileStatus;
 	std::function<void(const FileInfo& foundFile)>showFoundFile;
 
 private:
@@ -62,7 +62,7 @@ private:
 	void threadListen();
 	void threadServer(const std::string& IPaddress, const std::string& port);
 	void threadClient(void *arg);
-	void threadDownload(/*DownloadingFile downloadingFile*/);
+	void threadDownload(DownloadingFile& downloadingFile, std::function<void(const int& fileHash,const FileStatus& fileStatus,const int& filePercents)>&changeFileStatus);
 	void threadCreateDownloadingFile(std::string location, std::string description);
 	void threadSearchFile(std::string tockenFile);
 	void sendOutgoingDistribution(SOCKET *serverSocket);

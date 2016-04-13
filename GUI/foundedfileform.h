@@ -2,6 +2,11 @@
 #include <QWidget>
 #include <QTableWidget>
 #include <QString>
+#include "DownloadingFile.h"
+#include <functional>
+#include <QFileDialog>
+#include <QDebug>
+#include <QDialog>
 
 namespace Ui {
 class FoundedFileForm;
@@ -13,12 +18,11 @@ class FoundedFileForm : public QWidget
 
 public:
     explicit FoundedFileForm(
-            const QString& fileName,
-            const QString& fileDescription,
-            const QString& fileSize,
+          const FileInfo& fileInfo,
             QTableWidget *parentTable,
             QWidget *parent = 0);
     ~FoundedFileForm();
+    std::function<void(const DownloadingFile& file)>downloadFile;
 private slots:
     void on_SelectButton_clicked();
     void on_SelectedButton_clicked();
@@ -29,5 +33,6 @@ signals:
     void signalDownloadFile(const int& fileHash);
 private:
     QTableWidget* m_parentTable;
+    FileInfo m_fileInfo;
     Ui::FoundedFileForm *ui;
 };
