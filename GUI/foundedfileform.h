@@ -22,7 +22,7 @@ public:
             QTableWidget *parentTable,
             QWidget *parent = 0);
     ~FoundedFileForm();
-    std::function<void(const DownloadingFile& file)>downloadFile;
+    std::function<void(const FileInfo& file, const QString& QtLocation)>downloadFile;
 private slots:
     void on_SelectButton_clicked();
     void on_SelectedButton_clicked();
@@ -30,7 +30,7 @@ private slots:
 
 signals:
     void signalChangeChartSize();
-    void signalDownloadFile(const int& fileHash);
+   // void signalDownloadFile(const int& fileHash);
 private:
     QTableWidget* m_parentTable;
     FileInfo m_fileInfo;

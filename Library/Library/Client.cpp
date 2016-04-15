@@ -389,18 +389,18 @@ void Client::sendOutgoingDistribution(SOCKET *serverSocket)
 
 void Client::reciveDistribution(SOCKET *serverSocket)
 {
-	FileInfo downloadingFile;
+	DistributeFile downloadingFile;
 	int iResult = 0;
 	int fileSize = 0;
 	int numberDistribution = 0;
 	char* buffer = (char*)& numberDistribution;
 
-	std::ofstream out("Distribution", std::ios::out | std::ios::binary);
-	if (!out)
-	{
-		// обработай
-		return;
-	}
+	//std::ofstream out("Distribution", std::ios::out | std::ios::binary);
+	//if (!out)
+	//{
+	//	// обработай
+	//	return;
+	//}
 
 	iResult = recv(*serverSocket, buffer, 2, 0);
 	if (!iResult)
@@ -425,7 +425,7 @@ void Client::reciveDistribution(SOCKET *serverSocket)
 
 	for (int i = 0; i < numberDistribution; i++)
 	{
-		iResult = recv(*serverSocket, buffer, sizeof(FileInfo), 0);
+		iResult = recv(*serverSocket, buffer, sizeof(DistributeFile), 0);
 		if (!iResult)
 		{
 			// обработай
@@ -439,12 +439,15 @@ void Client::reciveDistribution(SOCKET *serverSocket)
 
 		//-----------------------------------------------------
 		m_mutexUserInteface.lock();
-		display(downloadingFile.m_fileDescription);
-		display(downloadingFile.m_fileName);
+		display(downloadingFile.m_fileInfo.m_fileDescription);
+		display(downloadingFile.m_fileInfo.m_fileName);
 		m_mutexUserInteface.unlock();
 		//----------------------------------------------------
 
-		out.write(buffer, sizeof(FileInfo));
+		//out.write(buffer, sizeof(FileInfo));
+
+
+
 	}
 }
 
@@ -611,4 +614,21 @@ void Client::connnect()
 	}
 
 
+}
+
+void Client::addDistributeFile(const DistributeFile& distributeFile)
+{
+	std::map<FileInfo, FileDistributors>::iterator p;
+
+	p = m_distirbution.find(distributeFile.m_fileInfo);
+	if (p != m_distirbution.end())
+	{
+		p->second.addAdress(distributeFile.m_addr);
+	}
+	else
+	{
+		FileDistributors addres;
+		addres.addAdress(distributeFile.m_addr);
+		m_distirbution.insert(std::pair<FileInfo, FileDistributors>(distributeFile.m_fileInfo, addres));
+	}	
 }

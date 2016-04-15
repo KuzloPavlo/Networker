@@ -81,9 +81,11 @@
   <ItemGroup>
     <ClInclude Include="Client.h" />
     <ClInclude Include="ClientSession.h" />
+    <ClInclude Include="DistributeFile.h" />
     <ClInclude Include="Downloader.h" />
     <ClInclude Include="DownloadingFile.h" />
     <ClInclude Include="DownloadSession.h" />
+    <ClInclude Include="FileDistributors.h" />
     <ClInclude Include="FileStatus.h" />
     <ClInclude Include="Listener.h" />
     <ClInclude Include="MessageTypes.h" />
@@ -95,6 +97,7 @@
     <ClCompile Include="ClientSession.cpp" />
     <ClCompile Include="Downloader.cpp" />
     <ClCompile Include="DownloadSession.cpp" />
+    <ClCompile Include="FileDistributors.cpp" />
     <ClCompile Include="Listener.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

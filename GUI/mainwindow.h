@@ -51,7 +51,7 @@ private slots:
 
     void slotShowFoundFile(const FileInfo& foundFile);
 
-   // void slotDownloadFile(const int& fileHash);
+    void slotDownloadFile(const FileInfo& foundFile, const QString& QtLocation);
 
     void on_searchEdit_returnPressed();
 
@@ -72,6 +72,8 @@ signals:
     void sigalshowNewFileStatus();
 
     void signalShowFoundFile(const FileInfo& foundFile);
+
+    void signalDownloadFile(const FileInfo& foundFile, const QString& QtLocation);
 
 
 private:

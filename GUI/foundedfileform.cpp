@@ -53,9 +53,6 @@ void FoundedFileForm::on_SelectedButton_clicked()
 
 void FoundedFileForm::on_DownloadButton_clicked()
 {
-    // в конструктор необходимо добавить еще хеш, и в сигнал его пихать
     QString fileWay = QFileDialog::getExistingDirectory(this,"Downloading","");
-   // DownloadingFile
-  //  ui->sourceSelection->setText(fileWay);
-    emit signalDownloadFile(0);
+    downloadFile(m_fileInfo, fileWay);
 }

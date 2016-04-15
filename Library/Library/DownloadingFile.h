@@ -13,6 +13,11 @@ struct FileInfo
 	int m_fileSize = 0;
 };
 
+bool operator < (FileInfo a, FileInfo b)
+{
+	return a.m_fileHash < b.m_fileHash;
+}
+
 struct DownloadingFile
 {
 	FileInfo m_fileInfo;

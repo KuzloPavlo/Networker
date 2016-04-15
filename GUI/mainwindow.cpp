@@ -84,6 +84,12 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(slotCreateNewDownloadingFile(QString,QString))
             );
 
+    connect(this,
+            SIGNAL (signalDownloadFile(const FileInfo&, const QString&)),
+            this,
+            SLOT(slotDownloadFile(const FileInfo&, const QString&))
+            );
+
 
 }
 
@@ -189,8 +195,14 @@ void MainWindow::slotShowFoundFile(const FileInfo& foundFile)
     emit slotDisplay(foundFile.m_fileName);
     //------------------------------------------
     FoundedFileForm* newForm = new FoundedFileForm(foundFile,ui->tableSearch, ui->tableSearch);
-    newForm->downloadFile = std::bind(&MainWindow::signalAddNewDownloadingFile,this, std::placeholders::_1);
+    newForm->downloadFile = std::bind(&MainWindow::signalDownloadFile,this, std::placeholders::_1, std::placeholders::_2);
 
     ui->tableSearch->insertRow(ui->tableSearch->rowCount());
     ui->tableSearch->setCellWidget(ui->tableSearch->rowCount()-1,0, newForm);
+}
+
+void MainWindow::slotDownloadFile(const FileInfo &foundFile, const QString &QtLocation)
+{
+    emit slotDisplay(QtLocation.toStdString());
+    // ПРОДОЛЖАЕМ
 }

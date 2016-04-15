@@ -26,6 +26,8 @@
 #include <boost/asio.hpp>
 #include "DownloadSession.h"
 #include "Downloader.h"
+#include "FileDistributors.h"
+#include "DistributeFile.h"
 
 #pragma comment(lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -52,8 +54,10 @@ public:
 	std::function<void(const FileInfo& foundFile)>showFoundFile;
 
 private:
+	std::map<FileInfo, FileDistributors> m_distirbution;
 	int m_countConnectedClients;
 	bool m_clientWorking;
+	
 	std::mutex m_mutexUserInteface;               //Only one thread is working with the interface
 	std::shared_ptr<std::mutex>m_mutexOutgoingDistribution;
 	std::shared_ptr<std::mutex>m_mutexDistribution;
@@ -68,4 +72,5 @@ private:
 	void sendOutgoingDistribution(SOCKET *serverSocket);
 	void reciveDistribution(SOCKET *serverSocket);
 	int getLargestCommonSubstring(/*std::string & result,*/ const std::string & a, const std::string & b);
+	void addDistributeFile(const DistributeFile& distributeFile);
 };
