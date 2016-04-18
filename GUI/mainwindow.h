@@ -11,11 +11,13 @@
 #include <functional>
 #include <memory>
 #include "FileStatus.h"
+#include "fileform.h"
 #include "foundedfileform.h"
 #include "DownloadingFile.h"
 Q_DECLARE_METATYPE(std::string)
 Q_DECLARE_METATYPE(DownloadingFile)
 Q_DECLARE_METATYPE(FileInfo)
+Q_DECLARE_METATYPE(FileStatus)
 
 namespace Ui {
 class MainWindow;

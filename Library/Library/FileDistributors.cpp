@@ -23,3 +23,8 @@ void FileDistributors::addAdress(const sockaddr_in& adress)
 	}
 	m_adresses.push_back(adress);
 }
+
+sockaddr_in& FileDistributors::operator [](const int& i)
+{
+	return m_adresses[i];
+}

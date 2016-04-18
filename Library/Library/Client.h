@@ -33,7 +33,6 @@
 #pragma comment (lib, "Mswsock.lib")
 #pragma comment (lib, "AdvApi32.lib")
 
-
 class Client
 {
 public:
@@ -46,7 +45,11 @@ public:
 	void connectToClient(const std::string& IPaddress, const std::string& port);
 	void createNewDownloadingFile(std::string location, std::string description);
 	void searchFile(const std::string& tockenFile);
-	void downloadFile(const int& fileHash, std::function<void(const int& fileHash,const FileStatus& fileStatus,const int& filePercents)>&changeFileStatus);
+
+	void downloadFile(
+		const DownloadingFile& downloadingFile,
+		std::function<void(const FileStatus& fileStatus, const int& filePercents)>&changeFileStatus,
+		std::function<void(const FileStatus& fileStatus)>* changeDownloader);
 
 	std::function<void(const std::string& str)>display;
 	//std::function<void(const DownloadingFile& newFile)>addNewFile;
@@ -66,11 +69,18 @@ private:
 	void threadListen();
 	void threadServer(const std::string& IPaddress, const std::string& port);
 	void threadClient(void *arg);
-	void threadDownload(DownloadingFile& downloadingFile, std::function<void(const int& fileHash,const FileStatus& fileStatus,const int& filePercents)>&changeFileStatus);
+
+	void threadDownload(
+		const DownloadingFile& downloadingFile,
+		const FileDistributors& adresses,
+		std::function<void(const FileStatus& fileStatus, const int& filePercents)>&changeFileStatus,
+		std::function<void(const FileStatus& fileStatus)>* changeDownloader);
+
 	void threadCreateDownloadingFile(std::string location, std::string description);
 	void threadSearchFile(std::string tockenFile);
 	void sendOutgoingDistribution(SOCKET *serverSocket);
 	void reciveDistribution(SOCKET *serverSocket);
 	int getLargestCommonSubstring(/*std::string & result,*/ const std::string & a, const std::string & b);
 	void addDistributeFile(const DistributeFile& distributeFile);
+	FileDistributors getDistributors(const FileInfo& fileInfo);//
 };

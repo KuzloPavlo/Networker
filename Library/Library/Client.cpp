@@ -38,26 +38,32 @@ void Client::threadListen()
 }
 
 void Client::downloadFile(
-	const int& fileHash,
-	std::function<void(const int& fileHash,const FileStatus& fileStatus,const int& filePercents)>&changeFileStatus)
+	const DownloadingFile& downloadingFile,
+	std::function<void(const FileStatus& fileStatus, const int& filePercents)>&changeFileStatus,
+	std::function<void(const FileStatus& fileStatus)>* changeDownloader)
 {
-	DownloadingFile dw;
-	std::thread downloadThread(&Client::threadDownload, this, dw, changeFileStatus);
+	display("Client::downloadFile1 ");
+	FileDistributors adresses;// = getDistributors(downloadingFile.m_fileInfo);
+	std::thread downloadThread(&Client::threadDownload, this, downloadingFile, adresses, std::ref(changeFileStatus), std::ref(changeDownloader));
+	display("Client::downloadFile2 ");
 	downloadThread.detach();
 }
 
 void Client::threadDownload(
-	DownloadingFile& downloadingFile,
-	std::function<void(const int& fileHash, const FileStatus& fileStatus, const int& filePercents)>&changeFileStatus)
+	const DownloadingFile& downloadingFile,
+	const FileDistributors& adresses,
+	std::function<void(const FileStatus& fileStatus, const int& filePercents)>&changeFileStatus,
+	std::function<void(const FileStatus& fileStatus)>* changeDownloader)
 {
+	display("Client::threadDownload1");
 	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-
+	display("Client::threadDownload2");
 	try
 	{
 		boost::asio::io_service io_service;
-
-		std::shared_ptr<Downloader> downloader(new Downloader(io_service, downloadingFile, this->m_mutexListParts, changeFileStatus));
-
+		display("Client::threadDownload2");
+		std::shared_ptr<Downloader> downloader(new Downloader(io_service, downloadingFile, adresses, this->m_mutexListParts, changeFileStatus, changeDownloader));
+		display("Client::threadDownload3");
 		downloader->func(this->display);
 		downloader->dosmth();
 
@@ -182,57 +188,7 @@ void Client::threadServer(const std::string& IPaddress, const std::string& port)
 
 void Client::threadClient(void *arg)
 {
-	//SOCKET clientSocket = (SOCKET)arg;
-	//char receiveBuffer[4096] = { 0 };
-	//char sendBuffer[4096] = { 0 };
-	//int receiveSize = 0;
-	//int sendSize = 0;
-	//int returnResult = 0;
-	////display("thread client");
-	//while (true)
-	//{
-	//	std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-	//	m_mutexUserInteface.lock();
-	//	if (!this->m_clientWorking)
-	//	{
-	//		m_mutexUserInteface.unlock();
-	//		break;
-	//	}
-	//	m_mutexUserInteface.unlock();
-
-	//	returnResult = 0;
-	//	returnResult = recv(clientSocket, receiveBuffer, 4096, 0);
-
-	//	if (returnResult == 0)
-	//	{
-	//		// обеспечить обработку ошибки
-	//		continue;
-	//	}
-
-	//	if (returnResult == SOCKET_ERROR)
-	//	{
-	//		// обеспечить обработку ошибки
-	//		continue;
-	//	}
-
-	//	if (returnResult > (sizeof(char)* 2))
-	//	{
-	//		char* p = (char*)&receiveSize;
-	//		*p = receiveBuffer[0];
-	//		p++;
-	//		*p = receiveBuffer[1];
-
-	//		if (receiveSize == returnResult - (sizeof(char)* 2))
-	//		{
-	//			p++;
-	//			readClient(p, receiveSize, sendBuffer);
-	//		}
-
-	//	}
-	//}
-	// освободить все ресурсы
-	// установить событие о том что поток закончил свою работу  
+	
 }
 
 int Client::readClient(char * const reseiveBuffer, const int& receiveSize, const char* sendBuffer)
@@ -395,13 +351,6 @@ void Client::reciveDistribution(SOCKET *serverSocket)
 	int numberDistribution = 0;
 	char* buffer = (char*)& numberDistribution;
 
-	//std::ofstream out("Distribution", std::ios::out | std::ios::binary);
-	//if (!out)
-	//{
-	//	// обработай
-	//	return;
-	//}
-
 	iResult = recv(*serverSocket, buffer, 2, 0);
 	if (!iResult)
 	{
@@ -413,13 +362,6 @@ void Client::reciveDistribution(SOCKET *serverSocket)
 		// обработай
 		return;
 	}
-
-	//-----------------------------------------------
-	m_mutexUserInteface.lock();
-	display("number:");
-	display(std::to_string(numberDistribution));
-	m_mutexUserInteface.unlock();
-	//---------------------------------------------
 
 	buffer = (char*)& downloadingFile;
 
@@ -436,18 +378,7 @@ void Client::reciveDistribution(SOCKET *serverSocket)
 			// обработай
 			break;
 		}
-
-		//-----------------------------------------------------
-		m_mutexUserInteface.lock();
-		display(downloadingFile.m_fileInfo.m_fileDescription);
-		display(downloadingFile.m_fileInfo.m_fileName);
-		m_mutexUserInteface.unlock();
-		//----------------------------------------------------
-
-		//out.write(buffer, sizeof(FileInfo));
-
-
-
+		addDistributeFile(downloadingFile);
 	}
 }
 
@@ -618,6 +549,12 @@ void Client::connnect()
 
 void Client::addDistributeFile(const DistributeFile& distributeFile)
 {
+	//--------------------------------------
+	m_mutexUserInteface.lock();
+	display(distributeFile.m_fileInfo.m_fileName);
+	m_mutexUserInteface.unlock();
+	//--------------------------------------
+
 	std::map<FileInfo, FileDistributors>::iterator p;
 
 	p = m_distirbution.find(distributeFile.m_fileInfo);
@@ -631,4 +568,13 @@ void Client::addDistributeFile(const DistributeFile& distributeFile)
 		addres.addAdress(distributeFile.m_addr);
 		m_distirbution.insert(std::pair<FileInfo, FileDistributors>(distributeFile.m_fileInfo, addres));
 	}	
+}
+
+FileDistributors Client::getDistributors(const FileInfo& fileInfo)
+{
+	std::map<FileInfo, FileDistributors>::iterator p;
+
+	p = m_distirbution.find(fileInfo);
+
+	return (p->second);
 }

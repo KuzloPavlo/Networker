@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType<std::string>();
     qRegisterMetaType<DownloadingFile>();
     qRegisterMetaType<FileInfo>();
+    qRegisterMetaType<FileStatus>();
 
     QPalette mainPall;
     mainPall.setColor (this->backgroundRole (), QColor(255, 255, 255, 255));
@@ -51,6 +52,11 @@ MainWindow::MainWindow(QWidget *parent) :
     // 0,127,255,100
 
     // Status* newStatus = new Status(this);
+
+//    ui->textDisplay->setVisible(false);
+//    ui->textinput->setVisible(false);
+//    ui->sendButton->setVisible(false);
+//    emit on_sendButton_clicked();
 
     m_pClient->display = std::bind(&MainWindow::signalDisplay, this, std::placeholders::_1);
 
@@ -137,7 +143,9 @@ void MainWindow::on_createFileBut_clicked()
 
 void MainWindow::on_sendButton_clicked()
 {
-    ui->tableDownloads->setSpan(0,0,1,ui->tableDownloads->columnCount());
+    //ui->tableDownloads->setSpan(0,0,1,ui->tableDownloads->columnCount());
+    FileInfo fi;
+    emit slotDownloadFile(fi, "akdsjf");
 
 }
 
@@ -203,6 +211,19 @@ void MainWindow::slotShowFoundFile(const FileInfo& foundFile)
 
 void MainWindow::slotDownloadFile(const FileInfo &foundFile, const QString &QtLocation)
 {
+    //-------------------------------------------
     emit slotDisplay(QtLocation.toStdString());
-    // ПРОДОЛЖАЕМ
+    //------------------------------------------
+
+    std::string location = changeLocationStyle(QtLocation);
+
+    DownloadingFile file;
+    file.m_fileInfo = foundFile;
+    strcpy_s(file.m_fileLocation,location.c_str());
+    file.m_fileStatus = FileStatus::creating;
+
+    FileForm* newFile = new FileForm(file, ui->tableDownloads, ui->tableDownloads);
+
+    m_pClient->downloadFile(file, newFile->changeFileStatus, &(newFile->changeDownloader));
+
 }

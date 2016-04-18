@@ -8,4 +8,5 @@ enum FileStatus
 	downloaded,
 	pause,
 	deleting,
+	failing,
 };

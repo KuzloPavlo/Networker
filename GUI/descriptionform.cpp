@@ -1,7 +1,7 @@
 #include "descriptionform.h"
 #include "ui_descriptionform.h"
 
-DescriptionForm::DescriptionForm(QWidget *parent) :
+DescriptionForm::DescriptionForm(const QString& description, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::DescriptionForm)
 {

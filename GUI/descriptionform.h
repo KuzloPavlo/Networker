@@ -10,7 +10,7 @@ class DescriptionForm : public QWidget
     Q_OBJECT
 
 public:
-    explicit DescriptionForm(QWidget *parent = 0);
+    explicit DescriptionForm(const QString& description, QWidget *parent = 0);
     ~DescriptionForm();
 
 private:
