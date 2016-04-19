@@ -55,13 +55,13 @@ void Client::threadDownload(
 	std::function<void(const FileStatus& fileStatus, const int& filePercents)>&changeFileStatus,
 	std::function<void(const FileStatus& fileStatus)>* changeDownloader)
 {
-	display("Client::threadDownload1");
+	display("Client::threadDownload1111");
 	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 	display("Client::threadDownload2");
 	try
 	{
 		boost::asio::io_service io_service;
-		display("Client::threadDownload2");
+		display("Client::threadDownload2/1");
 		std::shared_ptr<Downloader> downloader(new Downloader(io_service, downloadingFile, adresses, this->m_mutexListParts, changeFileStatus, changeDownloader));
 		display("Client::threadDownload3");
 		downloader->func(this->display);

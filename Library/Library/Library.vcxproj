@@ -79,6 +79,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Checker.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="ClientSession.h" />
     <ClInclude Include="DistributeFile.h" />
@@ -93,6 +94,7 @@
     <ClInclude Include="ReturnValues.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Checker.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="ClientSession.cpp" />
     <ClCompile Include="Downloader.cpp" />

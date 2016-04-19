@@ -84,3 +84,4 @@ private:
 	void addDistributeFile(const DistributeFile& distributeFile);
 	FileDistributors getDistributors(const FileInfo& fileInfo);//
 };
+//

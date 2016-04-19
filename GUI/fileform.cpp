@@ -39,5 +39,5 @@ void FileForm::on_SelectButton_clicked()
 
 void FileForm::slotChangeFileStatus(const FileStatus& fileStatus,const int& filePercents)
 {
-   ui->FileName->setText(std::to_string(filePercents).c_str());
+   ui->FileName->setText(std::to_string(fileStatus).c_str());
 }
