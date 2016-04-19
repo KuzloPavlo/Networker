@@ -18,8 +18,8 @@ public:
 		const DownloadingFile& downloadingFile,
 		const FileDistributors& adresses,
 		std::shared_ptr<std::mutex> mutexListParts,
-		std::function<void(const FileStatus& fileStatus,const int& filePercents)>&changeFileStatus,
-		std::function<void(const FileStatus& fileStatus)>* changeDownloader);
+		std::function<void(const FileStatus& fileStatus,const int& filePercents)>& changeFileStatus,
+		std::function<void(const FileStatus& fileStatus)>& changeDownloader);
 	~Downloader();
 	std::function<void(const FileStatus& fileStatus, const int& filePercents)>changeFileStatus;
 	void changeDownloader(const FileStatus& fileStatus);

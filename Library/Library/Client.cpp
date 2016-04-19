@@ -39,12 +39,12 @@ void Client::threadListen()
 
 void Client::downloadFile(
 	const DownloadingFile& downloadingFile,
-	std::function<void(const FileStatus& fileStatus, const int& filePercents)>&changeFileStatus,
-	std::function<void(const FileStatus& fileStatus)>* changeDownloader)
+	CHANGEFILESTATUS changeFileStatus,
+	CHANGEDOWNLOADER changeDownloader)
 {
 	display("Client::downloadFile1 ");
 	FileDistributors adresses;// = getDistributors(downloadingFile.m_fileInfo);
-	std::thread downloadThread(&Client::threadDownload, this, downloadingFile, adresses, std::ref(changeFileStatus), std::ref(changeDownloader));
+	std::thread downloadThread(&Client::threadDownload, this, downloadingFile, adresses,  changeFileStatus, changeDownloader);
 	display("Client::downloadFile2 ");
 	downloadThread.detach();
 }
@@ -52,8 +52,8 @@ void Client::downloadFile(
 void Client::threadDownload(
 	const DownloadingFile& downloadingFile,
 	const FileDistributors& adresses,
-	std::function<void(const FileStatus& fileStatus, const int& filePercents)>&changeFileStatus,
-	std::function<void(const FileStatus& fileStatus)>* changeDownloader)
+	CHANGEFILESTATUS changeFileStatus,
+	CHANGEDOWNLOADER changeDownloader)
 {
 	display("Client::threadDownload1111");
 	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
@@ -177,9 +177,9 @@ void Client::threadServer(const std::string& IPaddress, const std::string& port)
 		WSACleanup();
 	}
 
-	sendOutgoingDistribution(&serverSocket);
-
 	reciveDistribution(&serverSocket);
+
+	sendOutgoingDistribution(&serverSocket);
 
 	m_mutexUserInteface.lock();
 	display("Server Thread Connected");

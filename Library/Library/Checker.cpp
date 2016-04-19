@@ -1,7 +1,6 @@
 #include "Checker.h"
 
-
-Checker::Checker(const FileInfo& dataFile, bool creating) 
+Checker::Checker(const FileInfo& dataFile, bool creating)
 {
 	m_fileParts.open(std::to_string(m_fileInfo.m_fileHash), std::ios::in | std::ios::out | std::ios::binary);
 	if (!m_fileParts.is_open())
@@ -9,6 +8,9 @@ Checker::Checker(const FileInfo& dataFile, bool creating)
 		// обработай
 		return;
 	}
+
+	std::vector<bool>::iterator p = m_listParts.begin();
+	m_listParts.insert(p, m_fileInfo.m_numberParts, false);
 
 	if (creating)
 	{
@@ -20,11 +22,7 @@ Checker::Checker(const FileInfo& dataFile, bool creating)
 		{
 			m_fileParts << zero;
 		}
-
 		m_fileParts.flush();
-
-		std::vector<bool>::iterator p = m_listParts.begin();
-		m_listParts.insert(p, m_fileInfo.m_numberParts, false);
 	}
 	else
 	{

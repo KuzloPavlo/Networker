@@ -33,6 +33,9 @@
 #pragma comment (lib, "Mswsock.lib")
 #pragma comment (lib, "AdvApi32.lib")
 
+#define	CHANGEFILESTATUS  std::function<void(const FileStatus& fileStatus, const int& filePercents)>
+#define CHANGEDOWNLOADER  std::function<void(const FileStatus& fileStatus)>
+
 class Client
 {
 public:
@@ -48,19 +51,18 @@ public:
 
 	void downloadFile(
 		const DownloadingFile& downloadingFile,
-		std::function<void(const FileStatus& fileStatus, const int& filePercents)>&changeFileStatus,
-		std::function<void(const FileStatus& fileStatus)>* changeDownloader);
+		CHANGEFILESTATUS changeFileStatus,
+		CHANGEDOWNLOADER changeDownloader);
 
 	std::function<void(const std::string& str)>display;
 	//std::function<void(const DownloadingFile& newFile)>addNewFile;
-	//std::function<void(const int& fileHash, FileStatus& fileStatus, float& filePercents)>changeFileStatus;
 	std::function<void(const FileInfo& foundFile)>showFoundFile;
 
 private:
 	std::map<FileInfo, FileDistributors> m_distirbution;
 	int m_countConnectedClients;
 	bool m_clientWorking;
-	
+
 	std::mutex m_mutexUserInteface;               //Only one thread is working with the interface
 	std::shared_ptr<std::mutex>m_mutexOutgoingDistribution;
 	std::shared_ptr<std::mutex>m_mutexDistribution;
@@ -73,14 +75,15 @@ private:
 	void threadDownload(
 		const DownloadingFile& downloadingFile,
 		const FileDistributors& adresses,
-		std::function<void(const FileStatus& fileStatus, const int& filePercents)>&changeFileStatus,
-		std::function<void(const FileStatus& fileStatus)>* changeDownloader);
+		CHANGEFILESTATUS changeFileStatus,
+		CHANGEDOWNLOADER changeDownloader
+		);
 
 	void threadCreateDownloadingFile(std::string location, std::string description);
 	void threadSearchFile(std::string tockenFile);
 	void sendOutgoingDistribution(SOCKET *serverSocket);
 	void reciveDistribution(SOCKET *serverSocket);
-	int getLargestCommonSubstring(/*std::string & result,*/ const std::string & a, const std::string & b);
+	int getLargestCommonSubstring(const std::string & a, const std::string & b);
 	void addDistributeFile(const DistributeFile& distributeFile);
 	FileDistributors getDistributors(const FileInfo& fileInfo);//
 };
