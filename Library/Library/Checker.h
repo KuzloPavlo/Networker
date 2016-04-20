@@ -18,4 +18,5 @@ private:
 	int m_currentByte;
 	unsigned char m_currentBit;
 	int m_currentPart;
+	void getListParts();
 };

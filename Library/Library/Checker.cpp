@@ -26,10 +26,32 @@ Checker::Checker(const FileInfo& dataFile, bool creating)
 	}
 	else
 	{
-
+		getListParts();
 	}
 }
 
+
+void Checker::getListParts()
+{
+	std::vector<bool>::iterator p = m_listParts.begin();
+
+	while (p != m_listParts.end() && m_fileParts)
+	{
+		unsigned char Byte = 0;
+
+		m_fileParts >> Byte;
+
+		unsigned char mask = 1;
+
+		while (mask && p != m_listParts.end())
+		{
+			*p = mask & Byte;
+
+			mask <<= 1;
+			p++;
+		}
+	}
+}
 
 Checker::~Checker()
 {
