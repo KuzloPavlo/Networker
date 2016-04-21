@@ -44,7 +44,7 @@ void Client::downloadFile(
 {
 	display("Client::downloadFile1 ");
 	FileDistributors adresses;// = getDistributors(downloadingFile.m_fileInfo);
-	std::thread downloadThread(&Client::threadDownload, this, downloadingFile, adresses,  changeFileStatus, changeDownloader);
+	std::thread downloadThread(&Client::threadDownload, this, downloadingFile, adresses, changeFileStatus, changeDownloader);
 	display("Client::downloadFile2 ");
 	downloadThread.detach();
 }
@@ -188,7 +188,7 @@ void Client::threadServer(const std::string& IPaddress, const std::string& port)
 
 void Client::threadClient(void *arg)
 {
-	
+
 }
 
 int Client::readClient(char * const reseiveBuffer, const int& receiveSize, const char* sendBuffer)
@@ -232,7 +232,9 @@ void Client::createNewDownloadingFile(std::string location, std::string descript
 
 void Client::threadCreateDownloadingFile(std::string location, std::string description)
 {
-	display("client:: new file1");
+	//--------------------------
+	display("Client::threadCreateDownloadingFile1");
+	//--------------------------
 	const int partSize = 2048;
 	char filePart[partSize] = { 0 };
 	std::hash<std::string> hashFunction;
@@ -257,8 +259,6 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 		return;
 	}
 
-	display("client:: new file3");
-
 	do
 	{
 		in.read(filePart, partSize);
@@ -266,32 +266,76 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 		newFile.m_fileInfo.m_fileSize += in.gcount();
 		newFile.m_fileInfo.m_fileHash = (1 / 256) * (newFile.m_fileInfo.m_fileHash << 1) ^ hashFunction(filePart);
 
-	} while (!in.eof());
+	} while (in);
 
-	display(location);
-	display(tempName);
-	display(std::to_string(newFile.m_fileInfo.m_numberParts));
+	//--------------------------------
+	display("");
+	display("");
 	display(std::to_string(newFile.m_fileInfo.m_fileHash));
+	display(newFile.m_fileInfo.m_fileName);
+	display(newFile.m_fileInfo.m_fileDescription);
+	display(std::to_string(newFile.m_fileInfo.m_numberParts));
+	display(std::to_string(newFile.m_fileInfo.m_fileSize));
+	display(newFile.m_fileLocation);
+	//----------------------------------
 
 	std::ofstream out("OutgoingDistribution", std::ios::out | std::ios::app | std::ios::binary);
 	if (!out)
 	{
-		display("client:: new file4");
+		display("Oops cannot open file");
+		// обработать ошыбку
+		return;
+	}
+	char* outBuffer = (char*)&newFile;
+	out.write(outBuffer, sizeof(DownloadingFile));
+
+	//------------------------------------------------
+	//----------------------------------------------
+	out.close();
+
+	int numberOutDistribution = 0;
+	int fileSize = 0;
+
+
+	std::ifstream inn("OutgoingDistribution", std::ios::in | std::ios::binary);
+	if (!inn)
+	{
+		display("Oops cannot open file");
 		// обработать ошыбку
 		return;
 	}
 
-	char* p = (char*)&newFile;
-	char* outBuffer = new char[sizeof(newFile)];
-	for (int i = 0; i < sizeof(newFile); i++)
+	inn.seekg(0, inn.end);
+	fileSize = inn.tellg();
+	inn.seekg(0, inn.beg);
+
+	numberOutDistribution = fileSize / sizeof(DownloadingFile);
+
+	display("");
+	display("");
+
+	display(std::to_string(numberOutDistribution));
+	//inn.seekg(sizeof(DownloadingFile), std::ios::end);
+	DownloadingFile dff;
+	char* ptr = (char*)&dff;
+	for (int i = 0; i < numberOutDistribution; i++)
 	{
-		outBuffer[i] = *p;
-		p++;
+
+		inn.read(ptr, sizeof(DownloadingFile));
+		display("");
+		display("");
+
+		display(std::to_string(dff.m_fileInfo.m_fileHash));
+		display(dff.m_fileInfo.m_fileName);
+		display(dff.m_fileInfo.m_fileDescription);
+		display(std::to_string(dff.m_fileInfo.m_numberParts));
+		display(std::to_string(dff.m_fileInfo.m_fileSize));
+		display(dff.m_fileLocation);
+
 	}
 
-	out.write(outBuffer, sizeof(newFile));
 
-	delete[]outBuffer;
+	//-----------------------------------
 }
 
 void Client::sendOutgoingDistribution(SOCKET *serverSocket)
@@ -302,38 +346,55 @@ void Client::sendOutgoingDistribution(SOCKET *serverSocket)
 	int fileSize = 0;
 	int numberOutDistribution = 0;
 	char* buffer = nullptr;
-
+	//---------------------
+	display("Client::sendOutgoingDistribution1");
+	//------------------------
 	std::ifstream in("OutgoingDistribution", std::ios::in | std::ios::binary);
 	if (!in)
 	{
 		display("client:: new file4");
 		return;
 	}
-
+	//------------------------
+	display("Client::sendOutgoingDistribution2");
+	//--------------------------
 	in.seekg(0, in.end);
 	fileSize = in.tellg();
 	in.seekg(0, in.beg);
-
+	//-----------------
+	display("Client::sendOutgoingDistribution3");
+	//---------------------
 	numberOutDistribution = fileSize / sizeof(DownloadingFile);
 
 	buffer = (char*)& numberOutDistribution;
 
-	iResult = send(*serverSocket, buffer, 2, 0);
+	iResult = send(*serverSocket, buffer, 4, 0);
 	if (iResult == SOCKET_ERROR)
 	{
 		// обработай
 		return;
 	}
-
+	//----------------------
+	display("Client::sendOutgoingDistribution4");
+	//---------------------------
 	display(std::to_string(numberOutDistribution));
 
 	buffer = (char*)& downloadingFile;
 
 	for (int i = 0; i < numberOutDistribution; i++)
 	{
+		//----------------------
+		display("Client::sendOutgoingDistribution5");
+		//---------------------------
 		in.read(buffer, sizeof(DownloadingFile));
 		sendFile = downloadingFile.m_fileInfo;
 		buffer = (char*)& sendFile;
+		//-----------------------
+		display("otpravl");
+		display(sendFile.m_fileName);
+		display(sendFile.m_fileDescription);
+		display(std::to_string(sendFile.m_fileHash));
+		//------------------------------
 		iResult = send(*serverSocket, buffer, sizeof(FileInfo), 0);
 		if (iResult == SOCKET_ERROR)
 		{
@@ -341,17 +402,20 @@ void Client::sendOutgoingDistribution(SOCKET *serverSocket)
 			return;
 		}
 	}
+	//----------------------
+	display("Client::sendOutgoingDistribution6");
+	//---------------------------
 }
 
 void Client::reciveDistribution(SOCKET *serverSocket)
 {
-	DistributeFile downloadingFile;
+	/*DistributeFile*/ FileInfo downloadingFile;
 	int iResult = 0;
 	int fileSize = 0;
 	int numberDistribution = 0;
 	char* buffer = (char*)& numberDistribution;
 
-	iResult = recv(*serverSocket, buffer, 2, 0);
+	iResult = recv(*serverSocket, buffer, 4, 0);
 	if (!iResult)
 	{
 		// обработай
@@ -363,22 +427,33 @@ void Client::reciveDistribution(SOCKET *serverSocket)
 		return;
 	}
 
+	display("up");
+
 	buffer = (char*)& downloadingFile;
 
 	for (int i = 0; i < numberDistribution; i++)
 	{
-		iResult = recv(*serverSocket, buffer, sizeof(DistributeFile), 0);
+		display("up1");
+		iResult = recv(*serverSocket, buffer, sizeof(/*DistributeFile*/FileInfo), 0);
 		if (!iResult)
 		{
+			display("up2");
 			// обработай
 			break;
 		}
 		else if (iResult == SOCKET_ERROR)
 		{
+			display("up3");
 			// обработай
 			break;
 		}
-		addDistributeFile(downloadingFile);
+
+		display("for");
+
+		display("poku4au");
+		display(downloadingFile.m_fileName);
+		display(downloadingFile.m_fileDescription);
+		//	addDistributeFile(downloadingFile);
 	}
 }
 
@@ -567,7 +642,7 @@ void Client::addDistributeFile(const DistributeFile& distributeFile)
 		FileDistributors addres;
 		addres.addAdress(distributeFile.m_addr);
 		m_distirbution.insert(std::pair<FileInfo, FileDistributors>(distributeFile.m_fileInfo, addres));
-	}	
+	}
 }
 
 FileDistributors Client::getDistributors(const FileInfo& fileInfo)

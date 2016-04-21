@@ -7,7 +7,6 @@
 #include "ClientSession.h"
 #include <fstream>
 
-
 using boost::asio::ip::tcp;
 
 class Listener

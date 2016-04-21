@@ -27,7 +27,7 @@
 #include "DownloadSession.h"
 #include "Downloader.h"
 #include "FileDistributors.h"
-#include "DistributeFile.h"
+#include "DistributeFile.h" //
 
 #pragma comment(lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
