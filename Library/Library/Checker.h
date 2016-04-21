@@ -16,4 +16,6 @@ private:
 	std::vector<bool> m_vectorParts;
 	std::fstream m_fileParts;
 	void getVectorParts();
+	void createNewFileParts();
+	void openFileParts();
 };

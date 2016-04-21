@@ -21,12 +21,12 @@ public:
 		std::function<void(const FileStatus& fileStatus,const int& filePercents)>& changeFileStatus,
 		std::function<void(const FileStatus& fileStatus)>& changeDownloader, bool creating = true);
 	~Downloader();
-	std::function<void(const FileStatus& fileStatus, const int& filePercents)>changeFileStatus;
+	
 	void changeDownloader(const FileStatus& fileStatus);
+
 	//------------------------------------------------
 	std::function<void(const std::string& str)>display;
 	void dosmth(){
-		//-----------------------
 		display("");
 		display("");
 		display("Downloader::Downloader"); 
@@ -39,6 +39,7 @@ public:
 	//-------------------------------------------------
 	
 private:
+	std::function<void(const FileStatus& fileStatus, const int& filePercents)>changeFileStatus;
 	//std::shared_ptr<std::mutex>m_mutexListParts;
 	DownloadingFile m_downloadingFile;
 	FileDistributors m_distributors;

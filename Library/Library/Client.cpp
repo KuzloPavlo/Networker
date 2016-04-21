@@ -65,10 +65,12 @@ void Client::threadDownload(
 		boost::asio::io_service io_service;
 		display("Client::threadDownload2/1");
 		std::shared_ptr<Downloader> downloader(new Downloader(io_service, downloadingFile, adresses/*, this->m_mutexListParts*/, changeFileStatus, changeDownloader));
+		
+		//-----------------------
 		display("Client::threadDownload3");
 		downloader->func(this->display);
 		downloader->dosmth();
-
+		//----------------------------
 		io_service.run();
 	}
 	catch (const std::exception& ex)

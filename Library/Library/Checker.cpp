@@ -2,32 +2,52 @@
 
 Checker::Checker(const FileInfo& dataFile, bool creating)
 {
-	m_fileParts.open(std::to_string(m_fileInfo.m_fileHash), std::ios::in | std::ios::out | std::ios::binary);
-	if (!m_fileParts.is_open())
-	{
-		// обработай
-		return;
-	}
-
 	std::vector<bool>::iterator p = m_vectorParts.begin();
 	m_vectorParts.insert(p, m_fileInfo.m_numberParts, false);
 
 	if (creating)
 	{
-		unsigned int zero = 0;
-		int nIteration = ((m_fileInfo.m_numberParts / 8) / sizeof(unsigned int)) + 1;
-		for (int i = 0; i < nIteration; i++)
-		{
-			m_fileParts << zero;
-		}
-		m_fileParts.flush();
+		createNewFileParts();
+		openFileParts();
 	}
 	else
 	{
+		openFileParts();
 		getVectorParts();
 	}
 }
 
+void Checker::createNewFileParts()
+{
+	std::ofstream out(std::to_string(m_fileInfo.m_fileHash), std::ios::out | std::ios::binary);
+	throw std::runtime_error(std::to_string(m_fileInfo.m_fileHash));
+	if (!out)
+	{
+		throw std::runtime_error("std::ofstream out ne otkrilos");
+		// обработай
+		//return;
+	}
+
+	unsigned int zero = 0;
+	int nIteration = ((m_fileInfo.m_numberParts / 8) / sizeof(unsigned int)) + 1;
+	for (int i = 0; i < nIteration; i++)
+	{
+		out << zero;
+	}
+	out.flush();
+}
+
+void Checker::openFileParts()
+{
+	m_fileParts.open(std::to_string(m_fileInfo.m_fileHash), std::ios::in | std::ios::out | std::ios::binary);
+	if (!m_fileParts)
+
+	{
+		throw std::runtime_error("m_fileParts.open ne otkrilos");
+		// обработай
+		//return;
+	}
+}
 
 void Checker::getVectorParts()
 {
