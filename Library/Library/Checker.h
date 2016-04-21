@@ -13,10 +13,7 @@ public:
 	int getPart();
 private:
 	FileInfo m_fileInfo;
-	std::vector<bool> m_listParts;
+	std::vector<bool> m_vectorParts;
 	std::fstream m_fileParts;
-	int m_currentByte;
-	unsigned char m_currentBit;
-	int m_currentPart;
-	void getListParts();
+	void getVectorParts();
 };

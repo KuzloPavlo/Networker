@@ -1383,6 +1383,7 @@ debug\moc_mainwindow.cpp: ..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QMainWin
 		..\Library\Library\DownloadSession.h \
 		..\Library\Library\Downloader.h \
 		..\Library\Library\FileDistributors.h \
+		..\Library\Library\Checker.h \
 		..\Library\Library\DistributeFile.h \
 		..\GUI\fileform.h \
 		..\GUI\descriptionform.h \
@@ -3299,6 +3300,7 @@ debug\main.obj: ..\GUI\main.cpp ../GUI/mainwindow.h \
 		..\Library\Library\DownloadSession.h \
 		..\Library\Library\Downloader.h \
 		..\Library\Library\FileDistributors.h \
+		..\Library\Library\Checker.h \
 		..\Library\Library\DistributeFile.h \
 		../GUI/fileform.h \
 		../GUI/descriptionform.h \
@@ -4481,6 +4483,7 @@ debug\mainwindow.obj: ..\GUI\mainwindow.cpp ../GUI/mainwindow.h \
 		..\Library\Library\DownloadSession.h \
 		..\Library\Library\Downloader.h \
 		..\Library\Library\FileDistributors.h \
+		..\Library\Library\Checker.h \
 		..\Library\Library\DistributeFile.h \
 		../GUI/fileform.h \
 		../GUI/descriptionform.h \

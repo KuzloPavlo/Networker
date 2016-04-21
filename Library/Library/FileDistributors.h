@@ -1,17 +1,19 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include <Windows.h>
+#include <boost\asio.hpp>
+#include <utility>
+using boost::asio::ip::tcp;
 
 class FileDistributors
 {
 public:
 	FileDistributors();
 	~FileDistributors();
-	void addAdress(const sockaddr_in& adress);
-	std::vector<sockaddr_in> getAdresses();
-	sockaddr_in& operator [](const int& i);
+	void addAdress(const boost::asio::ip::address& adress);
+	std::vector<boost::asio::ip::address> getAdresses();
+	boost::asio::ip::address& operator [](const int& i);
 private:
-	std::vector<sockaddr_in> m_adresses;
+	std::vector<boost::asio::ip::address> m_adresses;
 };
 

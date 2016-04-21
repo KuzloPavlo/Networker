@@ -7,6 +7,7 @@
 #include <functional>
 #include "DownloadingFile.h"
 #include "FileDistributors.h"
+#include "Checker.h"
 #include <fstream>
 #include <mutex>
 
@@ -17,9 +18,8 @@ public:
 		boost::asio::io_service& io_service,
 		const DownloadingFile& downloadingFile,
 		const FileDistributors& adresses,
-		std::shared_ptr<std::mutex> mutexListParts,
 		std::function<void(const FileStatus& fileStatus,const int& filePercents)>& changeFileStatus,
-		std::function<void(const FileStatus& fileStatus)>& changeDownloader);
+		std::function<void(const FileStatus& fileStatus)>& changeDownloader, bool creating = true);
 	~Downloader();
 	std::function<void(const FileStatus& fileStatus, const int& filePercents)>changeFileStatus;
 	void changeDownloader(const FileStatus& fileStatus);
@@ -30,8 +30,9 @@ public:
 	//-------------------------------------------------
 	
 private:
-	std::shared_ptr<std::mutex>m_mutexListParts;
+	//std::shared_ptr<std::mutex>m_mutexListParts;
 	DownloadingFile m_downloadingFile;
 	FileDistributors m_distributors;
+	Checker m_checkerParts;
 };
 

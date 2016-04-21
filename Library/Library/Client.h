@@ -66,7 +66,6 @@ private:
 	std::mutex m_mutexUserInteface;               //Only one thread is working with the interface
 	std::shared_ptr<std::mutex>m_mutexOutgoingDistribution;
 	std::shared_ptr<std::mutex>m_mutexDistribution;
-	std::shared_ptr<std::mutex>m_mutexListParts;
 	std::shared_ptr<Listener> m_Listener;
 	void threadListen();
 	void threadServer(const std::string& IPaddress, const std::string& port);

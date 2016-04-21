@@ -62,7 +62,7 @@ void Client::threadDownload(
 	{
 		boost::asio::io_service io_service;
 		display("Client::threadDownload2/1");
-		std::shared_ptr<Downloader> downloader(new Downloader(io_service, downloadingFile, adresses, this->m_mutexListParts, changeFileStatus, changeDownloader));
+		std::shared_ptr<Downloader> downloader(new Downloader(io_service, downloadingFile, adresses/*, this->m_mutexListParts*/, changeFileStatus, changeDownloader));
 		display("Client::threadDownload3");
 		downloader->func(this->display);
 		downloader->dosmth();
@@ -290,6 +290,7 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 	out.write(outBuffer, sizeof(DownloadingFile));
 
 	//------------------------------------------------
+	// все що нижче видали
 	//----------------------------------------------
 	out.close();
 
@@ -334,7 +335,7 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 
 	}
 
-
+	//-----------------------------------
 	//-----------------------------------
 }
 
@@ -379,18 +380,23 @@ void Client::sendOutgoingDistribution(SOCKET *serverSocket)
 	//---------------------------
 	display(std::to_string(numberOutDistribution));
 
-	buffer = (char*)& downloadingFile;
+	
 
 	for (int i = 0; i < numberOutDistribution; i++)
 	{
 		//----------------------
 		display("Client::sendOutgoingDistribution5");
 		//---------------------------
+		
+		buffer = (char*)& downloadingFile;
 		in.read(buffer, sizeof(DownloadingFile));
+
 		sendFile = downloadingFile.m_fileInfo;
 		buffer = (char*)& sendFile;
 		//-----------------------
-		display("otpravl");
+		display("");
+		display("");
+		display("OTPRAVL");
 		display(sendFile.m_fileName);
 		display(sendFile.m_fileDescription);
 		display(std::to_string(sendFile.m_fileHash));
@@ -408,8 +414,12 @@ void Client::sendOutgoingDistribution(SOCKET *serverSocket)
 }
 
 void Client::reciveDistribution(SOCKET *serverSocket)
-{
-	/*DistributeFile*/ FileInfo downloadingFile;
+{	//-----------------
+	display("");
+	display("");
+	//------------------
+
+	DistributeFile /* FileInfo*/ distributeFile;
 	int iResult = 0;
 	int fileSize = 0;
 	int numberDistribution = 0;
@@ -429,12 +439,12 @@ void Client::reciveDistribution(SOCKET *serverSocket)
 
 	display("up");
 
-	buffer = (char*)& downloadingFile;
+	buffer = (char*)& distributeFile;
 
 	for (int i = 0; i < numberDistribution; i++)
 	{
 		display("up1");
-		iResult = recv(*serverSocket, buffer, sizeof(/*DistributeFile*/FileInfo), 0);
+		iResult = recv(*serverSocket, buffer, sizeof(DistributeFile/*FileInfo*/), 0);
 		if (!iResult)
 		{
 			display("up2");
@@ -451,8 +461,10 @@ void Client::reciveDistribution(SOCKET *serverSocket)
 		display("for");
 
 		display("poku4au");
-		display(downloadingFile.m_fileName);
-		display(downloadingFile.m_fileDescription);
+		display(distributeFile.m_fileInfo.m_fileName);
+		display(distributeFile.m_fileInfo.m_fileDescription);
+		std::string s = distributeFile.m_address.to_string();
+		display(s);
 		//	addDistributeFile(downloadingFile);
 	}
 }
@@ -635,12 +647,12 @@ void Client::addDistributeFile(const DistributeFile& distributeFile)
 	p = m_distirbution.find(distributeFile.m_fileInfo);
 	if (p != m_distirbution.end())
 	{
-		p->second.addAdress(distributeFile.m_addr);
+		p->second.addAdress(distributeFile.m_address);
 	}
 	else
 	{
 		FileDistributors addres;
-		addres.addAdress(distributeFile.m_addr);
+		addres.addAdress(distributeFile.m_address);
 		m_distirbution.insert(std::pair<FileInfo, FileDistributors>(distributeFile.m_fileInfo, addres));
 	}
 }
