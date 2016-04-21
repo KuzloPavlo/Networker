@@ -14,6 +14,7 @@
 #include "fileform.h"
 #include "foundedfileform.h"
 #include "DownloadingFile.h"
+#include "temdebuger.h"    // will delete
 Q_DECLARE_METATYPE(std::string)
 Q_DECLARE_METATYPE(DownloadingFile)
 Q_DECLARE_METATYPE(FileInfo)
@@ -85,4 +86,8 @@ private:
     NewServerDialog *m_pNewServerDialog;
     DownloadingFileDialog *m_pNewFileDialog;
     std::string changeLocationStyle(const QString& QtStyleLocation);
+
+    //--------------------------
+    TemDebuger* m_debuger;
+    //---------------------
 };

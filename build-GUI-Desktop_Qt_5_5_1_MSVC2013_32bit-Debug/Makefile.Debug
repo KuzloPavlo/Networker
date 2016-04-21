@@ -50,14 +50,16 @@ SOURCES       = ..\GUI\main.cpp \
 		..\GUI\foundedfileform.cpp \
 		..\GUI\status.cpp \
 		..\GUI\fileform.cpp \
-		..\GUI\descriptionform.cpp debug\qrc_icons.cpp \
+		..\GUI\descriptionform.cpp \
+		..\GUI\temdebuger.cpp debug\qrc_icons.cpp \
 		debug\moc_mainwindow.cpp \
 		debug\moc_downloadingfiledialog.cpp \
 		debug\moc_newserverdialog.cpp \
 		debug\moc_foundedfileform.cpp \
 		debug\moc_status.cpp \
 		debug\moc_fileform.cpp \
-		debug\moc_descriptionform.cpp
+		debug\moc_descriptionform.cpp \
+		debug\moc_temdebuger.cpp
 OBJECTS       = debug\main.obj \
 		debug\mainwindow.obj \
 		debug\downloadingfiledialog.obj \
@@ -66,6 +68,7 @@ OBJECTS       = debug\main.obj \
 		debug\status.obj \
 		debug\fileform.obj \
 		debug\descriptionform.obj \
+		debug\temdebuger.obj \
 		debug\qrc_icons.obj \
 		debug\moc_mainwindow.obj \
 		debug\moc_downloadingfiledialog.obj \
@@ -73,7 +76,8 @@ OBJECTS       = debug\main.obj \
 		debug\moc_foundedfileform.obj \
 		debug\moc_status.obj \
 		debug\moc_fileform.obj \
-		debug\moc_descriptionform.obj
+		debug\moc_descriptionform.obj \
+		debug\moc_temdebuger.obj
 
 DIST          =  ..\GUI\mainwindow.h \
 		..\GUI\downloadingfiledialog.h \
@@ -81,14 +85,16 @@ DIST          =  ..\GUI\mainwindow.h \
 		..\GUI\foundedfileform.h \
 		..\GUI\status.h \
 		..\GUI\fileform.h \
-		..\GUI\descriptionform.h ..\GUI\main.cpp \
+		..\GUI\descriptionform.h \
+		..\GUI\temdebuger.h ..\GUI\main.cpp \
 		..\GUI\mainwindow.cpp \
 		..\GUI\downloadingfiledialog.cpp \
 		..\GUI\newserverdialog.cpp \
 		..\GUI\foundedfileform.cpp \
 		..\GUI\status.cpp \
 		..\GUI\fileform.cpp \
-		..\GUI\descriptionform.cpp
+		..\GUI\descriptionform.cpp \
+		..\GUI\temdebuger.cpp
 QMAKE_TARGET  = GUI
 DESTDIR        = debug\ #avoid trailing-slash linebreak
 TARGET         = GUI.exe
@@ -163,7 +169,7 @@ DESTDIR_TARGET = debug\GUI.exe
 first: all
 all: Makefile.Debug  $(DESTDIR_TARGET)
 
-$(DESTDIR_TARGET): C:\projects_Qt\peep-to-peer-network\GUI\..\Library\debug\Library.lib ui_mainwindow.h ui_downloadingfiledialog.h ui_newserverdialog.h ui_foundedfileform.h ui_status.h ui_fileform.h ui_descriptionform.h $(OBJECTS) 
+$(DESTDIR_TARGET): C:\projects_Qt\peep-to-peer-network\GUI\..\Library\debug\Library.lib ui_mainwindow.h ui_downloadingfiledialog.h ui_newserverdialog.h ui_foundedfileform.h ui_status.h ui_fileform.h ui_descriptionform.h ui_temdebuger.h $(OBJECTS) 
 	$(LINKER) $(LFLAGS) /MANIFEST:embed /OUT:$(DESTDIR_TARGET) @<<
 $(OBJECTS) $(LIBS)
 <<
@@ -177,7 +183,7 @@ dist:
 	$(ZIP) GUI.zip $(SOURCES) $(DIST) ..\GUI\GUI.pro ..\..\..\newQt\5.5\msvc2013\mkspecs\features\spec_pre.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\common\msvc-desktop.conf ..\..\..\newQt\5.5\msvc2013\mkspecs\qconfig.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_axbase.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_axbase_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_axcontainer.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_axcontainer_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_axserver.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_axserver_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_bluetooth.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_bluetooth_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_bootstrap_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_clucene_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_concurrent.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_concurrent_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_core.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_core_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_dbus.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_dbus_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_designer.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_designer_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_designercomponents_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_enginio.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_enginio_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_gui.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_gui_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_help.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_help_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_multimedia.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_multimedia_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_multimediawidgets.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_multimediawidgets_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_network.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_network_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_nfc.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_nfc_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_opengl.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_opengl_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_openglextensions.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_openglextensions_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_platformsupport_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_positioning.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_positioning_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_printsupport.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_printsupport_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_qml.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_qml_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_qmldevtools_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_qmltest.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_qmltest_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_quick.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_quick_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_quickparticles_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_quickwidgets.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_quickwidgets_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_sensors.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_sensors_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_serialport.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_serialport_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_sql.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_sql_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_svg.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_svg_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_testlib.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_testlib_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_uiplugin.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_uitools.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_uitools_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_webchannel.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_webchannel_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_webkit.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_webkit_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_webkitwidgets.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_webkitwidgets_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_websockets.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_websockets_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_widgets.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_widgets_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_winextras.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_winextras_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_xml.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_xml_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_xmlpatterns.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\modules\qt_lib_xmlpatterns_private.pri ..\..\..\newQt\5.5\msvc2013\mkspecs\features\qt_functions.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\qt_config.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\win32\qt_config.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\win32-msvc2013\qmake.conf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\spec_post.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\exclusive_builds.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\default_pre.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\win32\default_pre.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\resolve_config.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\exclusive_builds_post.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\default_post.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\build_pass.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\qml_debug.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\win32\rtti.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\c++11.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\precompile_header.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\warn_on.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\qt.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\resources.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\moc.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\win32\opengl.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\uic.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\win32\windows.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\testcase_targets.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\exceptions.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\yacc.prf ..\..\..\newQt\5.5\msvc2013\mkspecs\features\lex.prf ..\GUI\GUI.pro ..\GUI\icons.qrc C:/newQt/5.5/msvc2013/lib/qtmaind.prl C:/newQt/5.5/msvc2013/lib/Qt5Widgetsd.prl C:/newQt/5.5/msvc2013/lib/Qt5Guid.prl C:/newQt/5.5/msvc2013/lib/Qt5Cored.prl  NO_PCH_SOURCES RESOURCES HEADERS SOURCES OBJECTIVE_SOURCES FORMS YACCSOURCES YACCSOURCES LEXSOURCES 
 
 clean: compiler_clean 
-	-$(DEL_FILE) debug\main.obj debug\mainwindow.obj debug\downloadingfiledialog.obj debug\newserverdialog.obj debug\foundedfileform.obj debug\status.obj debug\fileform.obj debug\descriptionform.obj debug\qrc_icons.obj debug\moc_mainwindow.obj debug\moc_downloadingfiledialog.obj debug\moc_newserverdialog.obj debug\moc_foundedfileform.obj debug\moc_status.obj debug\moc_fileform.obj debug\moc_descriptionform.obj
+	-$(DEL_FILE) debug\main.obj debug\mainwindow.obj debug\downloadingfiledialog.obj debug\newserverdialog.obj debug\foundedfileform.obj debug\status.obj debug\fileform.obj debug\descriptionform.obj debug\temdebuger.obj debug\qrc_icons.obj debug\moc_mainwindow.obj debug\moc_downloadingfiledialog.obj debug\moc_newserverdialog.obj debug\moc_foundedfileform.obj debug\moc_status.obj debug\moc_fileform.obj debug\moc_descriptionform.obj debug\moc_temdebuger.obj
 	-$(DEL_FILE) debug\GUI.exp debug\GUI.ilk debug\GUI.idb
 
 distclean: clean 
@@ -212,9 +218,9 @@ debug\qrc_icons.cpp: ..\GUI\icons.qrc \
 		..\Resources\Icons\Down.png
 	C:\newQt\5.5\msvc2013\bin\rcc.exe -name icons ..\GUI\icons.qrc -o debug\qrc_icons.cpp
 
-compiler_moc_header_make_all: debug\moc_mainwindow.cpp debug\moc_downloadingfiledialog.cpp debug\moc_newserverdialog.cpp debug\moc_foundedfileform.cpp debug\moc_status.cpp debug\moc_fileform.cpp debug\moc_descriptionform.cpp
+compiler_moc_header_make_all: debug\moc_mainwindow.cpp debug\moc_downloadingfiledialog.cpp debug\moc_newserverdialog.cpp debug\moc_foundedfileform.cpp debug\moc_status.cpp debug\moc_fileform.cpp debug\moc_descriptionform.cpp debug\moc_temdebuger.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) debug\moc_mainwindow.cpp debug\moc_downloadingfiledialog.cpp debug\moc_newserverdialog.cpp debug\moc_foundedfileform.cpp debug\moc_status.cpp debug\moc_fileform.cpp debug\moc_descriptionform.cpp
+	-$(DEL_FILE) debug\moc_mainwindow.cpp debug\moc_downloadingfiledialog.cpp debug\moc_newserverdialog.cpp debug\moc_foundedfileform.cpp debug\moc_status.cpp debug\moc_fileform.cpp debug\moc_descriptionform.cpp debug\moc_temdebuger.cpp
 debug\moc_mainwindow.cpp: ..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QMainWindow \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qmainwindow.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qwidget.h \
@@ -2093,11 +2099,119 @@ debug\moc_descriptionform.cpp: ..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QWi
 		..\GUI\descriptionform.h
 	C:\newQt\5.5\msvc2013\bin\moc.exe $(DEFINES) -D_MSC_VER=1800 -D_WIN32 -IC:/newQt/5.5/msvc2013/mkspecs/win32-msvc2013 -IC:/projects_Qt/peep-to-peer-network/GUI -IC:/projects_Qt/peep-to-peer-network/Library/Library -IC:/boost/VC/boost_1_60_0/boost_1_60_0 -IC:/newQt/5.5/msvc2013/include -IC:/newQt/5.5/msvc2013/include/QtWidgets -IC:/newQt/5.5/msvc2013/include/QtGui -IC:/newQt/5.5/msvc2013/include/QtANGLE -IC:/newQt/5.5/msvc2013/include/QtCore -I. ..\GUI\descriptionform.h -o debug\moc_descriptionform.cpp
 
+debug\moc_temdebuger.cpp: ..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QMainWindow \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qmainwindow.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qwidget.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qwindowdefs.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qglobal.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qconfig.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qfeatures.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qsystemdetection.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qprocessordetection.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qcompilerdetection.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qtypeinfo.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qtypetraits.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qsysinfo.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qlogging.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qflags.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qbasicatomic.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_bootstrap.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qgenericatomic.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_cxx11.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_gcc.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_msvc.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_armv7.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_armv6.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_armv5.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_ia64.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_mips.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_x86.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_unix.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qglobalstatic.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qmutex.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qnumeric.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qobjectdefs.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qnamespace.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qobjectdefs_impl.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qwindowdefs_win.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qobject.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qstring.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qchar.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qbytearray.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qrefcount.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qarraydata.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qstringbuilder.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qlist.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qalgorithms.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qiterator.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qbytearraylist.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qstringlist.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qregexp.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qstringmatcher.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qcoreevent.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qscopedpointer.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qmetatype.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qvarlengtharray.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qcontainerfwd.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qisenum.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qobject_impl.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qmargins.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qpaintdevice.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qrect.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qsize.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qpoint.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qpalette.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qcolor.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qrgb.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qbrush.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qpair.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qvector.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qmatrix.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qpolygon.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qregion.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qdatastream.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qiodevice.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qline.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qtransform.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qpainterpath.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qimage.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qpixelformat.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qpixmap.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qsharedpointer.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qshareddata.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qhash.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qsharedpointer_impl.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qfont.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qfontmetrics.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qfontinfo.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qsizepolicy.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qcursor.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qkeysequence.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qevent.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qvariant.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qmap.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qdebug.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qtextstream.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qlocale.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qset.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qcontiguouscache.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qurl.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qurlquery.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qfile.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qfiledevice.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qvector2d.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qtouchdevice.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qtabwidget.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qicon.h \
+		..\GUI\temdebuger.h
+	C:\newQt\5.5\msvc2013\bin\moc.exe $(DEFINES) -D_MSC_VER=1800 -D_WIN32 -IC:/newQt/5.5/msvc2013/mkspecs/win32-msvc2013 -IC:/projects_Qt/peep-to-peer-network/GUI -IC:/projects_Qt/peep-to-peer-network/Library/Library -IC:/boost/VC/boost_1_60_0/boost_1_60_0 -IC:/newQt/5.5/msvc2013/include -IC:/newQt/5.5/msvc2013/include/QtWidgets -IC:/newQt/5.5/msvc2013/include/QtGui -IC:/newQt/5.5/msvc2013/include/QtANGLE -IC:/newQt/5.5/msvc2013/include/QtCore -I. ..\GUI\temdebuger.h -o debug\moc_temdebuger.cpp
+
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all: ui_mainwindow.h ui_downloadingfiledialog.h ui_newserverdialog.h ui_foundedfileform.h ui_status.h ui_fileform.h ui_descriptionform.h
+compiler_uic_make_all: ui_mainwindow.h ui_downloadingfiledialog.h ui_newserverdialog.h ui_foundedfileform.h ui_status.h ui_fileform.h ui_descriptionform.h ui_temdebuger.h
 compiler_uic_clean:
-	-$(DEL_FILE) ui_mainwindow.h ui_downloadingfiledialog.h ui_newserverdialog.h ui_foundedfileform.h ui_status.h ui_fileform.h ui_descriptionform.h
+	-$(DEL_FILE) ui_mainwindow.h ui_downloadingfiledialog.h ui_newserverdialog.h ui_foundedfileform.h ui_status.h ui_fileform.h ui_descriptionform.h ui_temdebuger.h
 ui_mainwindow.h: ..\GUI\mainwindow.ui
 	C:\newQt\5.5\msvc2013\bin\uic.exe ..\GUI\mainwindow.ui -o ui_mainwindow.h
 
@@ -2118,6 +2232,9 @@ ui_fileform.h: ..\GUI\fileform.ui
 
 ui_descriptionform.h: ..\GUI\descriptionform.ui
 	C:\newQt\5.5\msvc2013\bin\uic.exe ..\GUI\descriptionform.ui -o ui_descriptionform.h
+
+ui_temdebuger.h: ..\GUI\temdebuger.ui
+	C:\newQt\5.5\msvc2013\bin\uic.exe ..\GUI\temdebuger.ui -o ui_temdebuger.h
 
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
@@ -5455,6 +5572,114 @@ debug\descriptionform.obj: ..\GUI\descriptionform.cpp ../GUI/descriptionform.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qtabwidget.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qrubberband.h
 
+debug\temdebuger.obj: ..\GUI\temdebuger.cpp ../GUI/temdebuger.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QMainWindow \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qmainwindow.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qwidget.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qwindowdefs.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qglobal.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qconfig.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qfeatures.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qsystemdetection.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qprocessordetection.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qcompilerdetection.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qtypeinfo.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qtypetraits.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qsysinfo.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qlogging.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qflags.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qbasicatomic.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_bootstrap.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qgenericatomic.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_cxx11.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_gcc.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_msvc.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_armv7.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_armv6.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_armv5.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_ia64.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_mips.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_x86.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qatomic_unix.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qglobalstatic.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qmutex.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qnumeric.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qobjectdefs.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qnamespace.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qobjectdefs_impl.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qwindowdefs_win.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qobject.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qstring.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qchar.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qbytearray.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qrefcount.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qarraydata.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qstringbuilder.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qlist.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qalgorithms.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qiterator.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qbytearraylist.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qstringlist.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qregexp.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qstringmatcher.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qcoreevent.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qscopedpointer.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qmetatype.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qvarlengtharray.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qcontainerfwd.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qisenum.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qobject_impl.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qmargins.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qpaintdevice.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qrect.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qsize.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qpoint.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qpalette.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qcolor.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qrgb.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qbrush.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qpair.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qvector.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qmatrix.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qpolygon.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qregion.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qdatastream.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qiodevice.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qline.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qtransform.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qpainterpath.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qimage.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qpixelformat.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qpixmap.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qsharedpointer.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qshareddata.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qhash.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qsharedpointer_impl.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qfont.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qfontmetrics.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qfontinfo.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qsizepolicy.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qcursor.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qkeysequence.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qevent.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qvariant.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qmap.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qdebug.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qtextstream.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qlocale.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qset.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qcontiguouscache.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qurl.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qurlquery.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qfile.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtCore\qfiledevice.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qvector2d.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qtouchdevice.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qtabwidget.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qicon.h \
+		ui_temdebuger.h
+
 debug\qrc_icons.obj: debug\qrc_icons.cpp 
 
 debug\moc_mainwindow.obj: debug\moc_mainwindow.cpp 
@@ -5470,6 +5695,8 @@ debug\moc_status.obj: debug\moc_status.cpp
 debug\moc_fileform.obj: debug\moc_fileform.cpp 
 
 debug\moc_descriptionform.obj: debug\moc_descriptionform.cpp 
+
+debug\moc_temdebuger.obj: debug\moc_temdebuger.cpp 
 
 ####### Install
 

@@ -25,7 +25,16 @@ public:
 	void changeDownloader(const FileStatus& fileStatus);
 	//------------------------------------------------
 	std::function<void(const std::string& str)>display;
-	void dosmth(){ display("Downloader::Downloader"); }
+	void dosmth(){
+		//-----------------------
+		display("");
+		display("");
+		display("Downloader::Downloader"); 
+		display(m_downloadingFile.m_fileInfo.m_fileName);
+		display(m_downloadingFile.m_fileInfo.m_fileDescription);
+		display(std::to_string(m_downloadingFile.m_fileInfo.m_fileHash));
+		display(m_downloadingFile.m_fileLocation);
+	}
 	void func(std::function<void(const std::string& str)>& fu){ this->display = fu; };
 	//-------------------------------------------------
 	

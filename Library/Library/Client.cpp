@@ -7,6 +7,8 @@ Client::Client() : m_countConnectedClients(0), m_clientWorking(true)
 {
 	std::thread listenThread(&Client::threadListen, this);
 	listenThread.detach();
+
+	
 }
 
 Client::~Client()
@@ -43,7 +45,7 @@ void Client::downloadFile(
 	CHANGEDOWNLOADER changeDownloader)
 {
 	display("Client::downloadFile1 ");
-	FileDistributors adresses;// = getDistributors(downloadingFile.m_fileInfo);
+	FileDistributors adresses = getDistributors(downloadingFile.m_fileInfo);
 	std::thread downloadThread(&Client::threadDownload, this, downloadingFile, adresses, changeFileStatus, changeDownloader);
 	display("Client::downloadFile2 ");
 	downloadThread.detach();
@@ -334,37 +336,31 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 		display(dff.m_fileLocation);
 
 	}
-
-	//-----------------------------------
-	//-----------------------------------
 }
 
 void Client::sendOutgoingDistribution(SOCKET *serverSocket)
 {
+	//----------------------
+	display("Client::sendOutgoingDistribution1");
+	//---------------------------
 	DownloadingFile downloadingFile;
 	FileInfo sendFile;
 	int iResult = 0;
 	int fileSize = 0;
 	int numberOutDistribution = 0;
 	char* buffer = nullptr;
-	//---------------------
-	display("Client::sendOutgoingDistribution1");
-	//------------------------
+
 	std::ifstream in("OutgoingDistribution", std::ios::in | std::ios::binary);
 	if (!in)
 	{
-		display("client:: new file4");
+		// обработай
 		return;
 	}
-	//------------------------
-	display("Client::sendOutgoingDistribution2");
-	//--------------------------
+
 	in.seekg(0, in.end);
 	fileSize = in.tellg();
 	in.seekg(0, in.beg);
-	//-----------------
-	display("Client::sendOutgoingDistribution3");
-	//---------------------
+
 	numberOutDistribution = fileSize / sizeof(DownloadingFile);
 
 	buffer = (char*)& numberOutDistribution;
@@ -375,19 +371,11 @@ void Client::sendOutgoingDistribution(SOCKET *serverSocket)
 		// обработай
 		return;
 	}
-	//----------------------
-	display("Client::sendOutgoingDistribution4");
-	//---------------------------
-	display(std::to_string(numberOutDistribution));
 
-	
+	display(std::to_string(numberOutDistribution));
 
 	for (int i = 0; i < numberOutDistribution; i++)
 	{
-		//----------------------
-		display("Client::sendOutgoingDistribution5");
-		//---------------------------
-		
 		buffer = (char*)& downloadingFile;
 		in.read(buffer, sizeof(DownloadingFile));
 
@@ -409,7 +397,7 @@ void Client::sendOutgoingDistribution(SOCKET *serverSocket)
 		}
 	}
 	//----------------------
-	display("Client::sendOutgoingDistribution6");
+	display("Client::sendOutgoingDistribution2");
 	//---------------------------
 }
 
@@ -465,7 +453,8 @@ void Client::reciveDistribution(SOCKET *serverSocket)
 		display(distributeFile.m_fileInfo.m_fileDescription);
 		std::string s = distributeFile.m_address.to_string();
 		display(s);
-		//	addDistributeFile(downloadingFile);
+
+		addDistributeFile(distributeFile);
 	}
 }
 
@@ -480,82 +469,71 @@ void Client::threadSearchFile(std::string tockenFile)
 	m_mutexUserInteface.lock();
 	display("Client::threadSearchFile");
 	m_mutexUserInteface.unlock();
-	FileInfo foundFile;
-	char* buffer = (char*)& foundFile;
-
-	//m_mutexDistribution->lock();
-
-	std::ifstream in("Distribution", std::ios::in | std::ios::binary);
-	if (!in)
-	{
-		//m_mutexDistribution->unlock();
-		//
-		return;
-	}
-
-	m_mutexUserInteface.lock();
-
+	
+	m_mutexUserInteface.lock(); //!!
+	m_mutexDistribution.lock();
+	
+	std::map<FileInfo, FileDistributors>::iterator p = m_distirbution.begin();
+	
 	if (tockenFile == "*")
 	{
-		while (in)
+		while (p != m_distirbution.end())
 		{
-			in.read(buffer, sizeof(FileInfo));
-			showFoundFile(foundFile);
+			showFoundFile(p->first);
+			p++;
 		}
 	}
 
 	else if (tockenFile.size() == 5 && tockenFile[0] == '*')
 	{
-		while (in)
+		while (p != m_distirbution.end())
 		{
-			in.read(buffer, sizeof(FileInfo));
-			if (4 == getLargestCommonSubstring(tockenFile, foundFile.m_fileName))
+			if (4 == getLargestCommonSubstring(tockenFile, p->first.m_fileName))
 			{
-				showFoundFile(foundFile);
+				showFoundFile(p->first);
 			}
+			p++;
 		}
 	}
 
 	else if (tockenFile.size() == 2 && tockenFile[1] == '*')
 	{
-		while (in)
+		while (p != m_distirbution.end())
 		{
-			in.read(buffer, sizeof(FileInfo));
-			if (tockenFile[0] == foundFile.m_fileName[0])
+			if (tockenFile[0] == p->first.m_fileName[0])
 			{
-				showFoundFile(foundFile);
+				showFoundFile(p->first);
 			}
+			p++;
 		}
 	}
 
 	else if (tockenFile.size() == 3 && tockenFile[1] == '*')
 	{
-		while (in)
+		while (p != m_distirbution.end())
 		{
-			in.read(buffer, sizeof(FileInfo));
-			if (tockenFile[0] == foundFile.m_fileName[0] && tockenFile[2] == foundFile.m_fileName[strlen(foundFile.m_fileName) - 5])
+			if (tockenFile[0] == p->first.m_fileName[0] && tockenFile[2] == p->first.m_fileName[strlen(p->first.m_fileName) - 5])
 			{
-				showFoundFile(foundFile);
+				showFoundFile(p->first);
 			}
+			p++;
 		}
 	}
 
 	else
 	{
-		while (in)
+		while (p != m_distirbution.end())
 		{
-			in.read(buffer, sizeof(FileInfo));
-			if (4 <= getLargestCommonSubstring(tockenFile, foundFile.m_fileDescription) ||
-				4 <= getLargestCommonSubstring(tockenFile, foundFile.m_fileName))
+			if (4 <= getLargestCommonSubstring(tockenFile, p->first.m_fileDescription) ||
+				4 <= getLargestCommonSubstring(tockenFile, p->first.m_fileName))
 			{
-				showFoundFile(foundFile);
+				showFoundFile(p->first);
 			}
-
+			p++;
 		}
 	}
-
 	m_mutexUserInteface.unlock();
-	//m_mutexDistribution->unlock();
+	m_mutexDistribution.unlock();
 }
 
 int Client::getLargestCommonSubstring(/*std::string & result,*/ const std::string & a, const std::string & b)
@@ -638,23 +616,44 @@ void Client::addDistributeFile(const DistributeFile& distributeFile)
 {
 	//--------------------------------------
 	m_mutexUserInteface.lock();
-	display(distributeFile.m_fileInfo.m_fileName);
+	display("Client::addDistributeFile");
 	m_mutexUserInteface.unlock();
 	//--------------------------------------
 
+	m_mutexDistribution.lock();
 	std::map<FileInfo, FileDistributors>::iterator p;
 
 	p = m_distirbution.find(distributeFile.m_fileInfo);
 	if (p != m_distirbution.end())
 	{
-		p->second.addAdress(distributeFile.m_address);
+		bool i = p->second.addAdress(distributeFile.m_address);
+
+		//-------------------	--------------------
+		if (i)
+		{
+			display("Addres dodano");
+		}
+		else
+		{
+			display("Addres NE dodano");
+		}
+
+		m_mutexUserInteface.lock();
+		display("Client::addDistributeFile2");
+		m_mutexUserInteface.unlock();
+		//---------------------------------------
 	}
 	else
 	{
+		m_mutexUserInteface.lock();
+		display("Client::addDistributeFile3");
+		m_mutexUserInteface.unlock();
+
 		FileDistributors addres;
 		addres.addAdress(distributeFile.m_address);
 		m_distirbution.insert(std::pair<FileInfo, FileDistributors>(distributeFile.m_fileInfo, addres));
 	}
+	m_mutexDistribution.unlock();
 }
 
 FileDistributors Client::getDistributors(const FileInfo& fileInfo)

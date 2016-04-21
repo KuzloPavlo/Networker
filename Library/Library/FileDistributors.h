@@ -10,7 +10,7 @@ class FileDistributors
 public:
 	FileDistributors();
 	~FileDistributors();
-	void addAdress(const boost::asio::ip::address& adress);
+	bool addAdress(const boost::asio::ip::address& adress);
 	std::vector<boost::asio::ip::address> getAdresses();
 	boost::asio::ip::address& operator [](const int& i);
 private:

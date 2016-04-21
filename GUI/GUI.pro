@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     foundedfileform.cpp \
     status.cpp \
     fileform.cpp \
-    descriptionform.cpp
+    descriptionform.cpp \
+    temdebuger.cpp
 
 HEADERS  += mainwindow.h \
     downloadingfiledialog.h \
@@ -27,7 +28,8 @@ HEADERS  += mainwindow.h \
     foundedfileform.h \
     status.h \
     fileform.h \
-    descriptionform.h
+    descriptionform.h \
+    temdebuger.h
 
 FORMS    += mainwindow.ui \
     downloadingfiledialog.ui \
@@ -35,7 +37,8 @@ FORMS    += mainwindow.ui \
     foundedfileform.ui \
     status.ui \
     fileform.ui \
-    descriptionform.ui
+    descriptionform.ui \
+    temdebuger.ui
 
 RESOURCES += \
     icons.qrc

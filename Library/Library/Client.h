@@ -58,14 +58,14 @@ public:
 	//std::function<void(const DownloadingFile& newFile)>addNewFile;
 	std::function<void(const FileInfo& foundFile)>showFoundFile;
 
-private:
+private://
 	std::map<FileInfo, FileDistributors> m_distirbution;
 	int m_countConnectedClients;
 	bool m_clientWorking;
 
 	std::mutex m_mutexUserInteface;               //Only one thread is working with the interface
 	std::shared_ptr<std::mutex>m_mutexOutgoingDistribution;
-	std::shared_ptr<std::mutex>m_mutexDistribution;
+	std::mutex m_mutexDistribution;
 	std::shared_ptr<Listener> m_Listener;
 	void threadListen();
 	void threadServer(const std::string& IPaddress, const std::string& port);

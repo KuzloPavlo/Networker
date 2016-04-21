@@ -6,7 +6,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), m_pNewServerDialog(new NewServerDialog(this)),
     m_pNewFileDialog(new DownloadingFileDialog(this)),
-    ui(new Ui::MainWindow), m_pClient(new Client())
+    ui(new Ui::MainWindow), m_pClient(new Client()), m_debuger(new TemDebuger(this))
 {
     ui->setupUi(this);
 
@@ -53,10 +53,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Status* newStatus = new Status(this);
 
-//    ui->textDisplay->setVisible(false);
-//    ui->textinput->setVisible(false);
-//    ui->sendButton->setVisible(false);
-//    emit on_sendButton_clicked();
+    //    ui->textDisplay->setVisible(false);
+    //    ui->textinput->setVisible(false);
+    //    ui->sendButton->setVisible(false);
+    //    emit on_sendButton_clicked();
 
     m_pClient->display = std::bind(&MainWindow::signalDisplay, this, std::placeholders::_1);
 
@@ -107,9 +107,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::slotDisplay(const std::string& str)
 {
-    char strstr[10000];
-    std::strcpy(strstr, str.c_str());
-    this->ui->textDisplay->append(strstr);
+    //    char strstr[10000];
+    //    std::strcpy(strstr, str.c_str());
+    //    this->ui->textDisplay->append(strstr);
+    m_debuger->display(str);
+    m_debuger->show();
 }
 
 void MainWindow::slotConnectToServer(const std::string &IPaddress, const std::string &port)
