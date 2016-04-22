@@ -21,12 +21,12 @@ public:
 		boost::asio::io_service& io_service,
 		const DownloadingFile& downloadingFile,
 		const FileDistributors& adresses,
-		std::function<void(const FileStatus& fileStatus,const int& filePercents)>& changeFileStatus,
+		std::function<void(const FileStatus& fileStatus, const int& filePercents)>& changeFileStatus,
 		std::function<void(const FileStatus& fileStatus)>& changeDownloader,
 		std::shared_ptr<std::mutex>mutexStatus,
 		FileStatus* fileStatus, bool creating = true);
 	~Downloader();
-	
+
 	void changeDownloader(const FileStatus& fileStatus);
 
 	//------------------------------------------------
@@ -34,7 +34,7 @@ public:
 	void dosmth(){
 		display("");
 		display("");
-		display("Downloader::Downloader"); 
+		display("Downloader::Downloader");
 		display(m_downloadingFile.m_fileInfo.m_fileName);
 		display(m_downloadingFile.m_fileInfo.m_fileDescription);
 		display(std::to_string(m_downloadingFile.m_fileInfo.m_fileHash));
@@ -43,20 +43,22 @@ public:
 	}
 	void func(std::function<void(const std::string& str)>& fu){ this->display = fu; };
 	//-------------------------------------------------
-	
+
 private:
 	std::function<void(const FileStatus& fileStatus, const int& filePercents)>changeFileStatus;
-	std::shared_ptr<std::mutex>m_mutexStatus;
+	void start();
+
+	Checker m_checkerParts;
+	FileStatus* m_myStatus;
 	DownloadingFile m_downloadingFile;
 	FileDistributors m_distributors;
-	int m_lastDistributor = 0;
-	//std::shared_ptr<Checker>m_checkerParts;
-	Checker m_checkerParts;
+
 	std::list<DownloadSession> m_sessions;
 	std::list<SessionStatus> m_statusHolder;
-	FileStatus* m_downloaderStatus;
-	void start();
-	boost::asio::io_service& m_io_service;
-	FileStatus* m_myStatus;
-};
 
+	std::shared_ptr<std::mutex>m_mutexStatus;
+	FileStatus* m_downloaderStatus;
+
+	boost::asio::io_service& m_io_service;
+	int m_lastDistributor = 0;
+};

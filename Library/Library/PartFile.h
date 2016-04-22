@@ -8,12 +8,14 @@ struct PartInfo
 	int m_partNumber;
 };
 
+#define PARTSIZE 2048
+
 struct PartFile
 {
 	int m_partNumber;
 	int m_partHash;
 	int m_partSize;
-	char m_part[2048];
+	char m_part[PARTSIZE];
 };
 
 int calculatePartHash(const PartFile& partFile);

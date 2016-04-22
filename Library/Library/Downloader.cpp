@@ -54,7 +54,8 @@ void Downloader::start()
 					m_distributors[i],
 					m_io_service,
 					m_mutexStatus,
-					&(*p)
+					&(*p),
+					m_downloadingFile.m_fileLocation
 					);
 				break;
 			}
