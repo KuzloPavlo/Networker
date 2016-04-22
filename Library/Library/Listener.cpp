@@ -16,7 +16,7 @@ void Listener::accept()
 {
 	m_Acceptor.async_accept(m_Socket,
 		[this](boost::system::error_code ec)
-	{ std::ofstream out("testttt.txt", std::ios::out | std::ios::binary);
+	{ 
 	if (!ec)
 	{
 		std::make_shared<ClientSession>(std::move(m_Socket), m_mutexOutgoingDistribution)->start();

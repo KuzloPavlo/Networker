@@ -4,14 +4,16 @@
 
 struct PartInfo
 {
-	int m_fileHash;
+	long int m_fileHash;
 	int m_partNumber;
 };
 
 struct PartFile
 {
-	PartInfo m_partInfo;
+	int m_partNumber;
 	int m_partHash;
 	int m_partSize;
 	char m_part[2048];
 };
+
+int calculatePartHash(const PartFile& partFile);

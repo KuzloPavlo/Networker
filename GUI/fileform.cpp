@@ -6,6 +6,8 @@ FileForm::FileForm(const DownloadingFile& file,QTableWidget *parentTable ,QWidge
     m_parentTable(parentTable),
     m_status(new Status(this)),
     m_description(new DescriptionForm(file.m_fileInfo.m_fileDescription, this)),
+    m_mutexStatus(new std::mutex),
+    m_downloaderStatus(new FileStatus(FileStatus::downloading)),
     ui(new Ui::FileForm)
 {
     ui->setupUi(this);

@@ -52,7 +52,9 @@ public:
 	void downloadFile(
 		const DownloadingFile& downloadingFile,
 		CHANGEFILESTATUS changeFileStatus,
-		CHANGEDOWNLOADER changeDownloader);
+		CHANGEDOWNLOADER changeDownloader,
+		std::shared_ptr<std::mutex>mutexStatus,
+		FileStatus* fileStatus);
 
 	std::function<void(const std::string& str)>display;
 	//std::function<void(const DownloadingFile& newFile)>addNewFile;
@@ -75,7 +77,9 @@ private://
 		const DownloadingFile& downloadingFile,
 		const FileDistributors& adresses,
 		CHANGEFILESTATUS changeFileStatus,
-		CHANGEDOWNLOADER changeDownloader
+		CHANGEDOWNLOADER changeDownloader,
+		std::shared_ptr<std::mutex>mutexStatus,
+		FileStatus* fileStatus
 		);
 
 	void threadCreateDownloadingFile(std::string location, std::string description);

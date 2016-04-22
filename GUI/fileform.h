@@ -6,6 +6,8 @@
 #include "DownloadingFile.h"
 #include <QFileDialog>
 #include <functional>
+#include <mutex>
+#include <memory>
 
 namespace Ui {
 class FileForm;
@@ -20,6 +22,8 @@ public:
     ~FileForm();
     std::function<void(const FileStatus& fileStatus)> changeDownloader;
     std::function<void(const FileStatus& fileStatus,const int& filePercents)> changeFileStatus;
+    std::shared_ptr<std::mutex> getMutex(){return m_mutexStatus;}
+    FileStatus* getDownloaderStatus(){return m_downloaderStatus;}
 private slots:
     void on_SelectButton_clicked();
     void slotChangeFileStatus(const FileStatus& fileStatus,const int& filePercents);
@@ -32,4 +36,6 @@ private:
     Status* m_status;
     DescriptionForm* m_description;
     Ui::FileForm *ui;
+    std::shared_ptr<std::mutex>m_mutexStatus;
+    FileStatus* m_downloaderStatus;
 };

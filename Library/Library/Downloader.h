@@ -22,7 +22,9 @@ public:
 		const DownloadingFile& downloadingFile,
 		const FileDistributors& adresses,
 		std::function<void(const FileStatus& fileStatus,const int& filePercents)>& changeFileStatus,
-		std::function<void(const FileStatus& fileStatus)>& changeDownloader, bool creating = true);
+		std::function<void(const FileStatus& fileStatus)>& changeDownloader,
+		std::shared_ptr<std::mutex>mutexStatus,
+		FileStatus* fileStatus, bool creating = true);
 	~Downloader();
 	
 	void changeDownloader(const FileStatus& fileStatus);
@@ -54,5 +56,7 @@ private:
 	std::list<SessionStatus> m_statusHolder;
 	FileStatus* m_downloaderStatus;
 	void start();
+	boost::asio::io_service& m_io_service;
+	FileStatus* m_myStatus;
 };
 

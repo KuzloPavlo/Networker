@@ -42,11 +42,13 @@ void Client::threadListen()
 void Client::downloadFile(
 	const DownloadingFile& downloadingFile,
 	CHANGEFILESTATUS changeFileStatus,
-	CHANGEDOWNLOADER changeDownloader)
+	CHANGEDOWNLOADER changeDownloader,
+	std::shared_ptr<std::mutex>mutexStatus,
+	FileStatus* fileStatus)
 {
 	display("Client::downloadFile1 ");
 	FileDistributors adresses = getDistributors(downloadingFile.m_fileInfo);
-	std::thread downloadThread(&Client::threadDownload, this, downloadingFile, adresses, changeFileStatus, changeDownloader);
+	std::thread downloadThread(&Client::threadDownload, this, downloadingFile, adresses, changeFileStatus, changeDownloader,mutexStatus,fileStatus);
 	display("Client::downloadFile2 ");
 	downloadThread.detach();
 }
@@ -55,7 +57,9 @@ void Client::threadDownload(
 	const DownloadingFile& downloadingFile,
 	const FileDistributors& adresses,
 	CHANGEFILESTATUS changeFileStatus,
-	CHANGEDOWNLOADER changeDownloader)
+	CHANGEDOWNLOADER changeDownloader,
+	std::shared_ptr<std::mutex>mutexStatus,
+	FileStatus* fileStatus)
 {
 	display("Client::threadDownload1111");
 	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
@@ -76,7 +80,7 @@ void Client::threadDownload(
 		display("");
 
 			//----------------------------------
-		std::shared_ptr<Downloader> downloader(new Downloader(io_service, downloadingFile, adresses/*, this->m_mutexListParts*/, changeFileStatus, changeDownloader));
+		std::shared_ptr<Downloader> downloader(new Downloader(io_service, downloadingFile, adresses/*, this->m_mutexListParts*/, changeFileStatus, changeDownloader,mutexStatus,fileStatus));
 
 		//-----------------------
 		display("Client::threadDownload3");

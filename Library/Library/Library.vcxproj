@@ -102,6 +102,7 @@
     <ClCompile Include="DownloadSession.cpp" />
     <ClCompile Include="FileDistributors.cpp" />
     <ClCompile Include="Listener.cpp" />
+    <ClCompile Include="PartFile.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -7,6 +7,7 @@
 #include <boost\asio.hpp>
 #include "DownloadingFile.h"
 #include "PartFile.h"
+#include <fstream>
 
 
 using boost::asio::ip::tcp;
