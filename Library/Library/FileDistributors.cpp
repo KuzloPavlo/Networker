@@ -29,3 +29,8 @@ boost::asio::ip::address& FileDistributors::operator [](const int& i)
 {
 	return m_adresses[i];
 }
+
+int FileDistributors::size()
+{
+	return m_adresses.size();
+}

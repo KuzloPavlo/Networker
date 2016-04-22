@@ -92,6 +92,7 @@
     <ClInclude Include="MessageTypes.h" />
     <ClInclude Include="PartFile.h" />
     <ClInclude Include="ReturnValues.h" />
+    <ClInclude Include="SessionStatus.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Checker.cpp" />

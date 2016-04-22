@@ -13,6 +13,7 @@ public:
 	bool addAdress(const boost::asio::ip::address& adress);
 	std::vector<boost::asio::ip::address> getAdresses();
 	boost::asio::ip::address& operator [](const int& i);
+	int size();
 private:
 	std::vector<boost::asio::ip::address> m_adresses;
 };

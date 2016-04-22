@@ -7,10 +7,15 @@ Downloader::Downloader(
 	std::function<void(const FileStatus& fileStatus, const int& filePercents)>& changeFileStatus,
 	std::function<void(const FileStatus& fileStatus)>& changeDownloader, 
 	bool creating)
-	: m_downloadingFile(downloadingFile), m_distributors(adresses), changeFileStatus(changeFileStatus), m_checkerParts(downloadingFile.m_fileInfo, creating)
+	: m_downloadingFile(downloadingFile),
+	m_distributors(adresses),
+	changeFileStatus(changeFileStatus),
+	m_checkerParts(downloadingFile.m_fileInfo, creating)
 {
 	changeDownloader = std::bind(&Downloader::changeDownloader, this, std::placeholders::_1);
 	this->changeFileStatus(downloadingFile.m_fileStatus, 0);
+
+	start();
 }
 
 Downloader::~Downloader()
@@ -20,4 +25,12 @@ Downloader::~Downloader()
 void Downloader::changeDownloader(const FileStatus& fileStatus)
 {
 
+}
+
+void Downloader::start()
+{
+	for (int i = 0; i < m_distributors.size() && 10; i++)
+	{
+		// запускаем кл сесии
+	}
 }

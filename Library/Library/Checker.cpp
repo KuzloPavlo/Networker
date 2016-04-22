@@ -1,6 +1,6 @@
 #include "Checker.h"
 
-Checker::Checker(const FileInfo& dataFile, bool creating)
+Checker::Checker(const FileInfo& dataFile, bool creating) : m_fileInfo(dataFile)
 {
 	std::vector<bool>::iterator p = m_vectorParts.begin();
 	m_vectorParts.insert(p, m_fileInfo.m_numberParts, false);
@@ -20,12 +20,10 @@ Checker::Checker(const FileInfo& dataFile, bool creating)
 void Checker::createNewFileParts()
 {
 	std::ofstream out(std::to_string(m_fileInfo.m_fileHash), std::ios::out | std::ios::binary);
-	throw std::runtime_error(std::to_string(m_fileInfo.m_fileHash));
 	if (!out)
 	{
-		throw std::runtime_error("std::ofstream out ne otkrilos");
-		// обработай
-		//return;
+		//
+		return;
 	}
 
 	unsigned int zero = 0;
@@ -43,9 +41,9 @@ void Checker::openFileParts()
 	if (!m_fileParts)
 
 	{
-		throw std::runtime_error("m_fileParts.open ne otkrilos");
+		//throw std::runtime_error("m_fileParts.open ne otkrilos");
 		// обработай
-		//return;
+		return;
 	}
 }
 

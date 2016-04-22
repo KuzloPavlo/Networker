@@ -8,7 +8,7 @@ Client::Client() : m_countConnectedClients(0), m_clientWorking(true)
 	std::thread listenThread(&Client::threadListen, this);
 	listenThread.detach();
 
-	
+
 }
 
 Client::~Client()
@@ -64,8 +64,20 @@ void Client::threadDownload(
 	{
 		boost::asio::io_service io_service;
 		display("Client::threadDownload2/1");
+		//-----------------------------------
+		display("");
+		display(downloadingFile.m_fileInfo.m_fileName);
+		display(downloadingFile.m_fileInfo.m_fileDescription);
+		display(std::to_string( downloadingFile.m_fileInfo.m_fileHash));
+		display(std::to_string( downloadingFile.m_fileInfo.m_fileSize));
+		display(std::to_string( downloadingFile.m_fileInfo.m_numberParts));
+		display("");
+		display(downloadingFile.m_fileLocation);
+		display("");
+
+			//----------------------------------
 		std::shared_ptr<Downloader> downloader(new Downloader(io_service, downloadingFile, adresses/*, this->m_mutexListParts*/, changeFileStatus, changeDownloader));
-		
+
 		//-----------------------
 		display("Client::threadDownload3");
 		downloader->func(this->display);
@@ -471,12 +483,12 @@ void Client::threadSearchFile(std::string tockenFile)
 	m_mutexUserInteface.lock();
 	display("Client::threadSearchFile");
 	m_mutexUserInteface.unlock();
-	
+
 	m_mutexUserInteface.lock(); //!!
 	m_mutexDistribution.lock();
-	
+
 	std::map<FileInfo, FileDistributors>::iterator p = m_distirbution.begin();
-	
+
 	if (tockenFile == "*")
 	{
 		while (p != m_distirbution.end())
