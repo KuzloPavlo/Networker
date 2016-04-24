@@ -79,7 +79,7 @@ void DownloadSession::write()
 		}
 		else
 		{
-			setEnd();
+			setEnd();  // возможно надо что-то другое
 			return;
 		}
 	});
@@ -99,8 +99,12 @@ void  DownloadSession::addPart(const PartFile& partFile)
 	{
 		unsetPart();
 	}
-	getPart();
-	write();
+
+	if (getPart())
+	{
+		write();
+	}
+
 }
 
 bool  DownloadSession::flushPart(const PartFile& partFile)
@@ -151,7 +155,7 @@ bool DownloadSession::getPart()
 	switch (m_myStatus->m_work)
 	{
 	case StatusValue::work:
-		m_partNumber.m_partNumber = m_myStatus->m_part;
+		m_partNumber.m_partNumber = m_myStatus->m_part; // geting a new part
 		m_mutexStatus->unlock();
 		break;
 

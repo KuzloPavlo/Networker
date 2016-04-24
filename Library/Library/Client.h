@@ -27,7 +27,8 @@
 #include "DownloadSession.h"
 #include "Downloader.h"
 #include "FileDistributors.h"
-#include "DistributeFile.h" //
+#include "DistributeFile.h" 
+#include "PartFile.h"
 
 #pragma comment(lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -68,7 +69,7 @@ private://
 	std::mutex m_mutexUserInteface;               //Only one thread is working with the interface
 	std::shared_ptr<std::mutex>m_mutexOutgoingDistribution;
 	std::mutex m_mutexDistribution;
-	std::shared_ptr<Listener> m_Listener;
+	//std::shared_ptr<Listener> m_Listener;
 	void threadListen();
 	void threadServer(const std::string& IPaddress, const std::string& port);
 	void threadClient(void *arg);

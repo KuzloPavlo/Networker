@@ -3,7 +3,7 @@
 
 using boost::asio::ip::tcp;
 
-Client::Client() : m_countConnectedClients(0), m_clientWorking(true)
+Client::Client() : m_countConnectedClients(0), m_clientWorking(true), m_mutexOutgoingDistribution(new std::mutex)
 {
 	std::thread listenThread(&Client::threadListen, this);
 	listenThread.detach();
@@ -24,8 +24,9 @@ void Client::threadListen()
 	try
 	{
 		boost::asio::io_service io_service;
-		std::shared_ptr<Listener> listener(new Listener(io_service, 77777, this->m_mutexOutgoingDistribution));
-		this->m_Listener = listener;
+		//std::shared_ptr<Listener> listener(new Listener(io_service, 77777, this->m_mutexOutgoingDistribution));
+		//this->m_Listener = listener;
+		Listener listener(io_service, 77777, this->m_mutexOutgoingDistribution);
 		m_mutexUserInteface.lock();
 		display("Listener Thread Started");
 		m_mutexUserInteface.unlock();
@@ -255,8 +256,8 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 	//--------------------------
 	display("Client::threadCreateDownloadingFile1");
 	//--------------------------
-	const int partSize = 2048;
-	char filePart[partSize] = { 0 };
+	//const int partSize = 2048;
+	char filePart[PARTSIZE] = { 0 };
 	std::hash<std::string> hashFunction;
 
 	DownloadingFile newFile;
@@ -274,14 +275,14 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 	std::ifstream in(location, std::ios::in | std::ios::binary);
 	if (!in)
 	{
-		display("client:: new file2");
+		display("Client::threadCreateDownloadingFile. Not open file fo creating!");
 		// обработать ошыбку
 		return;
 	}
 
 	do
 	{
-		in.read(filePart, partSize);
+		in.read(filePart, PARTSIZE);
 		newFile.m_fileInfo.m_numberParts++;
 		newFile.m_fileInfo.m_fileSize += in.gcount();
 		newFile.m_fileInfo.m_fileHash = (1 / 256) * (newFile.m_fileInfo.m_fileHash << 1) ^ hashFunction(filePart);

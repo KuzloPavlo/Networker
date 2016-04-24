@@ -23,13 +23,23 @@ public:
 private:
 	void read();
 	void write(std::size_t length);
+	bool getFileInfo(long int fileHash);
+	
 	tcp::socket m_ClientSocket;
 	std::shared_ptr<std::mutex> m_mutexOutgoingDistribution;
+	
+	DownloadingFile m_downloadingFile;
+	
+	PartInfo m_partNumber;
+	PartFile m_sendPart;
+
+	bool m_firstTime;
+
 	enum{
 		receiveLength = sizeof(PartInfo),
 		sendLength = sizeof(PartFile)
 	};
-	char m_receiveBuffer[receiveLength];
-	char m_sendBuffer[sendLength];
+	char* m_receiveBuffer;
+	char* m_sendBuffer;
 };
 
