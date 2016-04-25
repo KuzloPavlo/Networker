@@ -9,6 +9,7 @@
 #include "PartFile.h"
 #include <fstream>
 #include <thread>
+#include "ReturnValues.h"
 
 using boost::asio::ip::tcp;
 

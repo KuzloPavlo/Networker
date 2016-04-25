@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include "ReturnValues.h"
 
 struct PartInfo
 {
@@ -11,7 +12,8 @@ struct PartInfo
 #define PARTSIZE 2048
 
 struct PartFile
-{
+{	
+	ReturnValues m_values;
 	int m_partNumber;
 	int m_partHash;
 	int m_partSize;

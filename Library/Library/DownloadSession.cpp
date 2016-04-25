@@ -48,24 +48,6 @@ void DownloadSession::connectSeeder(const boost::system::error_code &err)
 	write();
 }
 
-void DownloadSession::read()
-{
-	auto self(shared_from_this());
-	m_socket.async_read_some(boost::asio::buffer(m_receiveBuffer, receiveLength),
-		[this, self](boost::system::error_code ec, std::size_t length)
-	{
-		if (!ec)
-		{
-			addPart(m_receivedPart);
-		}
-		else
-		{
-			setEnd();
-			return;
-		}
-	});
-
-}
 
 void DownloadSession::write()
 {
@@ -85,9 +67,28 @@ void DownloadSession::write()
 	});
 }
 
+void DownloadSession::read()
+{
+	auto self(shared_from_this());
+	m_socket.async_read_some(boost::asio::buffer(m_receiveBuffer, receiveLength),
+		[this, self](boost::system::error_code ec, std::size_t length)
+	{
+		if (!ec)
+		{
+			addPart(m_receivedPart);
+		}
+		else
+		{
+			setEnd();
+			return;
+		}
+	});
+
+}
+
 void  DownloadSession::addPart(const PartFile& partFile)
 {
-	if (partFile.m_partHash == calculatePartHash(partFile))
+	if (partFile.m_values == ReturnValues::good && partFile.m_partHash == calculatePartHash(partFile))
 	{
 		if (!flushPart(partFile))
 		{
@@ -95,16 +96,20 @@ void  DownloadSession::addPart(const PartFile& partFile)
 			return;
 		}
 	}
-	else
+	else if (partFile.m_values == ReturnValues::noPart)
 	{
 		unsetPart();
+	}
+	else if (partFile.m_values == ReturnValues::noDistribution)
+	{
+		setEnd();
+		return;
 	}
 
 	if (getPart())
 	{
 		write();
 	}
-
 }
 
 bool  DownloadSession::flushPart(const PartFile& partFile)

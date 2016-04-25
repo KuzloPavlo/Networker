@@ -1386,6 +1386,7 @@ release\moc_mainwindow.cpp: ..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QMainW
 		..\..\..\boost\VC\boost_1_60_0\boost_1_60_0\boost\asio\impl\write_at.hpp \
 		..\Library\Library\ClientSession.h \
 		..\Library\Library\PartFile.h \
+		..\Library\Library\ReturnValues.h \
 		..\Library\Library\DownloadSession.h \
 		..\Library\Library\SessionStatus.h \
 		..\Library\Library\Downloader.h \
@@ -3416,6 +3417,7 @@ release\main.obj: ..\GUI\main.cpp ../GUI/mainwindow.h \
 		..\..\..\boost\VC\boost_1_60_0\boost_1_60_0\boost\asio\impl\write_at.hpp \
 		..\Library\Library\ClientSession.h \
 		..\Library\Library\PartFile.h \
+		..\Library\Library\ReturnValues.h \
 		..\Library\Library\DownloadSession.h \
 		..\Library\Library\SessionStatus.h \
 		..\Library\Library\Downloader.h \
@@ -4601,6 +4603,7 @@ release\mainwindow.obj: ..\GUI\mainwindow.cpp ../GUI/mainwindow.h \
 		..\..\..\boost\VC\boost_1_60_0\boost_1_60_0\boost\asio\impl\write_at.hpp \
 		..\Library\Library\ClientSession.h \
 		..\Library\Library\PartFile.h \
+		..\Library\Library\ReturnValues.h \
 		..\Library\Library\DownloadSession.h \
 		..\Library\Library\SessionStatus.h \
 		..\Library\Library\Downloader.h \

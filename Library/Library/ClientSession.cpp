@@ -25,15 +25,31 @@ void ClientSession::read()
 		{
 			if (m_firstTime)
 			{
-				//getFileInfo(m_partNumber.m_fileHash);
+				m_firstTime = false;
+
+				if (!getFileInfo(m_partNumber.m_fileHash))
+				{
+					write(ReturnValues::noDistribution);
+					return;
+				}	
 			}
-			write(length);
+
+			if (preparePart())
+			{
+				write(ReturnValues::good);
+			}
+			else
+			{
+				write(ReturnValues::noPart);
+			}
 		}
 	});
 }
 
-void ClientSession::write(std::size_t length)
+void ClientSession::write(const ReturnValues& value)
 {
+	m_sendPart.m_values == value;
+
 	auto self(shared_from_this());
 	boost::asio::async_write(m_ClientSocket, boost::asio::buffer(m_sendBuffer, sendLength),
 		[this, self](boost::system::error_code ec, std::size_t)
@@ -72,9 +88,36 @@ bool ClientSession::getFileInfo(long int fileHash)
 		in.read(buff, sizeof(DownloadingFile));
 
 		if (m_partNumber.m_fileHash == m_downloadingFile.m_fileInfo.m_fileHash)
-		{
+		{	
+			m_file.open(m_downloadingFile.m_fileLocation, std::ios::in | std::ios::binary);
+			if (!m_file)
+			{
+				return false;
+			}
 			return true;
 		}
 	}
 	return false;
+}
+
+bool ClientSession::preparePart()
+{
+	try
+	{
+		int shift = (m_partNumber.m_partNumber - 1) * PARTSIZE;
+		m_file.seekg(shift, std::ios::beg);
+
+		m_file.read(m_sendPart.m_part, PARTSIZE);
+
+		m_sendPart.m_partSize = m_file.gcount();
+		
+		m_sendPart.m_partHash = calculatePartHash(m_sendPart);
+
+		m_sendPart.m_partNumber = m_partNumber.m_partNumber;
+	}
+	catch (const std::exception& ex)
+	{
+		return false;
+	}
+	return true;
 }

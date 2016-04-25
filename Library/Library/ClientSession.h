@@ -8,7 +8,7 @@
 #include "DownloadingFile.h"
 #include "PartFile.h"
 #include <fstream>
-
+#include "ReturnValues.h"
 
 using boost::asio::ip::tcp;
 
@@ -22,13 +22,16 @@ public:
 	void start();
 private:
 	void read();
-	void write(std::size_t length);
+	void write(const ReturnValues& value);
 	bool getFileInfo(long int fileHash);
+	bool preparePart();
 	
 	tcp::socket m_ClientSocket;
 	std::shared_ptr<std::mutex> m_mutexOutgoingDistribution;
 	
 	DownloadingFile m_downloadingFile;
+
+	std::ifstream m_file;
 	
 	PartInfo m_partNumber;
 	PartFile m_sendPart;

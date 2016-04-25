@@ -2,5 +2,7 @@
 
 enum ReturnValues
 {
-
+	good,
+	noDistribution,
+	noPart,
 };
