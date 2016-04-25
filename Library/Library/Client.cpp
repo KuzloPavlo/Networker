@@ -27,6 +27,8 @@ void Client::threadListen()
 		//std::shared_ptr<Listener> listener(new Listener(io_service, 77777, this->m_mutexOutgoingDistribution));
 		//this->m_Listener = listener;
 		Listener listener(io_service, 77777, this->m_mutexOutgoingDistribution);
+		listener.display = this->display;
+
 		m_mutexUserInteface.lock();
 		display("Listener Thread Started");
 		m_mutexUserInteface.unlock();
@@ -81,12 +83,12 @@ void Client::threadDownload(
 		display("");
 
 			//----------------------------------
-		std::shared_ptr<Downloader> downloader(new Downloader(io_service, downloadingFile, adresses/*, this->m_mutexListParts*/, changeFileStatus, changeDownloader,mutexStatus,fileStatus));
+		std::shared_ptr<Downloader> downloader(new Downloader(io_service, downloadingFile, adresses/*, this->m_mutexListParts*/, changeFileStatus, changeDownloader,mutexStatus,fileStatus, display));
 
 		//-----------------------
 		display("Client::threadDownload3");
-		downloader->func(this->display);
-		downloader->dosmth();
+		//downloader->func(this->display);
+	//	downloader->dosmth();
 		//----------------------------
 		io_service.run();
 	}

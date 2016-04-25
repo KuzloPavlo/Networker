@@ -1,5 +1,6 @@
 #pragma once
 
+
 enum StatusValue
 {
 	work,

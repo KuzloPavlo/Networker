@@ -1,11 +1,16 @@
 #include "ClientSession.h"
 
 ClientSession::ClientSession(tcp::socket clientSocket,
-	std::shared_ptr<std::mutex> mutexOutgoingDistribution)
+	std::shared_ptr<std::mutex> mutexOutgoingDistribution,
+	std::function<void(const std::string& str)>display)
 	: m_ClientSocket(std::move(clientSocket)),
 	m_mutexOutgoingDistribution(mutexOutgoingDistribution),
 	m_firstTime(true)
 {
+	//---------------------------
+	this->display = display;
+	display("ClientSession::ClientSession");
+	//---------------------------
 	m_receiveBuffer = (char*)& m_partNumber;
 	m_sendBuffer = (char*)& m_sendPart;
 }
@@ -17,14 +22,19 @@ void ClientSession::start()
 
 void ClientSession::read()
 {
+	Sleep(5000);
+	display("ClientSession::read()");
+
 	auto self(shared_from_this());
 	m_ClientSocket.async_read_some(boost::asio::buffer(m_receiveBuffer, receiveLength),
 		[this, self](boost::system::error_code ec, std::size_t length)
 	{
 		if (!ec)
 		{
+			display("ClientSession::read()1");
 			if (m_firstTime)
 			{
+				display("ClientSession::read()2");
 				m_firstTime = false;
 
 				if (!getFileInfo(m_partNumber.m_fileHash))
@@ -63,6 +73,7 @@ void ClientSession::write(const ReturnValues& value)
 
 bool ClientSession::getFileInfo(long int fileHash)
 {
+	display("ClientSession::getFileInfo1");
 	int numberOutDistribution = 0;
 	int fileSize = 0;
 	char* buff = (char*)& m_downloadingFile;
@@ -72,11 +83,12 @@ bool ClientSession::getFileInfo(long int fileHash)
 	std::ifstream in("OutgoingDistribution", std::ios::in | std::ios::binary);
 	if (!in)
 	{
+		display("ClientSession::getFileInfo2");
 		m_mutexOutgoingDistribution->unlock();
 		// обработать ошыбку
 		return false;
 	}
-
+	display("ClientSession::getFileInfo3");
 	in.seekg(0, in.end);
 	fileSize = in.tellg();
 	in.seekg(0, in.beg);
@@ -88,7 +100,8 @@ bool ClientSession::getFileInfo(long int fileHash)
 		in.read(buff, sizeof(DownloadingFile));
 
 		if (m_partNumber.m_fileHash == m_downloadingFile.m_fileInfo.m_fileHash)
-		{	
+		{
+			display(m_downloadingFile.m_fileLocation);
 			m_file.open(m_downloadingFile.m_fileLocation, std::ios::in | std::ios::binary);
 			if (!m_file)
 			{

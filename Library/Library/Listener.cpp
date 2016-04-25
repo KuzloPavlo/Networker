@@ -1,7 +1,5 @@
 #include "Listener.h"
 
-
-
 Listener::Listener(
 	boost::asio::io_service& io_service,
 	short port,
@@ -19,9 +17,9 @@ void Listener::accept()
 	{ 
 	if (!ec)
 	{
-		std::make_shared<ClientSession>(std::move(m_Socket), m_mutexOutgoingDistribution)->start();
+		display("Listener::accept");
+		std::make_shared<ClientSession>(std::move(m_Socket), m_mutexOutgoingDistribution, display)->start();
 	}
 	accept();
 	});
 }
-

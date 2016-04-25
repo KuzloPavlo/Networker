@@ -8,6 +8,7 @@ Downloader::Downloader(
 	std::function<void(const FileStatus& fileStatus)>& changeDownloader,
 	std::shared_ptr<std::mutex>mutexStatus,
 	FileStatus* fileStatus,
+	std::function<void(const std::string& str)>display,
 	bool creating)
 	: m_downloadingFile(downloadingFile),
 	m_distributors(adresses),
@@ -17,6 +18,9 @@ Downloader::Downloader(
 	m_mutexStatus(mutexStatus),
 	m_myStatus(fileStatus)
 {
+	this->display = display;
+	dosmth();
+
 	changeDownloader = std::bind(&Downloader::changeDownloader, this, std::placeholders::_1);
 	this->changeFileStatus(downloadingFile.m_fileStatus, 0);
 
@@ -34,6 +38,10 @@ void Downloader::changeDownloader(const FileStatus& fileStatus)
 
 void Downloader::start()
 {
+	std::string allLocation = m_downloadingFile.m_fileLocation;
+	allLocation += "\\";
+	allLocation += m_downloadingFile.m_fileInfo.m_fileName;
+
 	for (int i = 0; i < m_distributors.size() && 10; i++)
 	{
 		SessionStatus newStatus;
@@ -42,24 +50,24 @@ void Downloader::start()
 		newStatus.m_fileHash = m_downloadingFile.m_fileInfo.m_fileHash;
 		newStatus.m_part = m_checkerParts.getPart();
 
-		m_statusHolder.push_back(newStatus);
-		std::list<SessionStatus>::iterator p = m_statusHolder.begin();
+		std::list<SessionStatus>::iterator p = m_statusHolder.insert(m_statusHolder.end(), newStatus);
 
-		while (p != m_statusHolder.end())
-		{
-			if (p->m_sessionNumber == i)
-			{
-				DownloadSession newSession
-					(
-					m_distributors[i],
-					m_io_service,
-					m_mutexStatus,
-					&(*p),
-					m_downloadingFile.m_fileLocation
-					);
-				break;
-			}
-			p++;
-		}
+
+		display("Downloader::start()");
+
+		std::shared_ptr<DownloadSession>newSession(new DownloadSession
+			(
+			m_distributors[i],
+			m_io_service,
+			m_mutexStatus,
+			&(*p),
+			allLocation,
+			display
+			)) ;
+
+		m_sessions.insert(std::pair<int, std::shared_ptr<DownloadSession>>(i, newSession));
+		/*DownloadSession* newSession =*/
+
+		//m_sessions.insert(std::pair<int, DownloadSession*>(i, newSession));
 	}
 }

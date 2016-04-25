@@ -24,7 +24,10 @@ public:
 		std::function<void(const FileStatus& fileStatus, const int& filePercents)>& changeFileStatus,
 		std::function<void(const FileStatus& fileStatus)>& changeDownloader,
 		std::shared_ptr<std::mutex>mutexStatus,
-		FileStatus* fileStatus, bool creating = true);
+		FileStatus* fileStatus,
+		std::function<void(const std::string& str)>display,
+		bool creating = true
+		);
 	~Downloader();
 
 	void changeDownloader(const FileStatus& fileStatus);
@@ -40,6 +43,8 @@ public:
 		display(std::to_string(m_downloadingFile.m_fileInfo.m_fileHash));
 		display(m_downloadingFile.m_fileLocation);
 		display(m_distributors[0].to_string());
+		display("");
+		display("");
 	}
 	void func(std::function<void(const std::string& str)>& fu){ this->display = fu; };
 	//-------------------------------------------------
@@ -53,8 +58,10 @@ private:
 	DownloadingFile m_downloadingFile;
 	FileDistributors m_distributors;
 
-	std::list<DownloadSession> m_sessions;
+	//std::map<int ,DownloadSession*> m_sessions;
 	std::list<SessionStatus> m_statusHolder;
+
+	std::map<int, std::shared_ptr<DownloadSession>> m_sessions;
 
 	std::shared_ptr<std::mutex>m_mutexStatus;
 	FileStatus* m_downloaderStatus;

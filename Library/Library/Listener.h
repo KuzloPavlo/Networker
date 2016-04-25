@@ -16,6 +16,8 @@ public:
 		boost::asio::io_service& io_service,
 		short port,
 		std::shared_ptr<std::mutex> mutexOutgoingDistribution);
+	
+	std::function<void(const std::string& str)>display;
 private:
 	void accept();
 	tcp::acceptor m_Acceptor;

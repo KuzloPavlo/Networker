@@ -17,9 +17,12 @@ class ClientSession : public std::enable_shared_from_this<ClientSession>
 public:
 	ClientSession(
 		tcp::socket clientSocket,
-		std::shared_ptr<std::mutex> mutexOutgoingDistribution);
+		std::shared_ptr<std::mutex> mutexOutgoingDistribution,
+		std::function<void(const std::string& str)>display);
 
 	void start();
+	//----------------------------------------------
+	std::function<void(const std::string& str)>display;
 private:
 	void read();
 	void write(const ReturnValues& value);
