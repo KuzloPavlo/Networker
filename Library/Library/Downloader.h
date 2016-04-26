@@ -24,6 +24,7 @@ public:
 		std::function<void(const FileStatus& fileStatus, const int& filePercents)>& changeFileStatus,
 		std::function<void(const FileStatus& fileStatus)>& changeDownloader,
 		std::shared_ptr<std::mutex>mutexStatus,
+		std::shared_ptr<std::condition_variable> eventStatus,
 		FileStatus* fileStatus,
 		std::function<void(const std::string& str)>display,
 		bool creating = true
@@ -52,9 +53,13 @@ public:
 private:
 	std::function<void(const FileStatus& fileStatus, const int& filePercents)>changeFileStatus;
 	void start();
+	void work();
+	bool readSessioStatus(SessionStatus* status);
+	void readMyStatus();
+	void deleteSession(int number);
 
 	Checker m_checkerParts;
-	FileStatus* m_myStatus;
+	FileStatus* m_myStatus; // pause/deleting/downloading
 	DownloadingFile m_downloadingFile;
 	FileDistributors m_distributors;
 
@@ -64,6 +69,7 @@ private:
 	std::map<int, std::shared_ptr<DownloadSession>> m_sessions;
 
 	std::shared_ptr<std::mutex>m_mutexStatus;
+	std::shared_ptr<std::condition_variable> m_eventStatus;
 	FileStatus* m_downloaderStatus;
 
 	boost::asio::io_service& m_io_service;

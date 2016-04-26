@@ -21,6 +21,7 @@ public:
 		const boost::asio::ip::address& address,
 		boost::asio::io_service& io_service,
 		std::shared_ptr<std::mutex>mutexStatus,
+		std::shared_ptr<std::condition_variable> eventStatus,
 		SessionStatus* myStatus,
 		const std::string location,
 		std::function<void(const std::string& str)>display
@@ -31,19 +32,23 @@ public:
 	std::function<void(const std::string& str)>display;
 private:
 	
-	//void read();
+	void read();
+	void readHandler(const boost::system::error_code &err, std::size_t bytes);
+
 	void write();
 	void writeHandler(const boost::system::error_code &err, std::size_t bytes);
 
-	//void addPart(const PartFile& partFile);
-	//bool flushPart(const PartFile& partFile);
+	void addPart(const PartFile& partFile);
+	bool flushPart(const PartFile& partFile);
 	void connectSeeder(const boost::system::error_code &err);
 	void setEnd();
-	//void setPart();
+	void setPart();
 	//void unsetPart();
-	//bool getPart();
+	bool getPart();
 
 	std::shared_ptr<std::mutex>m_mutexStatus;
+	std::shared_ptr<std::condition_variable> m_eventStatus;
+
 	SessionStatus* m_myStatus;
 	tcp::socket m_socket;
 	int m_sessionNumber;

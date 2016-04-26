@@ -1,5 +1,7 @@
 #include "Downloader.h"
 
+#define DISPLAY Sleep(1);display("");display("");
+
 Downloader::Downloader(
 	boost::asio::io_service& io_service,
 	const DownloadingFile& downloadingFile,
@@ -7,6 +9,7 @@ Downloader::Downloader(
 	std::function<void(const FileStatus& fileStatus, const int& filePercents)>& changeFileStatus,
 	std::function<void(const FileStatus& fileStatus)>& changeDownloader,
 	std::shared_ptr<std::mutex>mutexStatus,
+	std::shared_ptr<std::condition_variable> eventStatus,
 	FileStatus* fileStatus,
 	std::function<void(const std::string& str)>display,
 	bool creating)
@@ -16,6 +19,7 @@ Downloader::Downloader(
 	m_checkerParts(downloadingFile.m_fileInfo, creating),
 	m_io_service(io_service),
 	m_mutexStatus(mutexStatus),
+	m_eventStatus(eventStatus),
 	m_myStatus(fileStatus)
 {
 	this->display = display;
@@ -24,7 +28,9 @@ Downloader::Downloader(
 	changeDownloader = std::bind(&Downloader::changeDownloader, this, std::placeholders::_1);
 	this->changeFileStatus(downloadingFile.m_fileStatus, 0);
 
-	start();
+	std::thread sessionsThread(&Downloader::start, this);
+	sessionsThread.detach();
+	work();
 }
 
 Downloader::~Downloader()
@@ -60,14 +66,126 @@ void Downloader::start()
 			m_distributors[i],
 			m_io_service,
 			m_mutexStatus,
+			m_eventStatus,
 			&(*p),
 			allLocation,
 			display
-			)) ;
+			));
 
 		m_sessions.insert(std::pair<int, std::shared_ptr<DownloadSession>>(i, newSession));
-		/*DownloadSession* newSession =*/
 
-		//m_sessions.insert(std::pair<int, DownloadSession*>(i, newSession));
+	}
+
+	//work();	
+	m_io_service.run();
+}
+
+void Downloader::work()
+{
+	DISPLAY
+		display("Downloader::work1");
+
+	std::list<SessionStatus>::iterator p = m_statusHolder.begin();
+
+	readMyStatus();
+
+	m_mutexStatus->lock();
+
+	while (p != m_statusHolder.end())
+	{
+		display("Downloader::work2");
+		if (!readSessioStatus(&(*p)))
+		{
+			m_statusHolder.erase(p);
+			m_mutexStatus->unlock();
+			work();
+			return;
+		}
+		p++;
+	}
+	m_mutexStatus->unlock();
+	display("Downloader::work3");
+	work();
+}
+
+bool Downloader::readSessioStatus(SessionStatus* status)
+{
+	DISPLAY
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+		display("Downloader::readSessioStatus1");
+	switch (status->m_work)
+	{
+	case StatusValue::work:
+		display("Downloader::readSessioStatus2");
+		break;
+
+	case StatusValue::stay:
+		if (status->m_doit == StatusValue::set)
+		{
+			display("Downloader::readSessioStatus3");
+			m_checkerParts.setPart(status->m_part);
+			status->m_part = m_checkerParts.getPart();
+			status->m_work = StatusValue::work;
+		}
+		else if (status->m_doit == StatusValue::unset)
+		{
+			display("Downloader::readSessioStatus4");
+			m_checkerParts.unsetPart(status->m_part);
+			status->m_part = m_checkerParts.getPart();
+			status->m_work = StatusValue::work;
+		}
+		break;
+
+	case StatusValue::end:
+		deleteSession(status->m_sessionNumber);
+		return false;
+
+
+	default:
+		deleteSession(status->m_sessionNumber);
+		return false;
+	}
+	return true;
+}
+
+void Downloader::readMyStatus()
+{
+	//std::this_thread::sleep_for(std::chrono::milliseconds(10000));
+	DISPLAY
+
+		display("Downloader::readMyStatus1");
+
+	FileStatus myStatus;
+	
+	m_mutexStatus->lock();
+	display("Downloader::readMyStatus2");
+	myStatus = *m_myStatus;
+	m_mutexStatus->unlock();
+
+	switch (myStatus)
+	{
+	case FileStatus::downloading:
+		break;
+
+	case FileStatus::pause:
+		//std::this_thread::sleep_for(std::chrono::milliseconds(10000));
+		readMyStatus();
+		break;
+
+	case FileStatus::deleting:
+		// сделай удаление
+		break;
+	}
+}
+
+void Downloader::deleteSession(int number)
+{
+	std::map<int, std::shared_ptr<DownloadSession>>::iterator q = m_sessions.begin();
+	q = m_sessions.find(number);
+
+	if (q != m_sessions.end())
+	{
+		m_sessions.erase(q);
 	}
 }
