@@ -8,6 +8,7 @@
 #include <functional>
 #include <mutex>
 #include <memory>
+#include <condition_variable>
 
 namespace Ui {
 class FileForm;
@@ -23,6 +24,7 @@ public:
     std::function<void(const FileStatus& fileStatus)> changeDownloader;
     std::function<void(const FileStatus& fileStatus,const int& filePercents)> changeFileStatus;
     std::shared_ptr<std::mutex> getMutex(){return m_mutexStatus;}
+    std::shared_ptr<std::condition_variable> getEvent(){return m_eventStatus;}
     FileStatus* getDownloaderStatus(){return m_downloaderStatus;}
 private slots:
     void on_SelectButton_clicked();
@@ -37,5 +39,6 @@ private:
     DescriptionForm* m_description;
     Ui::FileForm *ui;
     std::shared_ptr<std::mutex>m_mutexStatus;
-    FileStatus* m_downloaderStatus;
+    std::shared_ptr<std::condition_variable> m_eventStatus;
+    FileStatus* m_downloaderStatus;  // pause/deleting/downloading
 };

@@ -227,6 +227,6 @@ void MainWindow::slotDownloadFile(const FileInfo &foundFile, const QString &QtLo
     FileForm* newFile = new FileForm(file, ui->tableDownloads, ui->tableDownloads);
 
     m_pClient->downloadFile(file, newFile->changeFileStatus, newFile->changeDownloader,
-                            newFile->getMutex(), newFile->getDownloaderStatus());
+                            newFile->getMutex(),newFile->getEvent(), newFile->getDownloaderStatus());
 
 }

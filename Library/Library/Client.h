@@ -55,6 +55,7 @@ public:
 		CHANGEFILESTATUS changeFileStatus,
 		CHANGEDOWNLOADER changeDownloader,
 		std::shared_ptr<std::mutex>mutexStatus,
+		std::shared_ptr<std::condition_variable> eventStatus,
 		FileStatus* fileStatus);
 
 	std::function<void(const std::string& str)>display;
@@ -80,6 +81,7 @@ private://
 		CHANGEFILESTATUS changeFileStatus,
 		CHANGEDOWNLOADER changeDownloader,
 		std::shared_ptr<std::mutex>mutexStatus,
+		std::shared_ptr<std::condition_variable> eventStatus,
 		FileStatus* fileStatus
 		);
 

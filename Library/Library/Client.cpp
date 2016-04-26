@@ -27,6 +27,8 @@ void Client::threadListen()
 		//std::shared_ptr<Listener> listener(new Listener(io_service, 77777, this->m_mutexOutgoingDistribution));
 		//this->m_Listener = listener;
 		Listener listener(io_service, 77777, this->m_mutexOutgoingDistribution);
+		listener.display = this->display;
+
 		m_mutexUserInteface.lock();
 		display("Listener Thread Started");
 		m_mutexUserInteface.unlock();
@@ -45,11 +47,12 @@ void Client::downloadFile(
 	CHANGEFILESTATUS changeFileStatus,
 	CHANGEDOWNLOADER changeDownloader,
 	std::shared_ptr<std::mutex>mutexStatus,
+	std::shared_ptr<std::condition_variable> eventStatus,
 	FileStatus* fileStatus)
 {
 	display("Client::downloadFile1 ");
 	FileDistributors adresses = getDistributors(downloadingFile.m_fileInfo);
-	std::thread downloadThread(&Client::threadDownload, this, downloadingFile, adresses, changeFileStatus, changeDownloader,mutexStatus,fileStatus);
+	std::thread downloadThread(&Client::threadDownload, this, downloadingFile, adresses, changeFileStatus, changeDownloader,mutexStatus,eventStatus,fileStatus);
 	display("Client::downloadFile2 ");
 	downloadThread.detach();
 }
@@ -60,6 +63,7 @@ void Client::threadDownload(
 	CHANGEFILESTATUS changeFileStatus,
 	CHANGEDOWNLOADER changeDownloader,
 	std::shared_ptr<std::mutex>mutexStatus,
+	std::shared_ptr<std::condition_variable> eventStatus,
 	FileStatus* fileStatus)
 {
 	display("Client::threadDownload1111");
@@ -81,14 +85,15 @@ void Client::threadDownload(
 		display("");
 
 			//----------------------------------
-		std::shared_ptr<Downloader> downloader(new Downloader(io_service, downloadingFile, adresses/*, this->m_mutexListParts*/, changeFileStatus, changeDownloader,mutexStatus,fileStatus));
+		//io_service.run();
+		std::shared_ptr<Downloader> downloader(new Downloader(io_service, downloadingFile, adresses/*, this->m_mutexListParts*/, changeFileStatus, changeDownloader,mutexStatus,eventStatus,fileStatus, display));
 
 		//-----------------------
 		display("Client::threadDownload3");
-		downloader->func(this->display);
-		downloader->dosmth();
+		//downloader->func(this->display);
+	//	downloader->dosmth();
 		//----------------------------
-		io_service.run();
+		
 	}
 	catch (const std::exception& ex)
 	{
