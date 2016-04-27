@@ -30,6 +30,8 @@ private slots:
     void on_SelectButton_clicked();
     void slotChangeFileStatus(const FileStatus& fileStatus,const int& filePercents);
 
+    void on_SelectedButton_clicked();
+
 signals:
     void signalChangeFileStatus(const FileStatus& fileStatus,const int& filePercents);
 

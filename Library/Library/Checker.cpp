@@ -1,6 +1,6 @@
 #include "Checker.h"
 
-Checker::Checker(const FileInfo& dataFile, bool creating) : m_fileInfo(dataFile)
+Checker::Checker(const FileInfo& dataFile, bool creating) : m_fileInfo(dataFile), m_setedParts(0)
 {
 	std::vector<bool>::iterator p = m_vectorParts.begin();
 	m_vectorParts.insert(p, m_fileInfo.m_numberParts, false);
@@ -90,7 +90,7 @@ void Checker::unsetPart(const int& part)
 	m_vectorParts[part - 1] = false;
 }
 
-void Checker::setPart(const int& part)
+int Checker::setPart(const int& part)
 {
 	int currentByte;
 	unsigned char currentBit;
@@ -112,6 +112,10 @@ void Checker::setPart(const int& part)
 	m_fileParts << Byte;
 
 	m_fileParts.flush();
+
+	m_setedParts++;
+
+	return (m_setedParts * 100) / m_fileInfo.m_numberParts; // new percent
 }
 
 Checker::~Checker()

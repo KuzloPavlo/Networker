@@ -8,7 +8,7 @@ class Checker
 public:
 	Checker(const FileInfo& dataFile, bool creating = true);
 	~Checker();
-	void setPart(const int& part);
+	int setPart(const int& part);
 	void unsetPart(const int& part);
 	int getPart();
 private:
@@ -18,4 +18,5 @@ private:
 	void getVectorParts();
 	void createNewFileParts();
 	void openFileParts();
+	int m_setedParts;
 };

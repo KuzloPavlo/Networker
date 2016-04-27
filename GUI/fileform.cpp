@@ -13,10 +13,20 @@ FileForm::FileForm(const DownloadingFile& file,QTableWidget *parentTable ,QWidge
 {
     ui->setupUi(this);
 
+    //  ui->SelectedButton->setVisible(false);
+
     int myRow = m_parentTable->rowCount();
+
     m_parentTable->insertRow(myRow);
     m_parentTable->setCellWidget(myRow,1,this);
     m_parentTable->setCellWidget(myRow,2,m_status);
+    m_parentTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+    m_parentTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    //  m_parentTable->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
+
+    //--------------
+    //ui->tableDownloads->setSpan(0,0,1,ui->tableDownloads->columnCount());
+    //---------
 
     changeFileStatus = std::bind(
                 &FileForm::signalChangeFileStatus,
@@ -37,10 +47,21 @@ FileForm::~FileForm()
 
 void FileForm::on_SelectButton_clicked()
 {
+    // static int i = 1;
+    //    m_status->changeStatus();
+    //    m_status->changeLoadValue(i);
+
+
+    // i++;
+}
+
+void FileForm::on_SelectedButton_clicked()
+{
 
 }
 
 void FileForm::slotChangeFileStatus(const FileStatus& fileStatus,const int& filePercents)
 {
-   ui->FileName->setText(std::to_string(fileStatus).c_str());
+    m_status->changeStatus(FileStatus::creating, filePercents);
 }
+

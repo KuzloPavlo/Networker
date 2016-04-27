@@ -357,10 +357,10 @@ release\moc_mainwindow.cpp: ..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QMainW
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QWidget \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QLabel \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qlabel.h \
+		..\Library\Library\FileStatus.h \
 		..\Library\Library\Client.h \
 		..\Library\Library\MessageTypes.h \
 		..\Library\Library\DownloadingFile.h \
-		..\Library\Library\FileStatus.h \
 		..\Library\Library\Listener.h \
 		..\..\..\boost\VC\boost_1_60_0\boost_1_60_0\boost\asio.hpp \
 		..\..\..\boost\VC\boost_1_60_0\boost_1_60_0\boost\asio\async_result.hpp \
@@ -1858,6 +1858,7 @@ release\moc_status.cpp: ..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QWidget \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QLabel \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qlabel.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qframe.h \
+		..\Library\Library\FileStatus.h \
 		..\GUI\status.h
 	C:\newQt\5.5\msvc2013\bin\moc.exe $(DEFINES) -D_MSC_VER=1800 -D_WIN32 -IC:/newQt/5.5/msvc2013/mkspecs/win32-msvc2013 -IC:/projects_Qt/peep-to-peer-network/GUI -IC:/projects_Qt/peep-to-peer-network/Library/Library -IC:/boost/VC/boost_1_60_0/boost_1_60_0 -IC:/newQt/5.5/msvc2013/include -IC:/newQt/5.5/msvc2013/include/QtWidgets -IC:/newQt/5.5/msvc2013/include/QtGui -IC:/newQt/5.5/msvc2013/include/QtANGLE -IC:/newQt/5.5/msvc2013/include/QtCore -I. ..\GUI\status.h -o release\moc_status.cpp
 
@@ -1986,9 +1987,9 @@ release\moc_fileform.cpp: ..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QWidget 
 		..\GUI\status.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QLabel \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qlabel.h \
+		..\Library\Library\FileStatus.h \
 		..\GUI\descriptionform.h \
 		..\Library\Library\DownloadingFile.h \
-		..\Library\Library\FileStatus.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QFileDialog \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qfiledialog.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\qdir.h \
@@ -2388,10 +2389,10 @@ release\main.obj: ..\GUI\main.cpp ../GUI/mainwindow.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QWidget \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QLabel \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qlabel.h \
+		..\Library\Library\FileStatus.h \
 		..\Library\Library\Client.h \
 		..\Library\Library\MessageTypes.h \
 		..\Library\Library\DownloadingFile.h \
-		..\Library\Library\FileStatus.h \
 		..\Library\Library\Listener.h \
 		..\..\..\boost\VC\boost_1_60_0\boost_1_60_0\boost\asio.hpp \
 		..\..\..\boost\VC\boost_1_60_0\boost_1_60_0\boost\asio\async_result.hpp \
@@ -3574,10 +3575,10 @@ release\mainwindow.obj: ..\GUI\mainwindow.cpp ../GUI/mainwindow.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QWidget \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QLabel \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qlabel.h \
+		..\Library\Library\FileStatus.h \
 		..\Library\Library\Client.h \
 		..\Library\Library\MessageTypes.h \
 		..\Library\Library\DownloadingFile.h \
-		..\Library\Library\FileStatus.h \
 		..\Library\Library\Listener.h \
 		..\..\..\boost\VC\boost_1_60_0\boost_1_60_0\boost\asio.hpp \
 		..\..\..\boost\VC\boost_1_60_0\boost_1_60_0\boost\asio\async_result.hpp \
@@ -5242,6 +5243,7 @@ release\status.obj: ..\GUI\status.cpp ../GUI/status.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QLabel \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qlabel.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qframe.h \
+		..\Library\Library\FileStatus.h \
 		ui_status.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\QVariant \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QAction \
@@ -5407,9 +5409,9 @@ release\fileform.obj: ..\GUI\fileform.cpp ../GUI/fileform.h \
 		../GUI/status.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QLabel \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qlabel.h \
+		..\Library\Library\FileStatus.h \
 		../GUI/descriptionform.h \
 		..\Library\Library\DownloadingFile.h \
-		..\Library\Library\FileStatus.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QFileDialog \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qfiledialog.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\qdir.h \

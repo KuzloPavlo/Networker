@@ -59,7 +59,7 @@ void Downloader::start()
 		std::list<SessionStatus>::iterator p = m_statusHolder.insert(m_statusHolder.end(), newStatus);
 
 
-		display("Downloader::start()");
+	//	display("Downloader::start()");
 
 		std::shared_ptr<DownloadSession>newSession(new DownloadSession
 			(
@@ -82,8 +82,8 @@ void Downloader::start()
 
 void Downloader::work()
 {
-	DISPLAY
-		display("Downloader::work1");
+//	DISPLAY
+	//	display("Downloader::work1");
 
 	std::list<SessionStatus>::iterator p = m_statusHolder.begin();
 
@@ -93,7 +93,7 @@ void Downloader::work()
 
 	while (p != m_statusHolder.end())
 	{
-		display("Downloader::work2");
+		//display("Downloader::work2");
 		if (!readSessioStatus(&(*p)))
 		{
 			m_statusHolder.erase(p);
@@ -104,33 +104,33 @@ void Downloader::work()
 		p++;
 	}
 	m_mutexStatus->unlock();
-	display("Downloader::work3");
+//	display("Downloader::work3");
 	work();
 }
 
 bool Downloader::readSessioStatus(SessionStatus* status)
 {
-	DISPLAY
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	//DISPLAY
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-		display("Downloader::readSessioStatus1");
+	//	display("Downloader::readSessioStatus1");
 	switch (status->m_work)
 	{
 	case StatusValue::work:
-		display("Downloader::readSessioStatus2");
+	//	display("Downloader::readSessioStatus2");
 		break;
 
 	case StatusValue::stay:
 		if (status->m_doit == StatusValue::set)
 		{
-			display("Downloader::readSessioStatus3");
-			m_checkerParts.setPart(status->m_part);
+			//display("Downloader::readSessioStatus3");
+			changeFileStatus(FileStatus::failing, m_checkerParts.setPart(status->m_part));
 			status->m_part = m_checkerParts.getPart();
 			status->m_work = StatusValue::work;
 		}
 		else if (status->m_doit == StatusValue::unset)
 		{
-			display("Downloader::readSessioStatus4");
+			//display("Downloader::readSessioStatus4");
 			m_checkerParts.unsetPart(status->m_part);
 			status->m_part = m_checkerParts.getPart();
 			status->m_work = StatusValue::work;
@@ -152,14 +152,14 @@ bool Downloader::readSessioStatus(SessionStatus* status)
 void Downloader::readMyStatus()
 {
 	//std::this_thread::sleep_for(std::chrono::milliseconds(10000));
-	DISPLAY
+//	DISPLAY
 
-		display("Downloader::readMyStatus1");
+	//	display("Downloader::readMyStatus1");
 
 	FileStatus myStatus;
 	
 	m_mutexStatus->lock();
-	display("Downloader::readMyStatus2");
+	//display("Downloader::readMyStatus2");
 	myStatus = *m_myStatus;
 	m_mutexStatus->unlock();
 
