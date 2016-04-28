@@ -33,12 +33,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->createFileBut->setToolTip("Create new downloading file");
 
 
-    ui->tableDownloads->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
-    ui->tableDownloads->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
-    ui->tableDownloads->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
-    ui->tableDownloads->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
+    ui->tableDownloading->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
+    ui->tableDownloading->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
+    ui->tableDownloading->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
+    ui->tableDownloading->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
 
-    ui->tableFilters->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+   // ui->tableFilters->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     ui->tableSearch->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableSearch->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -145,7 +145,7 @@ void MainWindow::on_createFileBut_clicked()
 
 void MainWindow::on_sendButton_clicked()
 {
-    //ui->tableDownloads->setSpan(0,0,1,ui->tableDownloads->columnCount());
+    //ui->tableDownloading->setSpan(0,0,1,ui->tableDownloading->columnCount());
     FileInfo fi;
     emit slotDownloadFile(fi, "akdsjf");
 
@@ -224,7 +224,7 @@ void MainWindow::slotDownloadFile(const FileInfo &foundFile, const QString &QtLo
     strcpy_s(file.m_fileLocation,location.c_str());
     file.m_fileStatus = FileStatus::creating;
 
-    FileForm* newFile = new FileForm(file, ui->tableDownloads, ui->tableDownloads);
+    FileForm* newFile = new FileForm(file, ui->tableDownloading, ui->tableDownloading);
 
     m_pClient->downloadFile(file, newFile->changeFileStatus, newFile->changeDownloader,
                             newFile->getMutex(),newFile->getEvent(), newFile->getDownloaderStatus());

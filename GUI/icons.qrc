@@ -15,5 +15,8 @@
         <file>../Resources/Icons/select.png</file>
         <file>../Resources/Icons/selected.png</file>
         <file>../Resources/Icons/Down.png</file>
+        <file>../Resources/Icons/up.png</file>
+        <file>../Resources/Icons/isync.png</file>
+        <file>../Resources/Icons/Protection.png</file>
     </qresource>
 </RCC>
