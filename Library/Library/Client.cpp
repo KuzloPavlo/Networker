@@ -7,8 +7,6 @@ Client::Client() : m_countConnectedClients(0), m_clientWorking(true), m_mutexOut
 {
 	std::thread listenThread(&Client::threadListen, this);
 	listenThread.detach();
-
-
 }
 
 Client::~Client()
@@ -67,7 +65,7 @@ void Client::threadDownload(
 	FileStatus* fileStatus)
 {
 	display("Client::threadDownload1111");
-	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+	//std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 	display("Client::threadDownload2");
 	try
 	{
@@ -106,7 +104,7 @@ void Client::threadDownload(
 
 void Client::threadServer(const std::string& IPaddress, const std::string& port)
 {
-	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+	//std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 
 	//------------------------------------
 	m_mutexUserInteface.lock();

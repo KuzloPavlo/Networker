@@ -13,6 +13,7 @@
 #include <list>
 #include "SessionStatus.h"
 #include "DownloadSession.h"
+#include <condition_variable>
 
 class Downloader
 {
@@ -74,4 +75,5 @@ private:
 
 	boost::asio::io_service& m_io_service;
 	int m_lastDistributor = 0;
+	int m_donnePercent;
 };

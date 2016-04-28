@@ -43,7 +43,7 @@ private:
 	void connectSeeder(const boost::system::error_code &err);
 	void setEnd();
 	void setPart();
-	//void unsetPart();
+	void unsetPart();
 	bool getPart();
 
 	std::shared_ptr<std::mutex>m_mutexStatus;
