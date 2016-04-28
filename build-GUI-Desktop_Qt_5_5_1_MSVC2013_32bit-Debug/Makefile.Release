@@ -204,18 +204,21 @@ compiler_rcc_clean:
 	-$(DEL_FILE) release\qrc_icons.cpp
 release\qrc_icons.cpp: ..\GUI\icons.qrc \
 		..\Resources\Icons\selected.png \
-		..\Resources\Icons\sherlock.png \
 		..\Resources\Icons\softwareupdate.png \
-		..\Resources\Icons\select.png \
-		..\Resources\Icons\Gorillaz.png \
-		..\Resources\Icons\defrag.png \
-		..\Resources\Icons\blank.png \
-		..\Resources\Icons\check.png \
+		..\Resources\Icons\Down.png \
 		..\Resources\Icons\winrar.png \
-		..\Resources\Icons\acquisition.png \
 		..\Resources\Icons\Part.bmp \
+		..\Resources\Icons\Protection.png \
+		..\Resources\Icons\select.png \
+		..\Resources\Icons\acquisition.png \
+		..\Resources\Icons\up.png \
 		..\Resources\Icons\pixadex.png \
-		..\Resources\Icons\Down.png
+		..\Resources\Icons\sherlock.png \
+		..\Resources\Icons\blank.png \
+		..\Resources\Icons\isync.png \
+		..\Resources\Icons\check.png \
+		..\Resources\Icons\defrag.png \
+		..\Resources\Icons\Gorillaz.png
 	C:\newQt\5.5\msvc2013\bin\rcc.exe -name icons ..\GUI\icons.qrc -o release\qrc_icons.cpp
 
 compiler_moc_header_make_all: release\moc_mainwindow.cpp release\moc_downloadingfiledialog.cpp release\moc_newserverdialog.cpp release\moc_foundedfileform.cpp release\moc_status.cpp release\moc_fileform.cpp release\moc_descriptionform.cpp release\moc_temdebuger.cpp

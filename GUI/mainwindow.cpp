@@ -33,12 +33,43 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->createFileBut->setToolTip("Create new downloading file");
 
 
+    ui->tableAll->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
+    ui->tableAll->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
+    ui->tableAll->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
+    ui->tableAll->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
+    ui->tableAll->horizontalHeader()->setVisible(true);
+
     ui->tableDownloading->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
     ui->tableDownloading->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
     ui->tableDownloading->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
     ui->tableDownloading->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
+    ui->tableDownloading->horizontalHeader()->setVisible(true);
 
-   // ui->tableFilters->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableDistributed->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
+    ui->tableDistributed->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
+    ui->tableDistributed->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
+    ui->tableDistributed->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
+    ui->tableDistributed->horizontalHeader()->setVisible(true);
+
+    ui->tableCompleted->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
+    ui->tableCompleted->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
+    ui->tableCompleted->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
+    ui->tableCompleted->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
+    ui->tableCompleted->horizontalHeader()->setVisible(true);
+
+    ui->tableActive->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
+    ui->tableActive->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
+    ui->tableActive->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
+    ui->tableActive->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
+    ui->tableActive->horizontalHeader()->setVisible(true);
+
+    ui->tableInactive->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
+    ui->tableInactive->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
+    ui->tableInactive->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
+    ui->tableInactive->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
+    ui->tableInactive->horizontalHeader()->setVisible(true);
+
+    // ui->tableFilters->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     ui->tableSearch->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableSearch->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -224,9 +255,48 @@ void MainWindow::slotDownloadFile(const FileInfo &foundFile, const QString &QtLo
     strcpy_s(file.m_fileLocation,location.c_str());
     file.m_fileStatus = FileStatus::creating;
 
-    FileForm* newFile = new FileForm(file, ui->tableDownloading, ui->tableDownloading);
+    FileForm* newFile = new FileForm(
+                file,
+                ui->tableAll,
+                ui->tableDownloading,
+                ui->tableDistributed,
+                ui->tableCompleted,
+                ui->tableActive,
+                ui->tableInactive,
+                ui->tableDownloading);
 
     m_pClient->downloadFile(file, newFile->changeFileStatus, newFile->changeDownloader,
                             newFile->getMutex(),newFile->getEvent(), newFile->getDownloaderStatus());
 
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    ui->stackedDownloads->setCurrentIndex(0);
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    ui->stackedDownloads->setCurrentIndex(1);
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    ui->stackedDownloads->setCurrentIndex(2);
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    ui->stackedDownloads->setCurrentIndex(3);
+}
+
+void MainWindow::on_pushButton_5_clicked()
+{
+    ui->stackedDownloads->setCurrentIndex(4
+                                          );
+}
+
+void MainWindow::on_pushButton_6_clicked()
+{
+    ui->stackedDownloads->setCurrentIndex(5);
 }
