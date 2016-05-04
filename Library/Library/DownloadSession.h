@@ -11,6 +11,8 @@
 #include <thread>
 #include "ReturnValues.h"
 #include <functional>
+#include "Semaphore.h"
+#include "Synchronization.h"
 
 using boost::asio::ip::tcp;
 
@@ -20,8 +22,7 @@ public:
 	DownloadSession(
 		const boost::asio::ip::address& address,
 		boost::asio::io_service& io_service,
-		std::shared_ptr<std::mutex>mutexStatus,
-		std::shared_ptr<std::condition_variable> eventStatus,
+		Synchronization primitives, 
 		SessionStatus* myStatus,
 		const std::string location,
 		std::function<void(const std::string& str)>display
@@ -46,8 +47,7 @@ private:
 	void unsetPart();
 	bool getPart();
 
-	std::shared_ptr<std::mutex>m_mutexStatus;
-	std::shared_ptr<std::condition_variable> m_eventStatus;
+	Synchronization m_primitives;
 
 	SessionStatus* m_myStatus;
 	tcp::socket m_socket;

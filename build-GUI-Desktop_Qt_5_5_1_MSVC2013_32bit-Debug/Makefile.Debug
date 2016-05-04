@@ -1398,6 +1398,7 @@ debug\moc_mainwindow.cpp: ..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QMainWin
 		..\Library\Library\DistributeFile.h \
 		..\GUI\fileform.h \
 		..\GUI\descriptionform.h \
+		..\Library\Library\Semaphore.h \
 		..\GUI\foundedfileform.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\QString \
 		..\GUI\temdebuger.h \
@@ -1998,6 +1999,7 @@ debug\moc_fileform.cpp: ..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QWidget \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\qdir.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\qfileinfo.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qdialog.h \
+		..\Library\Library\Semaphore.h \
 		..\GUI\fileform.h
 	C:\newQt\5.5\msvc2013\bin\moc.exe $(DEFINES) -D_MSC_VER=1800 -D_WIN32 -IC:/newQt/5.5/msvc2013/mkspecs/win32-msvc2013 -IC:/projects_Qt/peep-to-peer-network/GUI -IC:/projects_Qt/peep-to-peer-network/Library/Library -IC:/boost/VC/boost_1_60_0/boost_1_60_0 -IC:/newQt/5.5/msvc2013/include -IC:/newQt/5.5/msvc2013/include/QtWidgets -IC:/newQt/5.5/msvc2013/include/QtGui -IC:/newQt/5.5/msvc2013/include/QtANGLE -IC:/newQt/5.5/msvc2013/include/QtCore -I. ..\GUI\fileform.h -o debug\moc_fileform.cpp
 
@@ -3430,6 +3432,7 @@ debug\main.obj: ..\GUI\main.cpp ../GUI/mainwindow.h \
 		..\Library\Library\DistributeFile.h \
 		../GUI/fileform.h \
 		../GUI/descriptionform.h \
+		..\Library\Library\Semaphore.h \
 		../GUI/foundedfileform.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\QString \
 		../GUI/temdebuger.h \
@@ -4616,6 +4619,7 @@ debug\mainwindow.obj: ..\GUI\mainwindow.cpp ../GUI/mainwindow.h \
 		..\Library\Library\DistributeFile.h \
 		../GUI/fileform.h \
 		../GUI/descriptionform.h \
+		..\Library\Library\Semaphore.h \
 		../GUI/foundedfileform.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\QString \
 		../GUI/temdebuger.h \
@@ -5123,6 +5127,7 @@ debug\foundedfileform.obj: ..\GUI\foundedfileform.cpp ../GUI/foundedfileform.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qlayout.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qlayoutitem.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qboxlayout.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QHBoxLayout \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QHeaderView \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qheaderview.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QLabel \
@@ -5420,6 +5425,7 @@ debug\fileform.obj: ..\GUI\fileform.cpp ../GUI/fileform.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\qdir.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\qfileinfo.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qdialog.h \
+		..\Library\Library\Semaphore.h \
 		ui_fileform.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\QVariant \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QAction \

@@ -14,6 +14,8 @@
 #include "SessionStatus.h"
 #include "DownloadSession.h"
 #include <condition_variable>
+#include "Semaphore.h"
+#include "Synchronization.h"
 
 class Downloader
 {
@@ -24,8 +26,7 @@ public:
 		const FileDistributors& adresses,
 		std::function<void(const FileStatus& fileStatus, const int& filePercents)>& changeFileStatus,
 		std::function<void(const FileStatus& fileStatus)>& changeDownloader,
-		std::shared_ptr<std::mutex>mutexStatus,
-		std::shared_ptr<std::condition_variable> eventStatus,
+		Synchronization primitives,
 		FileStatus* fileStatus,
 		std::function<void(const std::string& str)>display,
 		bool creating = true
@@ -69,8 +70,7 @@ private:
 
 	std::map<int, std::shared_ptr<DownloadSession>> m_sessions;
 
-	std::shared_ptr<std::mutex>m_mutexStatus;
-	std::shared_ptr<std::condition_variable> m_eventStatus;
+	Synchronization m_primitives;
 	FileStatus* m_downloaderStatus;
 
 	boost::asio::io_service& m_io_service;

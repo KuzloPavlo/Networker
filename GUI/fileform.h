@@ -9,6 +9,8 @@
 #include <mutex>
 #include <memory>
 #include <condition_variable>
+#include "Semaphore.h"
+#include "Synchronization.h"
 
 namespace Ui {
 class FileForm;
@@ -32,8 +34,7 @@ public:
     ~FileForm();
     std::function<void(const FileStatus& fileStatus)> changeDownloader;
     std::function<void(const FileStatus& fileStatus,const int& filePercents)> changeFileStatus;
-    std::shared_ptr<std::mutex> getMutex(){return m_mutexStatus;}
-    std::shared_ptr<std::condition_variable> getEvent(){return m_eventStatus;}
+    Synchronization getPrimitives(){return m_primitives;}
     FileStatus* getDownloaderStatus(){return m_downloaderStatus;}
 
 private slots:
@@ -56,12 +57,13 @@ private:
     QTableWidget *m_complitedTable;
     QTableWidget *m_activeTable;
     QTableWidget *m_inactiveTable;
+
     DownloadingFile m_dowloadingFile;
     Status* m_status;
     DescriptionForm* m_description;
     Ui::FileForm *ui;
-    std::shared_ptr<std::mutex>m_mutexStatus;
-    std::shared_ptr<std::condition_variable> m_eventStatus;
+
+    Synchronization m_primitives;
     FileStatus* m_downloaderStatus;  // pause/deleting/downloading
 
     FileForm* m_myInDownloading;// = nullptr;

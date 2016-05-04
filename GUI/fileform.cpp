@@ -21,13 +21,18 @@ FileForm::FileForm(
     m_inactiveTable(inactiveTable),
     m_status(new Status(this)),
     m_description(new DescriptionForm(file.m_fileInfo.m_fileDescription, this)),
-    m_mutexStatus(new std::mutex),
-    m_eventStatus(new std::condition_variable),
     m_downloaderStatus(new FileStatus(FileStatus::downloading)),
     ui(new Ui::FileForm),
     m_mainWidget(mainWidget)
 {
     ui->setupUi(this);
+
+    m_primitives.m_counter = std::make_shared<int> (int (0));
+    m_primitives.m_mutexCounter = std::make_shared<std::mutex>();
+    m_primitives.m_goWrite = std::make_shared<Semaphore>(Semaphore(NULL,1,1,NULL));
+    m_primitives.m_goRead = std::make_shared<Semaphore>(Semaphore(NULL,1,1,NULL));
+    m_primitives.m_Shared =  std::make_shared<Semaphore>(Semaphore(NULL,1,1,NULL));
+
 
     //  ui->SelectedButton->setVisible(false);
 
@@ -37,7 +42,7 @@ FileForm::FileForm(
 
     if(mainWidget)
     {
-        createTwin(/*this->m_myInDownloading,*/ m_downloadingTable);
+        createTwin(m_downloadingTable);
         createTwinActi(m_activeTable);
     }
 

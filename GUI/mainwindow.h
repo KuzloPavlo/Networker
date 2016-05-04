@@ -15,6 +15,7 @@
 #include "foundedfileform.h"
 #include "DownloadingFile.h"
 #include "temdebuger.h"    // will delete
+#include "Semaphore.h"
 Q_DECLARE_METATYPE(std::string)
 Q_DECLARE_METATYPE(DownloadingFile)
 Q_DECLARE_METATYPE(FileInfo)
@@ -72,6 +73,8 @@ private slots:
     void on_pushButton_5_clicked();
 
     void on_pushButton_6_clicked();
+
+    void on_homeButton_clicked();
 
 signals:
 

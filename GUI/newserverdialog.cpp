@@ -6,7 +6,7 @@ NewServerDialog::NewServerDialog(QWidget *parent) :
     ui(new Ui::NewServerDialog)
 {
     ui->setupUi(this);
-    ui->okButton->setEnabled(false);
+   // ui->okButton->setEnabled(false);
     ui->label->setEnabled(false);
 
     QPalette mainPall;

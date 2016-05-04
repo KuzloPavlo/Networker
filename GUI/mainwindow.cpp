@@ -29,9 +29,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->setStyleSheet ("color: rgb(0, 0, 255)");
 
+    ui->homeButton->setVisible(false);
+
     ui->addServerBut->setToolTip("Add new Server");
     ui->createFileBut->setToolTip("Create new downloading file");
-
+    ui->searchBut->setToolTip("Search files");
+    ui->homeButton->setToolTip("Go Home");
 
     ui->tableAll->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
     ui->tableAll->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
@@ -138,9 +141,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::slotDisplay(const std::string& str)
 {
-    //    char strstr[10000];
-    //    std::strcpy(strstr, str.c_str());
-    //    this->ui->textDisplay->append(strstr);
     m_debuger->display(str);
     m_debuger->show();
 }
@@ -152,16 +152,18 @@ void MainWindow::slotConnectToServer(const std::string &IPaddress, const std::st
 
 void MainWindow::on_searchBut_clicked()
 {
-    if(!ui->searchEdit->isVisible())
-    {
-        ui->searchEdit->setVisible(true);
-        ui->stackedWidgetLeft->setCurrentIndex(1);
-    }
-    else
-    {
-        ui->searchEdit->setVisible(false);
-        ui->stackedWidgetLeft->setCurrentIndex(0);
-    }
+    ui->searchEdit->setVisible(true);
+    ui->stackedWidgetLeft->setCurrentIndex(1);
+    ui->homeButton->setVisible(true);
+    ui->searchBut->setVisible(false);
+}
+
+void MainWindow::on_homeButton_clicked()
+{
+    ui->searchEdit->setVisible(false);
+    ui->stackedWidgetLeft->setCurrentIndex(0);
+    ui->homeButton->setVisible(false);
+    ui->searchBut->setVisible(true);
 }
 
 void MainWindow::on_addServerBut_clicked()
@@ -266,7 +268,7 @@ void MainWindow::slotDownloadFile(const FileInfo &foundFile, const QString &QtLo
                 ui->tableDownloading);
 
     m_pClient->downloadFile(file, newFile->changeFileStatus, newFile->changeDownloader,
-                            newFile->getMutex(),newFile->getEvent(), newFile->getDownloaderStatus());
+                            newFile->getPrimitives(), newFile->getDownloaderStatus());
 
 }
 

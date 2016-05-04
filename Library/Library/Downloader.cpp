@@ -8,8 +8,7 @@ Downloader::Downloader(
 	const FileDistributors& adresses,
 	std::function<void(const FileStatus& fileStatus, const int& filePercents)>& changeFileStatus,
 	std::function<void(const FileStatus& fileStatus)>& changeDownloader,
-	std::shared_ptr<std::mutex>mutexStatus,
-	std::shared_ptr<std::condition_variable> eventStatus,
+	Synchronization primitives,
 	FileStatus* fileStatus,
 	std::function<void(const std::string& str)>display,
 	bool creating)
@@ -18,8 +17,7 @@ Downloader::Downloader(
 	changeFileStatus(changeFileStatus),
 	m_checkerParts(downloadingFile.m_fileInfo, creating),
 	m_io_service(io_service),
-	m_mutexStatus(mutexStatus),
-	m_eventStatus(eventStatus),
+	m_primitives(primitives),
 	m_myStatus(fileStatus),
 	m_donnePercent(0)
 {
@@ -62,8 +60,7 @@ void Downloader::start()
 			(
 			m_distributors[i],
 			m_io_service,
-			m_mutexStatus,
-			m_eventStatus,
+			m_primitives,
 			&(*p),
 			allLocation,
 			display
@@ -80,20 +77,20 @@ void Downloader::work()
 	{
 		std::list<SessionStatus>::iterator p = m_statusHolder.begin();
 		readMyStatus();
-		m_mutexStatus->lock();
+//		m_mutexStatus->lock();
 
 		while (p != m_statusHolder.end())
 		{
 			if (!readSessioStatus(&(*p)))
 			{
 				m_statusHolder.erase(p);
-				m_mutexStatus->unlock();
+	//			m_mutexStatus->unlock();
 				work();
 				return;
 			}
 			p++;
 		}
-		m_mutexStatus->unlock();
+//		m_mutexStatus->unlock();
 	}
 }
 
@@ -141,9 +138,9 @@ void Downloader::readMyStatus()
 {
 	FileStatus myStatus;
 
-	m_mutexStatus->lock();
+	//m_mutexStatus->lock();
 	myStatus = *m_myStatus;
-	m_mutexStatus->unlock();
+//	m_mutexStatus->unlock();
 
 	switch (myStatus)
 	{

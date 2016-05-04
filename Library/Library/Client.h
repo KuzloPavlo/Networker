@@ -29,6 +29,8 @@
 #include "FileDistributors.h"
 #include "DistributeFile.h" 
 #include "PartFile.h"
+#include "Semaphore.h"
+#include "Synchronization.h"
 
 #pragma comment(lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -54,8 +56,7 @@ public:
 		const DownloadingFile& downloadingFile,
 		CHANGEFILESTATUS changeFileStatus,
 		CHANGEDOWNLOADER changeDownloader,
-		std::shared_ptr<std::mutex>mutexStatus,
-		std::shared_ptr<std::condition_variable> eventStatus,
+		Synchronization primitives,
 		FileStatus* fileStatus);
 
 	std::function<void(const std::string& str)>display;
@@ -79,9 +80,8 @@ private://
 		const DownloadingFile& downloadingFile,
 		const FileDistributors& adresses,
 		CHANGEFILESTATUS changeFileStatus,
-		CHANGEDOWNLOADER changeDownloader,
-		std::shared_ptr<std::mutex>mutexStatus,
-		std::shared_ptr<std::condition_variable> eventStatus,
+		CHANGEDOWNLOADER changeDownloader, 
+		Synchronization primitives,
 		FileStatus* fileStatus
 		);
 

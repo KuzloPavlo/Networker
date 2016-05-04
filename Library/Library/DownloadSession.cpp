@@ -5,14 +5,12 @@
 DownloadSession::DownloadSession(
 	const boost::asio::ip::address& address,
 	boost::asio::io_service& io_service,
-	std::shared_ptr<std::mutex>mutexStatus,
-	std::shared_ptr<std::condition_variable> eventStatus,
+	Synchronization primitives,
 	SessionStatus* myStatus,
 	const std::string location,
 	std::function<void(const std::string& str)>display
-	) : m_myStatus(myStatus),
-	m_mutexStatus(mutexStatus),
-	m_eventStatus(eventStatus),
+	) : m_myStatus(myStatus), 
+	m_primitives(primitives),
 	m_io_service(io_service),
 	m_socket(io_service),
 	m_fileLocation(location)
@@ -20,11 +18,11 @@ DownloadSession::DownloadSession(
 	m_address = address;
 	this->display = display;
 
-	m_mutexStatus->lock();
+	//m_mutexStatus->lock();
 	m_sessionNumber = m_myStatus->m_sessionNumber;
 	m_partNumber.m_fileHash = m_myStatus->m_fileHash;
 	m_partNumber.m_partNumber = m_myStatus->m_part;
-	m_mutexStatus->unlock();
+//	m_mutexStatus->unlock();
 
 	display(std::to_string(m_sessionNumber));
 	display(std::to_string(m_partNumber.m_fileHash));
@@ -150,45 +148,45 @@ bool  DownloadSession::flushPart(const PartFile& partFile)
 
 void  DownloadSession::setEnd()
 {
-	m_mutexStatus->lock();
+	//m_mutexStatus->lock();
 	m_myStatus->m_work = StatusValue::end;
-	m_mutexStatus->unlock();
+	//m_mutexStatus->unlock();
 	display("DownloadSession::setEnd()2");
 }
 
 void DownloadSession::setPart()
 {
-	m_mutexStatus->lock();
+//	m_mutexStatus->lock();
 	m_myStatus->m_work = StatusValue::stay;
 	m_myStatus->m_doit = StatusValue::set;
-	m_mutexStatus->unlock();
+//	m_mutexStatus->unlock();
 }
 
 void DownloadSession::unsetPart()
 {
-	m_mutexStatus->lock();
+//	m_mutexStatus->lock();
 	m_myStatus->m_work = StatusValue::stay;
 	m_myStatus->m_doit = StatusValue::unset;
-	m_mutexStatus->unlock();
+//	m_mutexStatus->unlock();
 }
 
 bool DownloadSession::getPart()
 {
-	m_mutexStatus->lock();
+//	m_mutexStatus->lock();
 
 	switch (m_myStatus->m_work)
 	{
 	case StatusValue::work:
 		m_partNumber.m_partNumber = m_myStatus->m_part; // geting a new part
-		m_mutexStatus->unlock();
+	//	m_mutexStatus->unlock();
 		break;
 
 	case StatusValue::stay:
-		m_mutexStatus->unlock();
+	//	m_mutexStatus->unlock();
 		return getPart();
 
 	case StatusValue::end:
-		m_mutexStatus->unlock();
+	//	m_mutexStatus->unlock();
 		return false;
 	}
 	return true;

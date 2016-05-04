@@ -14,11 +14,36 @@ FoundedFileForm::FoundedFileForm(
     ui->DescriptionLabel->setVisible(false);
     ui->SizeLabel->setVisible(false);
     ui->Size->setVisible(false);
+    ui->SizeType->setVisible(false);
     ui->DownloadButton->setVisible(false);
 
     ui->FoundFileName->setText(fileInfo.m_fileName);
     ui->Description->setText(fileInfo.m_fileDescription);
-    std::string sizeFile = std::to_string(fileInfo.m_fileSize);
+
+    float size = 0;
+
+    if(fileInfo.m_fileSize >= 1000)
+    {
+        size = ((float)fileInfo.m_fileSize)/1000;
+        ui->SizeType->setText("Kb");
+    }
+
+    if(fileInfo.m_fileSize >= 1000000)
+    {
+        size = ((float)fileInfo.m_fileSize)/1000000;
+        ui->SizeType->setText("Mb");
+    }
+
+    if(fileInfo.m_fileSize >= 1000000000)
+    {
+        size = ((float)fileInfo.m_fileSize)/1000000000;
+        ui->SizeType->setText("Gb");
+    }
+
+    std::string sizeFile = std::to_string(size);
+
+    sizeFile.erase( sizeFile.end()-4, sizeFile.end());
+
     ui->Size->setText(sizeFile.c_str());
 }
 
@@ -35,6 +60,7 @@ void FoundedFileForm::on_SelectButton_clicked()
     ui->DescriptionLabel->setVisible(true);
     ui->SizeLabel->setVisible(true);
     ui->Size->setVisible(true);
+    ui->SizeType->setVisible(true);
     ui->DownloadButton->setVisible(true);
     m_parentTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
@@ -47,6 +73,7 @@ void FoundedFileForm::on_SelectedButton_clicked()
     ui->DescriptionLabel->setVisible(false);
     ui->SizeLabel->setVisible(false);
     ui->Size->setVisible(false);
+    ui->SizeType->setVisible(false);
     ui->DownloadButton->setVisible(false);
     m_parentTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }

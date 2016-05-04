@@ -92,7 +92,9 @@
     <ClInclude Include="MessageTypes.h" />
     <ClInclude Include="PartFile.h" />
     <ClInclude Include="ReturnValues.h" />
+    <ClInclude Include="Semaphore.h" />
     <ClInclude Include="SessionStatus.h" />
+    <ClInclude Include="Synchronization.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Checker.cpp" />
@@ -103,6 +105,7 @@
     <ClCompile Include="FileDistributors.cpp" />
     <ClCompile Include="Listener.cpp" />
     <ClCompile Include="PartFile.cpp" />
+    <ClCompile Include="Semaphore.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
