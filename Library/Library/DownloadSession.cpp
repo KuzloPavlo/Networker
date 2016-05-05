@@ -9,7 +9,7 @@ DownloadSession::DownloadSession(
 	SessionStatus* myStatus,
 	const std::string location,
 	std::function<void(const std::string& str)>display
-	) : m_myStatus(myStatus), 
+	) : m_myStatus(myStatus),
 	m_primitives(primitives),
 	m_io_service(io_service),
 	m_socket(io_service),
@@ -18,11 +18,28 @@ DownloadSession::DownloadSession(
 	m_address = address;
 	this->display = display;
 
-	//m_mutexStatus->lock();
+
+	m_primitives.m_mutexCounter->lock();
+	if ((*m_primitives.m_counter) == 0)
+	{
+		m_primitives.m_goRead->lock();
+		m_primitives.m_Shared->lock();
+	}
+	(*m_primitives.m_counter)++;
+	m_primitives.m_mutexCounter->unlock();
+
 	m_sessionNumber = m_myStatus->m_sessionNumber;
 	m_partNumber.m_fileHash = m_myStatus->m_fileHash;
 	m_partNumber.m_partNumber = m_myStatus->m_part;
-//	m_mutexStatus->unlock();
+
+	m_primitives.m_mutexCounter->lock();
+	(*m_primitives.m_counter)--;
+	if ((*m_primitives.m_counter) == 0)
+	{
+		m_primitives.m_Shared->unlock_one();
+		m_primitives.m_goWrite->unlock_one();
+	}
+	m_primitives.m_mutexCounter->unlock();
 
 	display(std::to_string(m_sessionNumber));
 	display(std::to_string(m_partNumber.m_fileHash));
@@ -62,7 +79,6 @@ void DownloadSession::connectSeeder(const boost::system::error_code &err)
 	m_sendBuffer = (char*)& m_partNumber;
 	write();
 }
-//
 
 void DownloadSession::write()
 {
@@ -148,46 +164,130 @@ bool  DownloadSession::flushPart(const PartFile& partFile)
 
 void  DownloadSession::setEnd()
 {
-	//m_mutexStatus->lock();
+	m_primitives.m_mutexCounter->lock();
+	if ((*m_primitives.m_counter) == 0)
+	{
+		m_primitives.m_goRead->lock();
+		m_primitives.m_Shared->lock();
+	}
+	(*m_primitives.m_counter)++;
+	m_primitives.m_mutexCounter->unlock();
+
 	m_myStatus->m_work = StatusValue::end;
-	//m_mutexStatus->unlock();
+
+	m_primitives.m_mutexCounter->lock();
+	(*m_primitives.m_counter)--;
+	if ((*m_primitives.m_counter) == 0)
+	{
+		m_primitives.m_Shared->unlock_one();
+		m_primitives.m_goWrite->unlock_one();
+	}
+	m_primitives.m_mutexCounter->unlock();
+
 	display("DownloadSession::setEnd()2");
 }
 
 void DownloadSession::setPart()
 {
-//	m_mutexStatus->lock();
+	m_primitives.m_mutexCounter->lock();
+	if ((*m_primitives.m_counter) == 0)
+	{
+		m_primitives.m_goRead->lock();
+		m_primitives.m_Shared->lock();
+	}
+	(*m_primitives.m_counter)++;
+	m_primitives.m_mutexCounter->unlock();
+
 	m_myStatus->m_work = StatusValue::stay;
 	m_myStatus->m_doit = StatusValue::set;
-//	m_mutexStatus->unlock();
+
+	m_primitives.m_mutexCounter->lock();
+	(*m_primitives.m_counter)--;
+	if ((*m_primitives.m_counter) == 0)
+	{
+		m_primitives.m_Shared->unlock_one();
+		m_primitives.m_goWrite->unlock_one();
+	}
+	m_primitives.m_mutexCounter->unlock();
 }
 
 void DownloadSession::unsetPart()
 {
-//	m_mutexStatus->lock();
+	m_primitives.m_mutexCounter->lock();
+	if ((*m_primitives.m_counter) == 0)
+	{
+		m_primitives.m_goRead->lock();
+		m_primitives.m_Shared->lock();
+	}
+	(*m_primitives.m_counter)++;
+	m_primitives.m_mutexCounter->unlock();
+
 	m_myStatus->m_work = StatusValue::stay;
 	m_myStatus->m_doit = StatusValue::unset;
-//	m_mutexStatus->unlock();
+
+	m_primitives.m_mutexCounter->lock();
+	(*m_primitives.m_counter)--;
+	if ((*m_primitives.m_counter) == 0)
+	{
+		m_primitives.m_Shared->unlock_one();
+		m_primitives.m_goWrite->unlock_one();
+	}
+	m_primitives.m_mutexCounter->unlock();
 }
 
 bool DownloadSession::getPart()
 {
-//	m_mutexStatus->lock();
-
-	switch (m_myStatus->m_work)
+	while (true)
 	{
-	case StatusValue::work:
-		m_partNumber.m_partNumber = m_myStatus->m_part; // geting a new part
-	//	m_mutexStatus->unlock();
-		break;
+		m_primitives.m_mutexCounter->lock();
+		if ((*m_primitives.m_counter) == 0)
+		{
+			m_primitives.m_goRead->lock();
+			m_primitives.m_Shared->lock();
+		}
+		(*m_primitives.m_counter)++;
+		m_primitives.m_mutexCounter->unlock();
 
-	case StatusValue::stay:
-	//	m_mutexStatus->unlock();
-		return getPart();
+		switch (m_myStatus->m_work)
+		{
+		case StatusValue::work:
+			m_partNumber.m_partNumber = m_myStatus->m_part; // geting a new part
+		
+			m_primitives.m_mutexCounter->lock();
+			(*m_primitives.m_counter)--;
+			if ((*m_primitives.m_counter) == 0)
+			{
+				m_primitives.m_Shared->unlock_one();
+				m_primitives.m_goWrite->unlock_one();
+			}
+			m_primitives.m_mutexCounter->unlock();
 
-	case StatusValue::end:
-	//	m_mutexStatus->unlock();
-		return false;
+			return true;
+
+		case StatusValue::stay:
+			m_primitives.m_mutexCounter->lock();
+			(*m_primitives.m_counter)--;
+			if ((*m_primitives.m_counter) == 0)
+			{
+				m_primitives.m_Shared->unlock_one();
+				m_primitives.m_goWrite->unlock_one();
+			}
+			m_primitives.m_mutexCounter->unlock();
+
+			break;
+
+		case StatusValue::end:
+			m_primitives.m_mutexCounter->lock();
+			(*m_primitives.m_counter)--;
+			if ((*m_primitives.m_counter) == 0)
+			{
+				m_primitives.m_Shared->unlock_one();
+				m_primitives.m_goWrite->unlock_one();
+			}
+			m_primitives.m_mutexCounter->unlock();
+
+			return false;
+		}
 	}
 	return true;
 }

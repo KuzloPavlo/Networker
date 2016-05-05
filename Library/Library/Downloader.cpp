@@ -76,8 +76,10 @@ void Downloader::work()
 	while (true)
 	{
 		std::list<SessionStatus>::iterator p = m_statusHolder.begin();
-		readMyStatus();
-//		m_mutexStatus->lock();
+		//readMyStatus(); необходимо сделать
+
+		m_primitives.m_goWrite->lock();
+		m_primitives.m_Shared->lock();
 
 		while (p != m_statusHolder.end())
 		{
@@ -85,12 +87,14 @@ void Downloader::work()
 			{
 				m_statusHolder.erase(p);
 	//			m_mutexStatus->unlock();
-				work();
+			//	work();
 				return;
 			}
 			p++;
 		}
-//		m_mutexStatus->unlock();
+
+		m_primitives.m_Shared->unlock_one();
+		m_primitives.m_goRead->unlock_one();
 	}
 }
 
@@ -124,11 +128,11 @@ bool Downloader::readSessioStatus(SessionStatus* status)
 		break;
 
 	case StatusValue::end:
-		deleteSession(status->m_sessionNumber);
+		//deleteSession(status->m_sessionNumber); // 
 		return false;
 
 	default:
-		deleteSession(status->m_sessionNumber);
+		//deleteSession(status->m_sessionNumber);
 		return false;
 	}
 	return true;
@@ -138,9 +142,9 @@ void Downloader::readMyStatus()
 {
 	FileStatus myStatus;
 
-	//m_mutexStatus->lock();
+
 	myStatus = *m_myStatus;
-//	m_mutexStatus->unlock();
+
 
 	switch (myStatus)
 	{
@@ -148,7 +152,7 @@ void Downloader::readMyStatus()
 		break;
 
 	case FileStatus::pause:
-		readMyStatus();
+		//readMyStatus();
 		break;
 
 	case FileStatus::deleting:
