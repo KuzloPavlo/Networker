@@ -21,21 +21,26 @@ void Client::threadListen()
 	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 	try
 	{
+		display("Listener Thread Started1");
 		boost::asio::io_service io_service;
 		//std::shared_ptr<Listener> listener(new Listener(io_service, 77777, this->m_mutexOutgoingDistribution));
 		//this->m_Listener = listener;
+		display("Listener Thread Started2");
 		Listener listener(io_service, 77777, this->m_mutexOutgoingDistribution);
+		display("Listener Thread Started3");
 		listener.display = this->display;
 
 		m_mutexUserInteface.lock();
 		display("Listener Thread Started");
 		m_mutexUserInteface.unlock();
 		io_service.run();
+		display("Listener Thread Started4");
 	}
 	catch (const std::exception& ex)
 	{
 		m_mutexUserInteface.lock();
 		display("Listener Thread Not Started");
+		display(ex.what());
 		m_mutexUserInteface.unlock();
 	}
 }
@@ -82,14 +87,13 @@ void Client::threadDownload(
 
 			//----------------------------------
 		//io_service.run();
-		std::shared_ptr<Downloader> downloader(new Downloader(io_service, downloadingFile, adresses/*, this->m_mutexListParts*/, changeFileStatus, changeDownloader,primitives,fileStatus, display));
-
+		//std::shared_ptr<Downloader> downloader(new Downloader(io_service, downloadingFile, adresses/*, this->m_mutexListParts*/, changeFileStatus, changeDownloader,primitives,fileStatus, display));
+		Downloader downloader(io_service, downloadingFile, adresses/*, this->m_mutexListParts*/, changeFileStatus, changeDownloader, primitives, fileStatus, display);
 		//-----------------------
 		display("Client::threadDownload3");
 		//downloader->func(this->display);
-	//	downloader->dosmth();
-		//----------------------------
-		
+		downloader.dosmth();
+		//----------------------------	
 	}
 	catch (const std::exception& ex)
 	{

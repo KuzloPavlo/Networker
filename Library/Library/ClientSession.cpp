@@ -17,7 +17,9 @@ ClientSession::ClientSession(tcp::socket clientSocket,
 
 void ClientSession::start()
 {
+	display("ClientSession::start()1");
 	read();
+	display("ClientSession::start()2");
 }
 
 void ClientSession::read()
@@ -28,19 +30,24 @@ void ClientSession::read()
 	{
 		if (!ec)
 		{
+			//display("ClientSession::read()11");
 			if (m_firstTime)
 			{
+				//display("ClientSession::read()2");
 				m_firstTime = false;
 
 				if (!getFileInfo(m_partNumber.m_fileHash))
 				{
+					//display("ClientSession::read()3");
 					write(ReturnValues::noDistribution);
+					//display("ClientSession::read()4");
 					return;
 				}
 			}
 
 			if (preparePart())
 			{
+				//display("ClientSession::read()2");
 				write(ReturnValues::good);
 			}
 			else
@@ -68,19 +75,23 @@ void ClientSession::write(const ReturnValues& value)
 
 bool ClientSession::getFileInfo(long int fileHash)
 {
+	//display("ClientSession::getFileInfo1");
 	int numberOutDistribution = 0;
 	int fileSize = 0;
 	char* buff = (char*)& m_downloadingFile;
 
 	m_mutexOutgoingDistribution->lock();
-
+	//display("ClientSession::getFileInfo2");
 	std::ifstream in("OutgoingDistribution", std::ios::in | std::ios::binary);
 	if (!in)
 	{
+		//display("ClientSession::getFileInfo3");
 		m_mutexOutgoingDistribution->unlock();
 		// обработать ошыбку
 		return false;
 	}
+
+	//display("ClientSession::getFileInfo4");
 	in.seekg(0, in.end);
 	fileSize = in.tellg();
 	in.seekg(0, in.beg);
@@ -99,11 +110,14 @@ bool ClientSession::getFileInfo(long int fileHash)
 			m_file.open(m_downloadingFile.m_fileLocation, std::ios::in | std::ios::binary);
 			if (!m_file)
 			{
+				m_mutexOutgoingDistribution->unlock();
 				return false;
 			}
+			m_mutexOutgoingDistribution->unlock();
 			return true;
 		}
 	}
+	m_mutexOutgoingDistribution->unlock();
 	return false;
 }
 

@@ -262,6 +262,11 @@ bool DownloadSession::getPart()
 			}
 			m_primitives.m_mutexCounter->unlock();
 
+			if (m_partNumber.m_partNumber == 0)
+			{
+				setEnd();
+				return false;
+			}
 			return true;
 
 		case StatusValue::stay:

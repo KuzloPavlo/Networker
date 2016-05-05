@@ -12,13 +12,15 @@ Listener::Listener(
 
 void Listener::accept()
 {
+	//display("Listener::accept1");
 	m_Acceptor.async_accept(m_Socket,
 		[this](boost::system::error_code ec)
 	{ 
 	if (!ec)
 	{
-		display("Listener::accept");
+		display("Listener::accept2");
 		std::make_shared<ClientSession>(std::move(m_Socket), m_mutexOutgoingDistribution, display)->start();
+		display("Listener::accept3");
 	}
 	accept();
 	});
