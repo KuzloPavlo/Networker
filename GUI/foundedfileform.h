@@ -23,6 +23,7 @@ public:
             QWidget *parent = 0);
     ~FoundedFileForm();
     std::function<void(const FileInfo& file, const QString& QtLocation)>downloadFile;
+  static  void changeSizeStyle(const int& fileSize, float* size, QString* sizeType);
 private slots:
     void on_SelectButton_clicked();
     void on_SelectedButton_clicked();

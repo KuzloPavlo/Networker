@@ -102,6 +102,8 @@ private:
     DownloadingFileDialog *m_pNewFileDialog;
     std::string changeLocationStyle(const QString& QtStyleLocation);
 
+   void tableSetting(QTableWidget* table);
+
     //--------------------------
     TemDebuger* m_debuger;
     //---------------------

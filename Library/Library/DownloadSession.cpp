@@ -109,7 +109,7 @@ void DownloadSession::readHandler(const boost::system::error_code &err, std::siz
 {
 	if (!err)
 	{
-		display(std::to_string(m_receivedPart.m_partNumber));
+		//display(std::to_string(m_receivedPart.m_partNumber));
 		addPart(m_receivedPart);
 	}
 	else

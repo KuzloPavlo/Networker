@@ -36,41 +36,47 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->searchBut->setToolTip("Search files");
     ui->homeButton->setToolTip("Go Home");
 
-    ui->tableAll->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
-    ui->tableAll->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
-    ui->tableAll->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
-    ui->tableAll->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
-    ui->tableAll->horizontalHeader()->setVisible(true);
 
-    ui->tableDownloading->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
-    ui->tableDownloading->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
-    ui->tableDownloading->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
-    ui->tableDownloading->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
-    ui->tableDownloading->horizontalHeader()->setVisible(true);
+    //    ui->tableAll->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
+    //    ui->tableAll->setColumnWidth(2,200);
+    //    // ui->tableAll->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
+    //    //ui->tableAll->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
+    //    // ui->tableAll->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
+    //    ui->tableAll->setColumnWidth(0,100);
+    //    ui->tableAll->setColumnWidth(3,100);
+    //    ui->tableAll->horizontalHeader()->setVisible(true);
+    tableSetting(ui->tableAll);
 
-    ui->tableDistributed->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
-    ui->tableDistributed->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
-    ui->tableDistributed->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
-    ui->tableDistributed->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
-    ui->tableDistributed->horizontalHeader()->setVisible(true);
-
-    ui->tableCompleted->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
-    ui->tableCompleted->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
-    ui->tableCompleted->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
-    ui->tableCompleted->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
-    ui->tableCompleted->horizontalHeader()->setVisible(true);
-
-    ui->tableActive->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
-    ui->tableActive->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
-    ui->tableActive->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
-    ui->tableActive->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
-    ui->tableActive->horizontalHeader()->setVisible(true);
-
-    ui->tableInactive->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
-    ui->tableInactive->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
-    ui->tableInactive->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
-    ui->tableInactive->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
-    ui->tableInactive->horizontalHeader()->setVisible(true);
+    //    ui->tableDownloading->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
+    //    ui->tableDownloading->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
+    //    ui->tableDownloading->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
+    //    ui->tableDownloading->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
+    //    ui->tableDownloading->horizontalHeader()->setVisible(true);
+    tableSetting(ui->tableDownloading);
+    //    ui->tableDistributed->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
+    //    ui->tableDistributed->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
+    //    ui->tableDistributed->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
+    //    ui->tableDistributed->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
+    //    ui->tableDistributed->horizontalHeader()->setVisible(true);
+    tableSetting(ui->tableDistributed);
+    //    ui->tableCompleted->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
+    //    ui->tableCompleted->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
+    //    ui->tableCompleted->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
+    //    ui->tableCompleted->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
+    //    ui->tableCompleted->horizontalHeader()->setVisible(true);
+    tableSetting(ui->tableCompleted);
+    //    ui->tableActive->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
+    //    ui->tableActive->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
+    //    ui->tableActive->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
+    //    ui->tableActive->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
+    //    ui->tableActive->horizontalHeader()->setVisible(true);
+    tableSetting(ui->tableActive);
+    //    ui->tableInactive->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
+    //    ui->tableInactive->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
+    //    ui->tableInactive->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
+    //    ui->tableInactive->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
+    //    ui->tableInactive->horizontalHeader()->setVisible(true);
+    tableSetting(ui->tableInactive);
 
     // ui->tableFilters->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
@@ -301,4 +307,16 @@ void MainWindow::on_pushButton_5_clicked()
 void MainWindow::on_pushButton_6_clicked()
 {
     ui->stackedDownloads->setCurrentIndex(5);
+}
+
+
+void MainWindow::tableSetting(QTableWidget* table)
+{
+    table->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
+    table->setColumnWidth(2,200);
+    table->setColumnWidth(0,75);
+    table->setColumnWidth(3,100);
+    table->horizontalHeader()->setVisible(true);
+    table->setSelectionMode(QAbstractItemView::NoSelection);
+    table->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }

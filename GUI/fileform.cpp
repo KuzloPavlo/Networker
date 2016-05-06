@@ -33,8 +33,12 @@ FileForm::FileForm(
     m_primitives.m_goRead = std::make_shared<Semaphore>(Semaphore(NULL,1,1,NULL));
     m_primitives.m_Shared =  std::make_shared<Semaphore>(Semaphore(NULL,1,1,NULL));
 
+    // this->setStyleSheet ("color: rgb(0, 0, 0)");
 
-    //  ui->SelectedButton->setVisible(false);
+    // ui->FileName->setText(m_dowloadingFile.m_fileInfo.m_fileName);
+
+
+    ui->SelectedButton->setVisible(false);
 
     //--------------
     //ui->tableDownloads->setSpan(0,0,1,ui->tableDownloads->columnCount());
@@ -67,12 +71,14 @@ FileForm::~FileForm()
 
 void FileForm::on_SelectButton_clicked()
 {
-
+    ui->SelectButton->setVisible(false);
+    ui->SelectedButton->setVisible(true);
 }
 
 void FileForm::on_SelectedButton_clicked()
 {
-
+    ui->SelectButton->setVisible(true);
+    ui->SelectedButton->setVisible(false);
 }
 
 void FileForm::slotChangeFileStatus(const FileStatus& fileStatus,const int& filePercents)
@@ -122,6 +128,29 @@ void FileForm::insertMy()
     m_mainTable->setCellWidget(myRow,2,m_status);
     m_mainTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
     m_mainTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+    ui->FileName->setText(m_dowloadingFile.m_fileInfo.m_fileName);
+
+    QTableWidgetItem* number = new QTableWidgetItem(tr("%1").arg(myRow+1));
+    number->setTextAlignment(Qt::AlignCenter);
+
+
+    m_mainTable->setItem(myRow,0, number);
+
+    float forSize = 0;
+    QString sizeType;
+
+    FoundedFileForm::changeSizeStyle(m_dowloadingFile.m_fileInfo.m_fileSize, &forSize,&sizeType);
+
+    std::string sizeFile = std::to_string(forSize);
+
+    sizeFile.erase( sizeFile.end()-4, sizeFile.end());
+
+    sizeFile += " " + sizeType.toStdString();
+
+    QTableWidgetItem* size = new QTableWidgetItem(tr("%1").arg(sizeFile.c_str()));
+
+    m_mainTable->setItem(myRow,3,size);
 }
 
 void FileForm::createTwin(/*FileForm* ptwin,*/ QTableWidget *mainTable)

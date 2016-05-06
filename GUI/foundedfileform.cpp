@@ -21,30 +21,16 @@ FoundedFileForm::FoundedFileForm(
     ui->Description->setText(fileInfo.m_fileDescription);
 
     float size = 0;
+    QString sizeType;
 
-    if(fileInfo.m_fileSize >= 1000)
-    {
-        size = ((float)fileInfo.m_fileSize)/1000;
-        ui->SizeType->setText("Kb");
-    }
-
-    if(fileInfo.m_fileSize >= 1000000)
-    {
-        size = ((float)fileInfo.m_fileSize)/1000000;
-        ui->SizeType->setText("Mb");
-    }
-
-    if(fileInfo.m_fileSize >= 1000000000)
-    {
-        size = ((float)fileInfo.m_fileSize)/1000000000;
-        ui->SizeType->setText("Gb");
-    }
+    changeSizeStyle(fileInfo.m_fileSize,&size,&sizeType);
 
     std::string sizeFile = std::to_string(size);
 
     sizeFile.erase( sizeFile.end()-4, sizeFile.end());
 
     ui->Size->setText(sizeFile.c_str());
+    ui->SizeType->setText(sizeType);
 }
 
 FoundedFileForm::~FoundedFileForm()
@@ -82,4 +68,25 @@ void FoundedFileForm::on_DownloadButton_clicked()
 {
     QString fileWay = QFileDialog::getExistingDirectory(this,"Downloading","");
     downloadFile(m_fileInfo, fileWay);
+}
+
+void FoundedFileForm::changeSizeStyle(const int& fileSize, float* size, QString* sizeType)
+{
+    if(fileSize >= 1000)
+    {
+        *size = ((float)fileSize)/1000;
+        *sizeType = "Kb";
+    }
+
+    if(fileSize >= 1000000)
+    {
+        *size = ((float)fileSize)/1000000;
+        *sizeType ="Mb";
+    }
+
+    if(fileSize >= 1000000000)
+    {
+        *size = ((float)fileSize)/1000000000;
+        *sizeType = "Gb";
+    }
 }

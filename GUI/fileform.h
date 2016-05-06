@@ -11,6 +11,7 @@
 #include <condition_variable>
 #include "Semaphore.h"
 #include "Synchronization.h"
+#include "foundedfileform.h"
 
 namespace Ui {
 class FileForm;
