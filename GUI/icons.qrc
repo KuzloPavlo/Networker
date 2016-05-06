@@ -18,5 +18,8 @@
         <file>../Resources/Icons/up.png</file>
         <file>../Resources/Icons/isync.png</file>
         <file>../Resources/Icons/Protection.png</file>
+        <file>../Resources/Icons/network folder.png</file>
+        <file>../Resources/Icons/network.png</file>
+        <file>../Resources/Icons/Sidebar.png</file>
     </qresource>
 </RCC>

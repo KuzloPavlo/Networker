@@ -35,47 +35,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->createFileBut->setToolTip("Create new downloading file");
     ui->searchBut->setToolTip("Search files");
     ui->homeButton->setToolTip("Go Home");
+    ui->showAllButton->setToolTip("Show All files");
 
-
-    //    ui->tableAll->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
-    //    ui->tableAll->setColumnWidth(2,200);
-    //    // ui->tableAll->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
-    //    //ui->tableAll->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
-    //    // ui->tableAll->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
-    //    ui->tableAll->setColumnWidth(0,100);
-    //    ui->tableAll->setColumnWidth(3,100);
-    //    ui->tableAll->horizontalHeader()->setVisible(true);
     tableSetting(ui->tableAll);
 
-    //    ui->tableDownloading->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
-    //    ui->tableDownloading->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
-    //    ui->tableDownloading->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
-    //    ui->tableDownloading->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
-    //    ui->tableDownloading->horizontalHeader()->setVisible(true);
     tableSetting(ui->tableDownloading);
-    //    ui->tableDistributed->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
-    //    ui->tableDistributed->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
-    //    ui->tableDistributed->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
-    //    ui->tableDistributed->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
-    //    ui->tableDistributed->horizontalHeader()->setVisible(true);
+
     tableSetting(ui->tableDistributed);
-    //    ui->tableCompleted->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
-    //    ui->tableCompleted->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
-    //    ui->tableCompleted->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
-    //    ui->tableCompleted->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
-    //    ui->tableCompleted->horizontalHeader()->setVisible(true);
+
     tableSetting(ui->tableCompleted);
-    //    ui->tableActive->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
-    //    ui->tableActive->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
-    //    ui->tableActive->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
-    //    ui->tableActive->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
-    //    ui->tableActive->horizontalHeader()->setVisible(true);
+
     tableSetting(ui->tableActive);
-    //    ui->tableInactive->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
-    //    ui->tableInactive->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
-    //    ui->tableInactive->horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
-    //    ui->tableInactive->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
-    //    ui->tableInactive->horizontalHeader()->setVisible(true);
+
     tableSetting(ui->tableInactive);
 
     // ui->tableFilters->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -84,6 +55,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableSearch->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     ui->tableSearch->setSelectionMode(QAbstractItemView::NoSelection);
     ui->searchEdit->setVisible(false);
+    ui->showAllButton->setVisible(false);
+
+
+    // m_debuger->move(pos());
 
     //-----------------------------------------------------------+
     // Section for experements                                   |
@@ -148,7 +123,6 @@ MainWindow::~MainWindow()
 void MainWindow::slotDisplay(const std::string& str)
 {
     m_debuger->display(str);
-    m_debuger->show();
 }
 
 void MainWindow::slotConnectToServer(const std::string &IPaddress, const std::string &port)
@@ -159,6 +133,7 @@ void MainWindow::slotConnectToServer(const std::string &IPaddress, const std::st
 void MainWindow::on_searchBut_clicked()
 {
     ui->searchEdit->setVisible(true);
+    ui->showAllButton->setVisible(true);
     ui->stackedWidgetLeft->setCurrentIndex(1);
     ui->homeButton->setVisible(true);
     ui->searchBut->setVisible(false);
@@ -167,6 +142,7 @@ void MainWindow::on_searchBut_clicked()
 void MainWindow::on_homeButton_clicked()
 {
     ui->searchEdit->setVisible(false);
+    ui->showAllButton->setVisible(false);
     ui->stackedWidgetLeft->setCurrentIndex(0);
     ui->homeButton->setVisible(false);
     ui->searchBut->setVisible(true);
@@ -319,4 +295,23 @@ void MainWindow::tableSetting(QTableWidget* table)
     table->horizontalHeader()->setVisible(true);
     table->setSelectionMode(QAbstractItemView::NoSelection);
     table->setEditTriggers(QAbstractItemView::NoEditTriggers);
+}
+
+void MainWindow::on_showAllButton_clicked()
+{
+    ui->tableSearch->setRowCount(0);
+    m_pClient->searchFile("*");
+}
+
+void MainWindow::on_pushButton_7_clicked()
+{
+    if(m_debuger->isHidden())
+    {
+        m_debuger->move(x()+this->frameGeometry().width(),y());
+        m_debuger->show();
+    }
+    else
+    {
+        m_debuger->hide();
+    }
 }

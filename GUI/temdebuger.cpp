@@ -6,6 +6,7 @@ TemDebuger::TemDebuger(QWidget *parent) :
     ui(new Ui::TemDebuger)
 {
     ui->setupUi(this);
+    //this->move() // first v, second h
 }
 
 TemDebuger::~TemDebuger()

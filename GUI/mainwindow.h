@@ -76,6 +76,10 @@ private slots:
 
     void on_homeButton_clicked();
 
+    void on_showAllButton_clicked();
+
+    void on_pushButton_7_clicked();
+
 signals:
 
     void signalDisplay(const std::string& str);

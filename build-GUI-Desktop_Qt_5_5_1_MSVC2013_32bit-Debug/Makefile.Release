@@ -206,6 +206,7 @@ release\qrc_icons.cpp: ..\GUI\icons.qrc \
 		..\Resources\Icons\selected.png \
 		..\Resources\Icons\softwareupdate.png \
 		..\Resources\Icons\Down.png \
+		..\Resources\Icons\network.png \
 		..\Resources\Icons\winrar.png \
 		..\Resources\Icons\Part.bmp \
 		..\Resources\Icons\Protection.png \
@@ -217,6 +218,7 @@ release\qrc_icons.cpp: ..\GUI\icons.qrc \
 		..\Resources\Icons\blank.png \
 		..\Resources\Icons\isync.png \
 		..\Resources\Icons\check.png \
+		..\Resources\Icons\Sidebar.png \
 		..\Resources\Icons\defrag.png \
 		..\Resources\Icons\Gorillaz.png
 	C:\newQt\5.5\msvc2013\bin\rcc.exe -name icons ..\GUI\icons.qrc -o release\qrc_icons.cpp
@@ -2114,8 +2116,8 @@ release\moc_descriptionform.cpp: ..\..\..\newQt\5.5\msvc2013\include\QtWidgets\Q
 		..\GUI\descriptionform.h
 	C:\newQt\5.5\msvc2013\bin\moc.exe $(DEFINES) -D_MSC_VER=1800 -D_WIN32 -IC:/newQt/5.5/msvc2013/mkspecs/win32-msvc2013 -IC:/projects_Qt/peep-to-peer-network/GUI -IC:/projects_Qt/peep-to-peer-network/Library/Library -IC:/boost/VC/boost_1_60_0/boost_1_60_0 -IC:/newQt/5.5/msvc2013/include -IC:/newQt/5.5/msvc2013/include/QtWidgets -IC:/newQt/5.5/msvc2013/include/QtGui -IC:/newQt/5.5/msvc2013/include/QtANGLE -IC:/newQt/5.5/msvc2013/include/QtCore -I. ..\GUI\descriptionform.h -o release\moc_descriptionform.cpp
 
-release\moc_temdebuger.cpp: ..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QMainWindow \
-		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qmainwindow.h \
+release\moc_temdebuger.cpp: ..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QDialog \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qdialog.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qwidget.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtGui\qwindowdefs.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\qglobal.h \
@@ -2217,8 +2219,6 @@ release\moc_temdebuger.cpp: ..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QMainW
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\qfiledevice.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtGui\qvector2d.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtGui\qtouchdevice.h \
-		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qtabwidget.h \
-		..\..\..\newQt\5.5\msvc2013\include\QtGui\qicon.h \
 		..\GUI\temdebuger.h
 	C:\newQt\5.5\msvc2013\bin\moc.exe $(DEFINES) -D_MSC_VER=1800 -D_WIN32 -IC:/newQt/5.5/msvc2013/mkspecs/win32-msvc2013 -IC:/projects_Qt/peep-to-peer-network/GUI -IC:/projects_Qt/peep-to-peer-network/Library/Library -IC:/boost/VC/boost_1_60_0/boost_1_60_0 -IC:/newQt/5.5/msvc2013/include -IC:/newQt/5.5/msvc2013/include/QtWidgets -IC:/newQt/5.5/msvc2013/include/QtGui -IC:/newQt/5.5/msvc2013/include/QtANGLE -IC:/newQt/5.5/msvc2013/include/QtCore -I. ..\GUI\temdebuger.h -o release\moc_temdebuger.cpp
 
@@ -4650,6 +4650,7 @@ release\mainwindow.obj: ..\GUI\mainwindow.cpp ../GUI/mainwindow.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qlayout.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qlayoutitem.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qboxlayout.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QHBoxLayout \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QHeaderView \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qheaderview.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QLineEdit \
@@ -5603,8 +5604,8 @@ release\descriptionform.obj: ..\GUI\descriptionform.cpp ../GUI/descriptionform.h
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qrubberband.h
 
 release\temdebuger.obj: ..\GUI\temdebuger.cpp ../GUI/temdebuger.h \
-		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QMainWindow \
-		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qmainwindow.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QDialog \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qdialog.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qwidget.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtGui\qwindowdefs.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\qglobal.h \
@@ -5706,12 +5707,11 @@ release\temdebuger.obj: ..\GUI\temdebuger.cpp ../GUI/temdebuger.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\qfiledevice.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtGui\qvector2d.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtGui\qtouchdevice.h \
-		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qtabwidget.h \
-		..\..\..\newQt\5.5\msvc2013\include\QtGui\qicon.h \
 		ui_temdebuger.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\QVariant \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QAction \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qaction.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtGui\qicon.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qactiongroup.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QApplication \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qapplication.h \
@@ -5743,7 +5743,10 @@ release\temdebuger.obj: ..\GUI\temdebuger.cpp ../GUI/temdebuger.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qabstractslider.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qstyle.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qtabbar.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qtabwidget.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qrubberband.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QMainWindow \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qmainwindow.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QTextEdit \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qtextedit.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtGui\qtextdocument.h \
