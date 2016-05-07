@@ -41,9 +41,11 @@ public:
 private slots:
     void on_SelectButton_clicked();
     void slotChangeFileStatus(const FileStatus& fileStatus,const int& filePercents);
+    void slotSetFileStatus(const FileStatus& fileStatus);
     void on_SelectedButton_clicked();
 signals:
     void signalChangeFileStatus(const FileStatus& fileStatus,const int& filePercents);
+    void signalSetFileStatus(const FileStatus& fileStatus);
 private:
     void insertMy();
     void createTwin(/*FileForm* ptwin,*/ QTableWidget *m_mainTable);

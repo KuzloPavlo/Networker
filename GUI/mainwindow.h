@@ -42,7 +42,7 @@ private slots:
 
     void on_createFileBut_clicked();
 
-    void on_sendButton_clicked();
+   // void on_sendButton_clicked();
 
     void slotDisplay(const std::string& str);
 

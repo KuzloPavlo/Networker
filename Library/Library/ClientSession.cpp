@@ -68,6 +68,7 @@ void ClientSession::write(const ReturnValues& value)
 	{
 		if (!ec)
 		{
+			display(std::to_string(m_sendPart.m_partNumber));
 			read();
 		}
 	});

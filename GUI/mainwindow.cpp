@@ -162,13 +162,13 @@ void MainWindow::on_createFileBut_clicked()
     m_pNewFileDialog->show();
 }
 
-void MainWindow::on_sendButton_clicked()
-{
-    //ui->tableDownloading->setSpan(0,0,1,ui->tableDownloading->columnCount());
-    FileInfo fi;
-    emit slotDownloadFile(fi, "akdsjf");
+//void MainWindow::on_sendButton_clicked()
+//{
+//    //ui->tableDownloading->setSpan(0,0,1,ui->tableDownloading->columnCount());
+//    FileInfo fi;
+//    emit slotDownloadFile(fi, "akdsjf");
 
-}
+//}
 
 
 std::string MainWindow::changeLocationStyle(const QString& QtStyleLocation)

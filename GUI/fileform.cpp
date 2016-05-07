@@ -20,7 +20,7 @@ FileForm::FileForm(
     m_activeTable(activeTable),
     m_inactiveTable(inactiveTable),
     m_status(new Status(this)),
-    m_description(new DescriptionForm(file.m_fileInfo.m_fileDescription, this)),
+    m_description(new DescriptionForm(file.m_fileInfo, this)),
     m_downloaderStatus(new FileStatus(FileStatus::downloading)),
     ui(new Ui::FileForm),
     m_mainWidget(mainWidget)
@@ -33,19 +33,21 @@ FileForm::FileForm(
     m_primitives.m_goRead = std::make_shared<Semaphore>(Semaphore(NULL,1,1,NULL));
     m_primitives.m_Shared =  std::make_shared<Semaphore>(Semaphore(NULL,1,1,NULL));
 
-    // this->setStyleSheet ("color: rgb(0, 0, 0)");
-
-    // ui->FileName->setText(m_dowloadingFile.m_fileInfo.m_fileName);
-
+    connect(this,
+            SIGNAL (signalSetFileStatus(const FileStatus&)),
+            this,
+            SLOT
+            (slotSetFileStatus(const FileStatus&)));
 
     ui->SelectedButton->setVisible(false);
 
-    //--------------
-    //ui->tableDownloads->setSpan(0,0,1,ui->tableDownloads->columnCount());
-    //---------
-
     if(mainWidget)
     {
+        m_description->setFilseStatus = std::bind(
+                    &FileForm::signalSetFileStatus,
+                    this,
+                    std::placeholders::_1);
+
         createTwin(m_downloadingTable);
         createTwinActi(m_activeTable);
     }
@@ -89,7 +91,7 @@ void FileForm::on_SelectedButton_clicked()
 
 void FileForm::slotChangeFileStatus(const FileStatus& fileStatus,const int& filePercents)
 {
-    m_status->changeStatus(FileStatus::creating, filePercents);
+    m_status->changeStatus(fileStatus, filePercents);
 
     if(m_mainWidget)
     {
@@ -132,17 +134,11 @@ void FileForm::insertMy()
     m_mainTable->insertRow(m_myRow);
     m_mainTable->setCellWidget(m_myRow,1,this);
     m_mainTable->setCellWidget(m_myRow,2,m_status);
-   // m_mainTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
-   // m_mainTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    //-------
+
     m_mainTable->insertRow(m_myRow+1);
     m_mainTable->setRowHeight(m_myRow+1,0);
     m_mainTable->setSpan(m_myRow+1,1,1,2);
     m_mainTable->setCellWidget(m_myRow+1,1,m_description);
-
-    //-----------
-
-
 
     ui->FileName->setText(m_dowloadingFile.m_fileInfo.m_fileName);
 
@@ -171,6 +167,10 @@ void FileForm::insertMy()
 void FileForm::createTwin(/*FileForm* ptwin,*/ QTableWidget *mainTable)
 {
     m_myInDownloading = new FileForm(m_dowloadingFile, mainTable,nullptr,nullptr,nullptr,nullptr,nullptr,this,false );
+    m_myInDownloading->m_description->setFilseStatus = std::bind(
+                &FileForm::signalSetFileStatus,
+                this,
+                std::placeholders::_1);
 }
 
 void FileForm::createTwinDist(/*FileForm* ptwin,*/ QTableWidget *mainTable)
@@ -190,4 +190,32 @@ void FileForm::createTwinActi(/*FileForm* ptwin,*/ QTableWidget *mainTable)
 void FileForm::createTwinIna(/*FileForm* ptwin,*/ QTableWidget *mainTable)
 {
     m_myInInactive = new FileForm(m_dowloadingFile, mainTable,nullptr,nullptr,nullptr,nullptr,nullptr,this,false );
+}
+
+void FileForm::slotSetFileStatus(const FileStatus& fileStatus)
+{
+    //------------------
+    static int i = 2;
+    i++;
+    signalChangeFileStatus(fileStatus,i);
+    //----------
+    m_primitives.m_mutexCounter->lock();
+    if ((*m_primitives.m_counter) == 0)
+    {
+        m_primitives.m_goRead->lock();
+        m_primitives.m_Shared->lock();
+    }
+    (*m_primitives.m_counter)++;
+    m_primitives.m_mutexCounter->unlock();
+
+    *m_downloaderStatus = fileStatus;
+
+    m_primitives.m_mutexCounter->lock();
+    (*m_primitives.m_counter)--;
+    if ((*m_primitives.m_counter) == 0)
+    {
+        m_primitives.m_Shared->unlock_one();
+        m_primitives.m_goWrite->unlock_one();
+    }
+    m_primitives.m_mutexCounter->unlock();
 }

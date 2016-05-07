@@ -54,11 +54,12 @@ public:
 
 private:
 	std::function<void(const FileStatus& fileStatus, const int& filePercents)>changeFileStatus;
-	void start();
+	void start(bool creating);
 	void work();
 	bool readSessioStatus(SessionStatus* status);
 	void readMyStatus();
 	void deleteSession(int number);
+	bool createEmptyFile(const std::string& location, int sizeFile);
 
 	Checker m_checkerParts;
 	FileStatus* m_myStatus; // pause/deleting/downloading

@@ -1,7 +1,5 @@
 #include "Downloader.h"
 
-#define DISPLAY display("");display("");
-
 Downloader::Downloader(
 	boost::asio::io_service& io_service,
 	const DownloadingFile& downloadingFile,
@@ -27,7 +25,7 @@ Downloader::Downloader(
 	changeDownloader = std::bind(&Downloader::changeDownloader, this, std::placeholders::_1);
 	this->changeFileStatus(downloadingFile.m_fileStatus, 0);
 
-	std::thread sessionsThread(&Downloader::start, this);
+	std::thread sessionsThread(&Downloader::start, this, creating);
 	sessionsThread.detach();
 	work();
 }
@@ -40,12 +38,23 @@ void Downloader::changeDownloader(const FileStatus& fileStatus)
 {
 }
 
-void Downloader::start()
+void Downloader::start(bool creating)
 {
 	std::string allLocation = m_downloadingFile.m_fileLocation;
 	allLocation += "\\";
 	allLocation += m_downloadingFile.m_fileInfo.m_fileName;
 
+	if (creating)
+	{
+		if (!createEmptyFile(allLocation, m_downloadingFile.m_fileInfo.m_fileSize))
+		{
+			display("Downloader::start cannot create an empty file");
+			return;
+		}
+	}
+
+	display("Downloader::start created an empty file");
+	
 	for (int i = 0; i < m_distributors.size() && 10; i++)
 	{
 		SessionStatus newStatus;
@@ -86,8 +95,8 @@ void Downloader::work()
 			if (!readSessioStatus(&(*p)))
 			{
 				m_statusHolder.erase(p);
-	//			m_mutexStatus->unlock();
-			//	work();
+				//			m_mutexStatus->unlock();
+				//	work();
 				return;
 			}
 			p++;
@@ -110,12 +119,12 @@ bool Downloader::readSessioStatus(SessionStatus* status)
 		{
 			int percent = m_checkerParts.setPart(status->m_part);
 
-			if (m_donnePercent < percent )
-			{	
+			if (m_donnePercent < percent)
+			{
 				m_donnePercent = percent;
 				changeFileStatus(FileStatus::failing, m_donnePercent);
 			}
-			
+
 			status->m_part = m_checkerParts.getPart();
 			status->m_work = StatusValue::work;
 		}
@@ -170,4 +179,34 @@ void Downloader::deleteSession(int number)
 	{
 		m_sessions.erase(q);
 	}
+}
+
+bool Downloader::createEmptyFile(const std::string& location, int sizeFile)
+{
+	enum
+	{
+		emptyLength = 32768
+	};
+
+	std::ofstream out(location, std::ios::out | std::ios::binary);
+	if (!out)
+	{
+		display(std::to_string(GetLastError()));
+		return false;
+	}
+
+	char emptyBuff[emptyLength] = { 0 };
+	int nIteration = sizeFile / emptyLength;
+
+	for (int i = 0; i < nIteration; i++)
+	{
+		out.write(emptyBuff, emptyLength);
+		out.flush();
+		sizeFile -= emptyLength;
+	}
+
+	out.write(emptyBuff, sizeFile);
+	out.flush();
+
+	return true;
 }

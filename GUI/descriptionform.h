@@ -1,5 +1,10 @@
 #pragma once
 #include <QWidget>
+#include "DownloadingFile.h"
+#include "FileStatus.h"
+#include "functional"
+
+#define CHANGESTATUS std::function<void(const FileStatus& fileStatus)>
 
 namespace Ui {
 class DescriptionForm;
@@ -10,11 +15,11 @@ class DescriptionForm : public QWidget
     Q_OBJECT
 
 public:
-    explicit DescriptionForm(const QString& description, QWidget *parent = 0);
+    explicit DescriptionForm(const FileInfo& description, QWidget *parent = 0);
     ~DescriptionForm();
     void showDescription();
     void hidDescription();
-
+    CHANGESTATUS setFilseStatus;
 private slots:
     void on_DowloadButton_clicked();
 

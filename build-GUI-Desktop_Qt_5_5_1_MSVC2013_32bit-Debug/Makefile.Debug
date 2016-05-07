@@ -2117,6 +2117,8 @@ debug\moc_descriptionform.cpp: ..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QWi
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\qfiledevice.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtGui\qvector2d.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtGui\qtouchdevice.h \
+		..\Library\Library\DownloadingFile.h \
+		..\Library\Library\FileStatus.h \
 		..\GUI\descriptionform.h
 	C:\newQt\5.5\msvc2013\bin\moc.exe $(DEFINES) -D_MSC_VER=1800 -D_WIN32 -IC:/newQt/5.5/msvc2013/mkspecs/win32-msvc2013 -IC:/projects_Qt/peep-to-peer-network/GUI -IC:/projects_Qt/peep-to-peer-network/Library/Library -IC:/boost/VC/boost_1_60_0/boost_1_60_0 -IC:/newQt/5.5/msvc2013/include -IC:/newQt/5.5/msvc2013/include/QtWidgets -IC:/newQt/5.5/msvc2013/include/QtGui -IC:/newQt/5.5/msvc2013/include/QtANGLE -IC:/newQt/5.5/msvc2013/include/QtCore -I. ..\GUI\descriptionform.h -o debug\moc_descriptionform.cpp
 
@@ -5576,6 +5578,8 @@ debug\descriptionform.obj: ..\GUI\descriptionform.cpp ../GUI/descriptionform.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\qfiledevice.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtGui\qvector2d.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtGui\qtouchdevice.h \
+		..\Library\Library\DownloadingFile.h \
+		..\Library\Library\FileStatus.h \
 		ui_descriptionform.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\QVariant \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QAction \
