@@ -16,6 +16,7 @@
 #include "DownloadingFile.h"
 #include "temdebuger.h"    // will delete
 #include "Semaphore.h"
+#include "descriptionform.h"
 Q_DECLARE_METATYPE(std::string)
 Q_DECLARE_METATYPE(DownloadingFile)
 Q_DECLARE_METATYPE(FileInfo)

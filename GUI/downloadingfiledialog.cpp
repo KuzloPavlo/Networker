@@ -5,10 +5,13 @@ DownloadingFileDialog::DownloadingFileDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DownloadingFileDialog)
 {
-
     ui->setupUi(this);
     ui->okButton->setEnabled(false);
     ui->createLabel->setEnabled(false);
+
+    QPalette mainPall;
+    mainPall.setColor (this->backgroundRole (), QColor(255, 255, 255, 255));
+     this->setPalette (mainPall);
 }
 
 DownloadingFileDialog::~DownloadingFileDialog()

@@ -7,6 +7,7 @@ TemDebuger::TemDebuger(QWidget *parent) :
 {
     ui->setupUi(this);
     //this->move() // first v, second h
+    this->setWindowFlags(Qt::Tool);
 }
 
 TemDebuger::~TemDebuger()
@@ -18,5 +19,6 @@ void TemDebuger::display(const std::string &str)
 {
     char strstr[10000];
     std::strcpy(strstr, str.c_str());
+    this->ui->textEdit->append("");
     this->ui->textEdit->append(strstr);
 }

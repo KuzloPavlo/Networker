@@ -73,5 +73,7 @@ private:
     FileForm* m_myInActive= nullptr;
     FileForm* m_myInInactive= nullptr;
 
+    int m_myRow;
+
     bool m_mainWidget;
 };

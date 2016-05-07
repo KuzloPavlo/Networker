@@ -36,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->searchBut->setToolTip("Search files");
     ui->homeButton->setToolTip("Go Home");
     ui->showAllButton->setToolTip("Show All files");
+    ui->refreshButton->setToolTip("Refresh Distribution");
 
     tableSetting(ui->tableAll);
 
@@ -56,10 +57,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableSearch->setSelectionMode(QAbstractItemView::NoSelection);
     ui->searchEdit->setVisible(false);
     ui->showAllButton->setVisible(false);
-
-
-    // m_debuger->move(pos());
-
+    ui->refreshButton->setVisible(false);
     //-----------------------------------------------------------+
     // Section for experements                                   |
     //-----------------------------------------------------------+
@@ -72,6 +70,10 @@ MainWindow::MainWindow(QWidget *parent) :
     //    ui->textinput->setVisible(false);
     //    ui->sendButton->setVisible(false);
     //    emit on_sendButton_clicked();
+
+   // this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+
+
 
     m_pClient->display = std::bind(&MainWindow::signalDisplay, this, std::placeholders::_1);
 
@@ -137,6 +139,7 @@ void MainWindow::on_searchBut_clicked()
     ui->stackedWidgetLeft->setCurrentIndex(1);
     ui->homeButton->setVisible(true);
     ui->searchBut->setVisible(false);
+    ui->refreshButton->setVisible(true);
 }
 
 void MainWindow::on_homeButton_clicked()
@@ -146,6 +149,7 @@ void MainWindow::on_homeButton_clicked()
     ui->stackedWidgetLeft->setCurrentIndex(0);
     ui->homeButton->setVisible(false);
     ui->searchBut->setVisible(true);
+    ui->refreshButton->setVisible(false);
 }
 
 void MainWindow::on_addServerBut_clicked()
@@ -289,6 +293,8 @@ void MainWindow::on_pushButton_6_clicked()
 void MainWindow::tableSetting(QTableWidget* table)
 {
     table->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch );
+    table->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Fixed);
+    table->horizontalHeader()->setSectionResizeMode(3,QHeaderView::Fixed);
     table->setColumnWidth(2,200);
     table->setColumnWidth(0,75);
     table->setColumnWidth(3,100);
@@ -308,6 +314,7 @@ void MainWindow::on_pushButton_7_clicked()
     if(m_debuger->isHidden())
     {
         m_debuger->move(x()+this->frameGeometry().width(),y());
+        m_debuger->resize(200,this->height());
         m_debuger->show();
     }
     else

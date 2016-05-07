@@ -73,12 +73,18 @@ void FileForm::on_SelectButton_clicked()
 {
     ui->SelectButton->setVisible(false);
     ui->SelectedButton->setVisible(true);
+
+    m_description->showDescription();
+    m_mainTable->setRowHeight(m_myRow+1, 155);
 }
 
 void FileForm::on_SelectedButton_clicked()
 {
     ui->SelectButton->setVisible(true);
     ui->SelectedButton->setVisible(false);
+
+    m_description->hidDescription();
+    m_mainTable->setRowHeight(m_myRow+1, 0);
 }
 
 void FileForm::slotChangeFileStatus(const FileStatus& fileStatus,const int& filePercents)
@@ -121,21 +127,30 @@ void FileForm::slotChangeFileStatus(const FileStatus& fileStatus,const int& file
 
 void FileForm::insertMy()
 {
-    int myRow = m_mainTable->rowCount();
+    m_myRow = m_mainTable->rowCount();
 
-    m_mainTable->insertRow(myRow);
-    m_mainTable->setCellWidget(myRow,1,this);
-    m_mainTable->setCellWidget(myRow,2,m_status);
-    m_mainTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
-    m_mainTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    m_mainTable->insertRow(m_myRow);
+    m_mainTable->setCellWidget(m_myRow,1,this);
+    m_mainTable->setCellWidget(m_myRow,2,m_status);
+   // m_mainTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+   // m_mainTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    //-------
+    m_mainTable->insertRow(m_myRow+1);
+    m_mainTable->setRowHeight(m_myRow+1,0);
+    m_mainTable->setSpan(m_myRow+1,1,1,2);
+    m_mainTable->setCellWidget(m_myRow+1,1,m_description);
+
+    //-----------
+
+
 
     ui->FileName->setText(m_dowloadingFile.m_fileInfo.m_fileName);
 
-    QTableWidgetItem* number = new QTableWidgetItem(tr("%1").arg(myRow+1));
+    QTableWidgetItem* number = new QTableWidgetItem(tr("%1").arg((m_myRow/2)+1));
     number->setTextAlignment(Qt::AlignCenter);
 
 
-    m_mainTable->setItem(myRow,0, number);
+    m_mainTable->setItem(m_myRow,0, number);
 
     float forSize = 0;
     QString sizeType;
@@ -150,7 +165,7 @@ void FileForm::insertMy()
 
     QTableWidgetItem* size = new QTableWidgetItem(tr("%1").arg(sizeFile.c_str()));
 
-    m_mainTable->setItem(myRow,3,size);
+    m_mainTable->setItem(m_myRow,3,size);
 }
 
 void FileForm::createTwin(/*FileForm* ptwin,*/ QTableWidget *mainTable)

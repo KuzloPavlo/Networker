@@ -21,5 +21,9 @@
         <file>../Resources/Icons/network folder.png</file>
         <file>../Resources/Icons/network.png</file>
         <file>../Resources/Icons/Sidebar.png</file>
+        <file>../Resources/Icons/garageband.png</file>
+        <file>../Resources/Icons/Next.png</file>
+        <file>../Resources/Icons/Pause.png</file>
+        <file>../Resources/Icons/Stop.png</file>
     </qresource>
 </RCC>

@@ -79,14 +79,14 @@
       <widget class="QPushButton" name="SelectedButton">
        <property name="minimumSize">
         <size>
-         <width>21</width>
-         <height>21</height>
+         <width>18</width>
+         <height>18</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>21</width>
-         <height>21</height>
+         <width>18</width>
+         <height>18</height>
         </size>
        </property>
        <property name="text">
@@ -121,14 +121,14 @@
       <widget class="QPushButton" name="SelectButton">
        <property name="minimumSize">
         <size>
-         <width>21</width>
-         <height>21</height>
+         <width>18</width>
+         <height>18</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>21</width>
-         <height>21</height>
+         <width>18</width>
+         <height>18</height>
         </size>
        </property>
        <property name="text">
