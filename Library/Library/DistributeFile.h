@@ -8,6 +8,5 @@ using boost::asio::ip::tcp;
 struct DistributeFile
 {
 	FileInfo m_fileInfo;
-//	sockaddr_in m_addr;
 	boost::asio::ip::address m_address;
 };

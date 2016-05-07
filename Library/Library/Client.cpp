@@ -1,7 +1,4 @@
 #include "Client.h"
-#include <fstream>
-
-using boost::asio::ip::tcp;
 
 Client::Client() : m_countConnectedClients(0), m_clientWorking(true), m_mutexOutgoingDistribution(new std::mutex)
 {
@@ -48,13 +45,13 @@ void Client::threadListen()
 void Client::downloadFile(
 	const DownloadingFile& downloadingFile,
 	CHANGEFILESTATUS changeFileStatus,
-	CHANGEDOWNLOADER changeDownloader, 
+	CHANGEDOWNLOADER changeDownloader,
 	Synchronization primitives,
 	FileStatus* fileStatus)
 {
 	display("Client::downloadFile1 ");
 	FileDistributors adresses = getDistributors(downloadingFile.m_fileInfo);
-	std::thread downloadThread(&Client::threadDownload, this, downloadingFile, adresses, changeFileStatus, changeDownloader,primitives,fileStatus);
+	std::thread downloadThread(&Client::threadDownload, this, downloadingFile, adresses, changeFileStatus, changeDownloader, primitives, fileStatus);
 	display("Client::downloadFile2 ");
 	downloadThread.detach();
 }
@@ -63,7 +60,7 @@ void Client::threadDownload(
 	const DownloadingFile& downloadingFile,
 	const FileDistributors& adresses,
 	CHANGEFILESTATUS changeFileStatus,
-	CHANGEDOWNLOADER changeDownloader, 
+	CHANGEDOWNLOADER changeDownloader,
 	Synchronization primitives,
 	FileStatus* fileStatus)
 {
@@ -78,14 +75,14 @@ void Client::threadDownload(
 		display("");
 		display(downloadingFile.m_fileInfo.m_fileName);
 		display(downloadingFile.m_fileInfo.m_fileDescription);
-		display(std::to_string( downloadingFile.m_fileInfo.m_fileHash));
-		display(std::to_string( downloadingFile.m_fileInfo.m_fileSize));
-		display(std::to_string( downloadingFile.m_fileInfo.m_numberParts));
+		display(std::to_string(downloadingFile.m_fileInfo.m_fileHash));
+		display(std::to_string(downloadingFile.m_fileInfo.m_fileSize));
+		display(std::to_string(downloadingFile.m_fileInfo.m_numberParts));
 		display("");
 		display(downloadingFile.m_fileLocation);
 		display("");
 
-			//----------------------------------
+		//----------------------------------
 		//io_service.run();
 		//std::shared_ptr<Downloader> downloader(new Downloader(io_service, downloadingFile, adresses/*, this->m_mutexListParts*/, changeFileStatus, changeDownloader,primitives,fileStatus, display));
 		Downloader downloader(io_service, downloadingFile, adresses/*, this->m_mutexListParts*/, changeFileStatus, changeDownloader, primitives, fileStatus, display);
@@ -106,110 +103,32 @@ void Client::threadDownload(
 
 void Client::threadServer(const std::string& IPaddress, const std::string& port)
 {
-	//std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-	//------------------------------------
-	m_mutexUserInteface.lock();
-	display("Server Thread Started");
-	display(IPaddress);
-	display(port);
-	m_mutexUserInteface.unlock();
-	//------------------------------------
-
-	SOCKET serverSocket = INVALID_SOCKET;
-	int iResult = 0;
-	char receiveBuffer[4096] = { 0 };
-	int receiveSize = 0;
-	int returnResult = 0;
-
-	if (iResult != 0)
+	while (true)
 	{
-		m_mutexUserInteface.lock();
-		display("Server Thread 1");
-		m_mutexUserInteface.unlock();
-		// обеспечить обработку ошибки
-		//		return 1;
+		display("Server Thread Started");
+		display(IPaddress);
+		display(port);
+		try
+		{
+			boost::asio::io_service io_service;
+			tcp::socket serverSocket(io_service);
+			tcp::resolver resolver(io_service);
+			boost::asio::connect(serverSocket, resolver.resolve({ IPaddress.c_str(), port.c_str() }));
+
+			reciveDistribution(&serverSocket);
+			sendOutgoingDistribution(&serverSocket);
+
+			serverSocket.close();
+		}
+		catch (std::exception& e)
+		{
+			display("Client::threadServer Not Start");
+			display(e.what());
+		}
+		std::this_thread::sleep_for(std::chrono::minutes(1));
 	}
-
-	struct addrinfo *result = NULL, *ptr = NULL, hints;
-
-	ZeroMemory(&hints, sizeof(hints));
-
-	hints.ai_family = AF_UNSPEC;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_protocol = IPPROTO_TCP;
-
-	iResult = getaddrinfo(IPaddress.c_str(), port.c_str(), &hints, &result);
-
-	if (iResult != 0)
-	{
-		m_mutexUserInteface.lock();
-		display("Server Thread == 0");
-		m_mutexUserInteface.unlock();
-		// обеспечить обработку ошибки
-		WSACleanup();
-
-		m_mutexUserInteface.lock();
-		display(std::to_string(WSAGetLastError()));
-		m_mutexUserInteface.unlock();
-	}
-
-	ptr = result;
-
-	m_mutexUserInteface.lock();
-	display("Server Thread 4");
-	m_mutexUserInteface.unlock();
-
-	serverSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
-
-	m_mutexUserInteface.lock();
-	display("Server Thread 41");
-	m_mutexUserInteface.unlock();
-
-	if (serverSocket == INVALID_SOCKET)
-	{
-		// обеспечить обработку ошибки
-
-		m_mutexUserInteface.lock();
-		display("Server Thread 5");
-		m_mutexUserInteface.unlock();
-		freeaddrinfo(result);
-		WSACleanup();
-	}
-
-	iResult = connect(serverSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-
-	m_mutexUserInteface.lock();
-	display("Server Thread 51");
-	m_mutexUserInteface.unlock();
-
-	if (iResult == SOCKET_ERROR)
-	{
-		closesocket(serverSocket);
-		serverSocket = INVALID_SOCKET;
-
-		m_mutexUserInteface.lock();
-		display("Server Thread 6");
-		m_mutexUserInteface.unlock();
-	}
-
-	freeaddrinfo(result);
-
-	if (serverSocket == INVALID_SOCKET)
-	{
-		m_mutexUserInteface.lock();
-		display("Server Thread 7");
-		m_mutexUserInteface.unlock();
-		WSACleanup();
-	}
-
-	reciveDistribution(&serverSocket);
-
-	sendOutgoingDistribution(&serverSocket);
-
-	m_mutexUserInteface.lock();
-	display("Server Thread Connected");
-	m_mutexUserInteface.unlock();
 }
 
 void Client::threadClient(void *arg)
@@ -358,18 +277,14 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 		display(std::to_string(dff.m_fileInfo.m_numberParts));
 		display(std::to_string(dff.m_fileInfo.m_fileSize));
 		display(dff.m_fileLocation);
-
 	}
 }
 
-void Client::sendOutgoingDistribution(SOCKET *serverSocket)
+void Client::sendOutgoingDistribution(tcp::socket* serverSocket)
 {
-	//----------------------
-	display("Client::sendOutgoingDistribution1");
-	//---------------------------
 	DownloadingFile downloadingFile;
 	FileInfo sendFile;
-	int iResult = 0;
+	int sendLength = sizeof(FileInfo);
 	int fileSize = 0;
 	int numberOutDistribution = 0;
 	char* buffer = nullptr;
@@ -389,90 +304,49 @@ void Client::sendOutgoingDistribution(SOCKET *serverSocket)
 
 	buffer = (char*)& numberOutDistribution;
 
-	iResult = send(*serverSocket, buffer, 4, 0);
-	if (iResult == SOCKET_ERROR)
-	{
-		// обработай
-		return;
-	}
+	boost::asio::write(*serverSocket, boost::asio::buffer(buffer, 4));
 
+	display("Client::sendOutgoingDistribution numberDistribution:");
 	display(std::to_string(numberOutDistribution));
 
 	for (int i = 0; i < numberOutDistribution; i++)
 	{
 		buffer = (char*)& downloadingFile;
+
 		in.read(buffer, sizeof(DownloadingFile));
 
 		sendFile = downloadingFile.m_fileInfo;
 		buffer = (char*)& sendFile;
-		//-----------------------
-		display("");
-		display("");
-		display("OTPRAVL");
+
+		boost::asio::write(*serverSocket, boost::asio::buffer(buffer, sendLength));
+		display("Client::sendOutgoingDistribution sended next file:");
 		display(sendFile.m_fileName);
 		display(sendFile.m_fileDescription);
 		display(std::to_string(sendFile.m_fileHash));
-		//------------------------------
-		iResult = send(*serverSocket, buffer, sizeof(FileInfo), 0);
-		if (iResult == SOCKET_ERROR)
-		{
-			// ОБРАБОТАЙ
-			return;
-		}
+
 	}
-	//----------------------
-	display("Client::sendOutgoingDistribution2");
-	//---------------------------
 }
 
-void Client::reciveDistribution(SOCKET *serverSocket)
-{	//-----------------
-	display("");
-	display("");
-	//------------------
-
-	DistributeFile /* FileInfo*/ distributeFile;
-	int iResult = 0;
-	int fileSize = 0;
+void Client::reciveDistribution(tcp::socket* serverSocket)
+{
+	DistributeFile distributeFile;
 	int numberDistribution = 0;
 	char* buffer = (char*)& numberDistribution;
+	int receiveLength = sizeof(DistributeFile);
 
-	iResult = recv(*serverSocket, buffer, 4, 0);
-	if (!iResult)
-	{
-		// обработай
-		return;
-	}
-	else if (iResult == SOCKET_ERROR)
-	{
-		// обработай
-		return;
-	}
+	boost::asio::read(*serverSocket,
+		boost::asio::buffer(buffer, 4));
 
-	display("up");
+	display("Client::reciveDistribution numberDistribution:");
+	display(std::to_string(numberDistribution));
 
 	buffer = (char*)& distributeFile;
 
 	for (int i = 0; i < numberDistribution; i++)
 	{
-		display("up1");
-		iResult = recv(*serverSocket, buffer, sizeof(DistributeFile/*FileInfo*/), 0);
-		if (!iResult)
-		{
-			display("up2");
-			// обработай
-			break;
-		}
-		else if (iResult == SOCKET_ERROR)
-		{
-			display("up3");
-			// обработай
-			break;
-		}
+		boost::asio::read(*serverSocket, boost::asio::buffer(buffer, receiveLength));
 
-		display("for");
-
-		display("poku4au");
+		display("Client::reciveDistribution received next file:");
 		display(distributeFile.m_fileInfo.m_fileName);
 		display(distributeFile.m_fileInfo.m_fileDescription);
 		std::string s = distributeFile.m_address.to_string();
@@ -601,40 +475,37 @@ int Client::getLargestCommonSubstring(/*std::string & result,*/ const std::strin
 	//result = a.substr(result_index, max_length);
 	return max_length;
 }
-
-void Client::connnect()
-{
-
-	enum { max_length = 1024 };
-
-	try
-	{
-		boost::asio::io_service io_service;
-
-		tcp::socket s(io_service);
-		tcp::resolver resolver(io_service);
-		boost::asio::connect(s, resolver.resolve({ "127.0.0.1", "77777" }));
-
-		std::cout << "Enter message: ";
-		char request[max_length];
-		std::cin.getline(request, max_length);
-		size_t request_length = std::strlen(request);
-		boost::asio::write(s, boost::asio::buffer(request, request_length));
-
-		char reply[max_length];
-		size_t reply_length = boost::asio::read(s,
-			boost::asio::buffer(reply, request_length));
-		std::cout << "Reply is: ";
-		std::cout.write(reply, reply_length);
-		std::cout << "\n";
-	}
-	catch (std::exception& e)
-	{
-		std::cerr << "Exception: " << e.what() << "\n";
-	}
-
-
-}
+//
+//void Client::connnect()
+//{
+//	enum { max_length = 1024 };
+//
+//	try
+//	{
+//		boost::asio::io_service io_service;
+//
+//		tcp::socket s(io_service);
+//		tcp::resolver resolver(io_service);
+//		boost::asio::connect(s, resolver.resolve({ "127.0.0.1", "77777" }));
+//
+//		std::cout << "Enter message: ";
+//		char request[max_length];
+//		std::cin.getline(request, max_length);
+//		size_t request_length = std::strlen(request);
+//		boost::asio::write(s, boost::asio::buffer(request, request_length));
+//
+//		char reply[max_length];
+//		size_t reply_length = boost::asio::read(s,
+//			boost::asio::buffer(reply, request_length));
+//		std::cout << "Reply is: ";
+//		std::cout.write(reply, reply_length);
+//		std::cout << "\n";
+//	}
+//	catch (std::exception& e)
+//	{
+//		std::cerr << "Exception: " << e.what() << "\n";
+//	}
+//}
 
 void Client::addDistributeFile(const DistributeFile& distributeFile)
 {

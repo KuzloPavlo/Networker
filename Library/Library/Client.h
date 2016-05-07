@@ -3,11 +3,11 @@
 #endif
 
 #pragma once
-#include <windows.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <Wincrypt.h>
-#include <iphlpapi.h>
+//#include <windows.h>
+//#include <winsock2.h>
+//#include <ws2tcpip.h>
+//#include <Wincrypt.h>
+//#include <iphlpapi.h>
 #include "MessageTypes.h"
 #include <string>
 #include <functional>
@@ -32,9 +32,13 @@
 #include "Semaphore.h"
 #include "Synchronization.h"
 
-#pragma comment(lib, "Ws2_32.lib")
-#pragma comment (lib, "Mswsock.lib")
-#pragma comment (lib, "AdvApi32.lib")
+using boost::asio::ip::tcp;
+
+//
+//
+//#pragma comment(lib, "Ws2_32.lib")
+//#pragma comment (lib, "Mswsock.lib")
+//#pragma comment (lib, "AdvApi32.lib")
 
 #define	CHANGEFILESTATUS  std::function<void(const FileStatus& fileStatus, const int& filePercents)>
 #define CHANGEDOWNLOADER  std::function<void(const FileStatus& fileStatus)>
@@ -44,7 +48,7 @@ class Client
 public:
 	Client();
 	~Client();
-	void connnect();
+	//void connnect();
 	void readServer();
 	int readClient(char * const reseiveBuffer, const int& receiveSize, const char* sendBuffer);
 	void connectToServer(const std::string& IPaddress, const std::string& port);
@@ -87,8 +91,8 @@ private://
 
 	void threadCreateDownloadingFile(std::string location, std::string description);
 	void threadSearchFile(std::string tockenFile);
-	void sendOutgoingDistribution(SOCKET *serverSocket);
-	void reciveDistribution(SOCKET *serverSocket);
+	void sendOutgoingDistribution(tcp::socket* serverSocket);
+	void reciveDistribution(tcp::socket* serverSocket);
 	int getLargestCommonSubstring(const std::string & a, const std::string & b);
 	void addDistributeFile(const DistributeFile& distributeFile);
 	FileDistributors getDistributors(const FileInfo& fileInfo);//

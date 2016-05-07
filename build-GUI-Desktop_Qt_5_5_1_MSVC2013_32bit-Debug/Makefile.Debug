@@ -5591,6 +5591,8 @@ debug\descriptionform.obj: ..\GUI\descriptionform.cpp ../GUI/descriptionform.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtGui\qinputmethod.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QButtonGroup \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qbuttongroup.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QFrame \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qframe.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QGridLayout \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qgridlayout.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qlayout.h \
@@ -5600,7 +5602,6 @@ debug\descriptionform.obj: ..\GUI\descriptionform.cpp ../GUI/descriptionform.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qheaderview.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qabstractitemview.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qabstractscrollarea.h \
-		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qframe.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\qabstractitemmodel.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\qitemselectionmodel.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qabstractitemdelegate.h \
