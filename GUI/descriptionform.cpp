@@ -7,15 +7,23 @@ DescriptionForm::DescriptionForm(const FileInfo& description, QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-    ui->Hash->setText(std::to_string( description.m_fileHash).c_str());
-    ui->Parts->setText(std::to_string(description.m_numberParts).c_str());
-    ui->Description->setText(description.m_fileDescription);
+    //    ui->Hash->setText(std::to_string( description.m_fileHash).c_str());
+    //    ui->Parts->setText(std::to_string(description.m_numberParts).c_str());
+    //    ui->Description->setText(description.m_fileDescription);
+    setFileInfo(description);
     this->hidDescription();
 }
 
 DescriptionForm::~DescriptionForm()
 {
     delete ui;
+}
+
+void DescriptionForm::setFileInfo(const FileInfo &description)
+{
+    ui->Hash->setText(std::to_string( description.m_fileHash).c_str());
+    ui->Parts->setText(std::to_string(description.m_numberParts).c_str());
+    ui->Description->setText(description.m_fileDescription);
 }
 
 void DescriptionForm::showDescription()
@@ -55,7 +63,7 @@ void DescriptionForm::on_DowloadButton_clicked()
     setFilseStatus(FileStatus::downloading);
 
     //--------------
-     ui->Hash->setText("DescriptionForm::on_DowloadButton_clicked()");
+    ui->Hash->setText("DescriptionForm::on_DowloadButton_clicked()");
     //---------
 }
 

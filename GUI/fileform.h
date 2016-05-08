@@ -46,6 +46,7 @@ signals:
     void signalSetFile(const DownloadingFile& newFile);
 private:
     void insertMy();
+    void showSize();
 
     QTableWidget *m_mainTable;
 

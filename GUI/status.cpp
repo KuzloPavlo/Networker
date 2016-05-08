@@ -34,7 +34,7 @@ void Status::changeStatusBar(const int &filePercents)
 
         QPalette pall;
 
-        pall.setColor (part->backgroundRole (), QColor(0,127,255,100));
+        pall.setColor (part->backgroundRole(), QColor(0,127,255,100));
 
         part->setPalette(pall);
 
@@ -83,6 +83,11 @@ void Status::changeStatusLabel(const FileStatus &fileStatus)
         break;
 
     case FileStatus::failing:
+        ui->status->setText("Failing");
+        QPalette pall;
+        pall.setColor (ui->widget->backgroundRole (), QColor(200,0,0,150));
+        ui->widget->setPalette(pall);
+        ui->widget->setAutoFillBackground(true);
         break;
     }
 }

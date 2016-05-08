@@ -19,6 +19,7 @@ public:
     ~DescriptionForm();
     void showDescription();
     void hidDescription();
+    void setFileInfo(const FileInfo& description);
     CHANGESTATUS setFilseStatus;
 private slots:
     void on_DowloadButton_clicked();

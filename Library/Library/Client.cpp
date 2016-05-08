@@ -177,106 +177,130 @@ void Client::createNewDownloadingFile(std::string location, std::string descript
 
 void Client::threadCreateDownloadingFile(std::string location, std::string description, ADDNEWFILE addNewFile, CHANGEFILESTATUS changeFileStatus)
 {
-	//--------------------------
-	display("Client::threadCreateDownloadingFile1");
-	//--------------------------
-	//const int partSize = 2048;
-	char filePart[PARTSIZE] = { 0 };
-	std::hash<std::string> hashFunction;
-
-	DownloadingFile newFile;
-	strcpy_s(newFile.m_fileInfo.m_fileDescription, description.c_str());
-	strcpy_s(newFile.m_fileLocation, location.c_str());
-	newFile.m_fileStatus = FileStatus::creating;
-
-	std::string tempName;
-	tempName.assign(location, location.rfind("\\") + 1, location.size());
-
-	strcpy_s(newFile.m_fileInfo.m_fileName, tempName.c_str());
-
-	newFile.m_fileInfo.m_fileHash = (newFile.m_fileInfo.m_fileHash) ^ hashFunction(tempName);
-
-	std::ifstream in(location, std::ios::in | std::ios::binary);
-	if (!in)
+	try
 	{
-		display("Client::threadCreateDownloadingFile. Not open file fo creating!");
-		// обработать ошыбку
-		return;
+		display("Client::threadCreateDownloadingFile Started");
+
+		char filePart[PARTSIZE] = { 0 };
+		std::hash<std::string> hashFunction;
+
+		DownloadingFile newFile;
+		strcpy_s(newFile.m_fileInfo.m_fileDescription, description.c_str());
+		strcpy_s(newFile.m_fileLocation, location.c_str());
+		newFile.m_fileStatus = FileStatus::creating;
+
+		changeFileStatus(newFile.m_fileStatus, 0);
+
+		std::string tempName;
+		tempName.assign(location, location.rfind("\\") + 1, location.size());
+
+		strcpy_s(newFile.m_fileInfo.m_fileName, tempName.c_str());
+
+		newFile.m_fileInfo.m_fileHash = (newFile.m_fileInfo.m_fileHash) ^ hashFunction(tempName);
+
+		std::ifstream in(location, std::ios::in | std::ios::binary);
+		if (!in)
+		{
+			newFile.m_fileStatus = FileStatus::failing;
+			changeFileStatus(newFile.m_fileStatus, 0);
+			throw std::exception("Client::threadCreateDownloadingFile. Not open file for creating!");
+		}
+
+		int inSize = 0;
+
+		in.seekg(0, in.end);
+		inSize = in.tellg();
+		in.seekg(0, in.beg);
+
+		int percent = 0;
+
+		do
+		{
+			in.read(filePart, PARTSIZE);
+			newFile.m_fileInfo.m_numberParts++;
+			newFile.m_fileInfo.m_fileSize += in.gcount();
+			newFile.m_fileInfo.m_fileHash = (1 / 256) * (newFile.m_fileInfo.m_fileHash << 1) ^ hashFunction(filePart);
+
+			if (((newFile.m_fileInfo.m_fileSize * 100) / inSize) > percent)
+			{
+				percent = (newFile.m_fileInfo.m_fileSize * 100) / inSize;
+				changeFileStatus(newFile.m_fileStatus, percent);
+			}
+
+		} while (in);
+
+		display(std::to_string(newFile.m_fileInfo.m_fileHash));
+		display(newFile.m_fileInfo.m_fileName);
+		display(newFile.m_fileInfo.m_fileDescription);
+		display(std::to_string(newFile.m_fileInfo.m_numberParts));
+		display(std::to_string(newFile.m_fileInfo.m_fileSize));
+		display(newFile.m_fileLocation);
+
+		std::ofstream out("OutgoingDistribution", std::ios::out | std::ios::app | std::ios::binary);
+		if (!out)
+		{
+			newFile.m_fileStatus = FileStatus::failing;
+			changeFileStatus(newFile.m_fileStatus, 0);
+			throw std::exception("Client::threadCreateDownloadingFile. Oops cannot open repository file");
+		}
+
+		newFile.m_fileStatus = FileStatus::distribution;
+
+		char* outBuffer = (char*)&newFile;
+		out.write(outBuffer, sizeof(DownloadingFile));
+
+		changeFileStatus(newFile.m_fileStatus, 100);
+
+		out.close();
+
+		addNewFile(newFile);
+	}
+	catch (const std::exception& ex)
+	{
+		changeFileStatus(FileStatus::failing, 100);
+		display(ex.what());
 	}
 
-	do
+	//---------------------------------------------------------------------------+
+	// under code only for displaing									         |	
+	//---------------------------------------------------------------------------+
+
+	try
 	{
-		in.read(filePart, PARTSIZE);
-		newFile.m_fileInfo.m_numberParts++;
-		newFile.m_fileInfo.m_fileSize += in.gcount();
-		newFile.m_fileInfo.m_fileHash = (1 / 256) * (newFile.m_fileInfo.m_fileHash << 1) ^ hashFunction(filePart);
+		int numberOutDistribution = 0;
+		int fileSize = 0;
 
-	} while (in);
+		std::ifstream inn("OutgoingDistribution", std::ios::in | std::ios::binary);
+		if (!inn)
+		{
+			throw std::exception("Client::threadCreateDownloadingFile. Oops cannot open file for read");
+		}
 
-	//--------------------------------
-	display("");
-	display("");
-	display(std::to_string(newFile.m_fileInfo.m_fileHash));
-	display(newFile.m_fileInfo.m_fileName);
-	display(newFile.m_fileInfo.m_fileDescription);
-	display(std::to_string(newFile.m_fileInfo.m_numberParts));
-	display(std::to_string(newFile.m_fileInfo.m_fileSize));
-	display(newFile.m_fileLocation);
-	//----------------------------------
+		inn.seekg(0, inn.end);
+		fileSize = inn.tellg();
+		inn.seekg(0, inn.beg);
 
-	std::ofstream out("OutgoingDistribution", std::ios::out | std::ios::app | std::ios::binary);
-	if (!out)
-	{
-		display("Oops cannot open file");
-		// обработать ошыбку
-		return;
+		numberOutDistribution = fileSize / sizeof(DownloadingFile);
+
+		display(std::to_string(numberOutDistribution));
+
+		DownloadingFile dff;
+		char* ptr = (char*)&dff;
+		for (int i = 0; i < numberOutDistribution; i++)
+		{
+			inn.read(ptr, sizeof(DownloadingFile));
+
+			display(std::to_string(dff.m_fileInfo.m_fileHash));
+			display(dff.m_fileInfo.m_fileName);
+			display(dff.m_fileInfo.m_fileDescription);
+			display(std::to_string(dff.m_fileInfo.m_numberParts));
+			display(std::to_string(dff.m_fileInfo.m_fileSize));
+			display(dff.m_fileLocation);
+		}
 	}
-	char* outBuffer = (char*)&newFile;
-	out.write(outBuffer, sizeof(DownloadingFile));
-
-	//------------------------------------------------
-	// все що нижче видали
-	//----------------------------------------------
-	out.close();
-
-	int numberOutDistribution = 0;
-	int fileSize = 0;
-
-
-	std::ifstream inn("OutgoingDistribution", std::ios::in | std::ios::binary);
-	if (!inn)
+	catch (const std::exception& ex)
 	{
-		display("Oops cannot open file");
-		// обработать ошыбку
-		return;
-	}
-
-	inn.seekg(0, inn.end);
-	fileSize = inn.tellg();
-	inn.seekg(0, inn.beg);
-
-	numberOutDistribution = fileSize / sizeof(DownloadingFile);
-
-	display("");
-	display("");
-
-	display(std::to_string(numberOutDistribution));
-	//inn.seekg(sizeof(DownloadingFile), std::ios::end);
-	DownloadingFile dff;
-	char* ptr = (char*)&dff;
-	for (int i = 0; i < numberOutDistribution; i++)
-	{
-
-		inn.read(ptr, sizeof(DownloadingFile));
-		display("");
-		display("");
-
-		display(std::to_string(dff.m_fileInfo.m_fileHash));
-		display(dff.m_fileInfo.m_fileName);
-		display(dff.m_fileInfo.m_fileDescription);
-		display(std::to_string(dff.m_fileInfo.m_numberParts));
-		display(std::to_string(dff.m_fileInfo.m_fileSize));
-		display(dff.m_fileLocation);
+		display(ex.what());
 	}
 }
 

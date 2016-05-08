@@ -49,6 +49,11 @@ FileForm::FileForm(
             SIGNAL(signalChangeFileStatus(FileStatus,int)),
             this,
             SLOT(slotChangeFileStatus(FileStatus,int)) );
+
+    connect(this,
+            SIGNAL(signalSetFile(const DownloadingFile &)),
+            this,
+            SLOT(slotSetFile(const DownloadingFile &)));
 }
 
 FileForm::~FileForm()
@@ -98,9 +103,28 @@ void FileForm::insertMy()
     QTableWidgetItem* number = new QTableWidgetItem(tr("%1").arg((m_myRow/2)+1));
     number->setTextAlignment(Qt::AlignCenter);
 
-
     m_mainTable->setItem(m_myRow,0, number);
 
+    showSize();
+
+    //    float forSize = 0;
+    //    QString sizeType;
+
+    //    FoundedFileForm::changeSizeStyle(m_dowloadingFile.m_fileInfo.m_fileSize, &forSize,&sizeType);
+
+    //    std::string sizeFile = std::to_string(forSize);
+
+    //    sizeFile.erase( sizeFile.end()-4, sizeFile.end());
+
+    //    sizeFile += " " + sizeType.toStdString();
+
+    //    QTableWidgetItem* size = new QTableWidgetItem(tr("%1").arg(sizeFile.c_str()));
+
+    //    m_mainTable->setItem(m_myRow,3,size);
+}
+
+void FileForm::showSize()
+{
     float forSize = 0;
     QString sizeType;
 
@@ -175,4 +199,6 @@ void FileForm::filter(const Filter& filter)
 void FileForm::slotSetFile(const DownloadingFile &newFile)
 {
     m_dowloadingFile = newFile;
+    m_description->setFileInfo(newFile.m_fileInfo);
+    showSize();
 }
