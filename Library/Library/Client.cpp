@@ -169,13 +169,13 @@ void Client::connectToServer(const std::string& IPaddress, const std::string& po
 	serverThread.detach();
 }
 
-void Client::createNewDownloadingFile(std::string location, std::string description)
+void Client::createNewDownloadingFile(std::string location, std::string description, ADDNEWFILE addNewFile, CHANGEFILESTATUS changeFileStatus)
 {
-	std::thread createingFile(&Client::threadCreateDownloadingFile, this, location, description);
+	std::thread createingFile(&Client::threadCreateDownloadingFile, this, location, description, addNewFile, changeFileStatus);
 	createingFile.detach();
 }
 
-void Client::threadCreateDownloadingFile(std::string location, std::string description)
+void Client::threadCreateDownloadingFile(std::string location, std::string description, ADDNEWFILE addNewFile, CHANGEFILESTATUS changeFileStatus)
 {
 	//--------------------------
 	display("Client::threadCreateDownloadingFile1");

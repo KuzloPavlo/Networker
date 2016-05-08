@@ -42,6 +42,7 @@ using boost::asio::ip::tcp;
 
 #define	CHANGEFILESTATUS  std::function<void(const FileStatus& fileStatus, const int& filePercents)>
 #define CHANGEDOWNLOADER  std::function<void(const FileStatus& fileStatus)>
+#define ADDNEWFILE std::function<void (const DownloadingFile& newFile)>
 
 class Client
 {
@@ -53,7 +54,7 @@ public:
 	int readClient(char * const reseiveBuffer, const int& receiveSize, const char* sendBuffer);
 	void connectToServer(const std::string& IPaddress, const std::string& port);
 	void connectToClient(const std::string& IPaddress, const std::string& port);
-	void createNewDownloadingFile(std::string location, std::string description);
+	void createNewDownloadingFile(std::string location, std::string description, ADDNEWFILE addNewFile, CHANGEFILESTATUS changeFileStatus);
 	void searchFile(const std::string& tockenFile);
 
 	void downloadFile(
@@ -89,7 +90,7 @@ private://
 		FileStatus* fileStatus
 		);
 
-	void threadCreateDownloadingFile(std::string location, std::string description);
+	void threadCreateDownloadingFile(std::string location, std::string description, ADDNEWFILE addNewFile, CHANGEFILESTATUS changeFileStatus);
 	void threadSearchFile(std::string tockenFile);
 	void sendOutgoingDistribution(tcp::socket* serverSocket);
 	void reciveDistribution(tcp::socket* serverSocket);

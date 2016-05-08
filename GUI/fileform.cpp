@@ -4,26 +4,14 @@
 FileForm::FileForm(
         const DownloadingFile& file,
         QTableWidget *mainTable,
-        QTableWidget *downloadingTable,
-        QTableWidget *distributedTable,
-        QTableWidget *complitedTable,
-        QTableWidget *activeTable,
-        QTableWidget *inactiveTable,
-        QWidget *parent,
-        bool mainWidget) :
+        QWidget *parent) :
     QWidget(parent),
     m_dowloadingFile(file),
     m_mainTable(mainTable),
-    m_downloadingTable(downloadingTable),
-    m_distributedTable(distributedTable),
-    m_complitedTable(complitedTable),
-    m_activeTable(activeTable),
-    m_inactiveTable(inactiveTable),
     m_status(new Status(this)),
     m_description(new DescriptionForm(file.m_fileInfo, this)),
     m_downloaderStatus(new FileStatus(FileStatus::downloading)),
-    ui(new Ui::FileForm),
-    m_mainWidget(mainWidget)
+    ui(new Ui::FileForm)
 {
     ui->setupUi(this);
 
@@ -41,16 +29,11 @@ FileForm::FileForm(
 
     ui->SelectedButton->setVisible(false);
 
-    if(mainWidget)
-    {
-        m_description->setFilseStatus = std::bind(
-                    &FileForm::signalSetFileStatus,
-                    this,
-                    std::placeholders::_1);
 
-        createTwin(m_downloadingTable);
-        createTwinActi(m_activeTable);
-    }
+    m_description->setFilseStatus = std::bind(
+                &FileForm::signalSetFileStatus,
+                this,
+                std::placeholders::_1);
 
     insertMy();
 
@@ -59,6 +42,8 @@ FileForm::FileForm(
                 this,
                 std::placeholders::_1,
                 std::placeholders::_2);
+
+    setNewFile = std::bind(&FileForm::signalSetFile, this, std::placeholders::_1);
 
     connect(this,
             SIGNAL(signalChangeFileStatus(FileStatus,int)),
@@ -92,39 +77,7 @@ void FileForm::on_SelectedButton_clicked()
 void FileForm::slotChangeFileStatus(const FileStatus& fileStatus,const int& filePercents)
 {
     m_status->changeStatus(fileStatus, filePercents);
-
-    if(m_mainWidget)
-    {
-        if(m_myInDownloading)
-        {
-            this->m_myInDownloading->changeFileStatus(fileStatus, filePercents);
-        }
-
-        if(m_myInDistributed)
-        {
-            this->m_myInDistributed->changeFileStatus(fileStatus, filePercents);
-        }
-
-        if(m_myInDistributed)
-        {
-            this->m_myInDownloading->changeFileStatus(fileStatus, filePercents);
-        }
-
-        if(m_myInComplited)
-        {
-            this->m_myInComplited->changeFileStatus(fileStatus, filePercents);
-        }
-
-        if(m_myInActive)
-        {
-            this->m_myInActive->changeFileStatus(fileStatus, filePercents);
-        }
-
-        if(m_myInInactive)
-        {
-            this->m_myInInactive->changeFileStatus(fileStatus, filePercents);
-        }
-    }
+    m_dowloadingFile.m_fileStatus = fileStatus;
 }
 
 void FileForm::insertMy()
@@ -164,33 +117,6 @@ void FileForm::insertMy()
     m_mainTable->setItem(m_myRow,3,size);
 }
 
-void FileForm::createTwin(/*FileForm* ptwin,*/ QTableWidget *mainTable)
-{
-    m_myInDownloading = new FileForm(m_dowloadingFile, mainTable,nullptr,nullptr,nullptr,nullptr,nullptr,this,false );
-    m_myInDownloading->m_description->setFilseStatus = std::bind(
-                &FileForm::signalSetFileStatus,
-                this,
-                std::placeholders::_1);
-}
-
-void FileForm::createTwinDist(/*FileForm* ptwin,*/ QTableWidget *mainTable)
-{
-    m_myInDistributed = new FileForm(m_dowloadingFile, mainTable,nullptr,nullptr,nullptr,nullptr,nullptr,this,false );
-}
-void FileForm::createTwinCom(/*FileForm* ptwin,*/ QTableWidget *mainTable)
-{
-    m_myInComplited = new FileForm(m_dowloadingFile, mainTable,nullptr,nullptr,nullptr,nullptr,nullptr,this,false );
-}
-
-void FileForm::createTwinActi(/*FileForm* ptwin,*/ QTableWidget *mainTable)
-{
-    m_myInActive = new FileForm(m_dowloadingFile, mainTable,nullptr,nullptr,nullptr,nullptr,nullptr,this,false );
-}
-
-void FileForm::createTwinIna(/*FileForm* ptwin,*/ QTableWidget *mainTable)
-{
-    m_myInInactive = new FileForm(m_dowloadingFile, mainTable,nullptr,nullptr,nullptr,nullptr,nullptr,this,false );
-}
 
 void FileForm::slotSetFileStatus(const FileStatus& fileStatus)
 {
@@ -199,23 +125,54 @@ void FileForm::slotSetFileStatus(const FileStatus& fileStatus)
     i++;
     signalChangeFileStatus(fileStatus,i);
     //----------
-    m_primitives.m_mutexCounter->lock();
-    if ((*m_primitives.m_counter) == 0)
-    {
-        m_primitives.m_goRead->lock();
-        m_primitives.m_Shared->lock();
-    }
-    (*m_primitives.m_counter)++;
-    m_primitives.m_mutexCounter->unlock();
+    //    m_primitives.m_mutexCounter->lock();
+    //    if ((*m_primitives.m_counter) == 0)
+    //    {
+    //        m_primitives.m_goRead->lock();
+    //        m_primitives.m_Shared->lock();
+    //    }
+    //    (*m_primitives.m_counter)++;
+    //    m_primitives.m_mutexCounter->unlock();
 
-    *m_downloaderStatus = fileStatus;
+    //    *m_downloaderStatus = fileStatus;
 
-    m_primitives.m_mutexCounter->lock();
-    (*m_primitives.m_counter)--;
-    if ((*m_primitives.m_counter) == 0)
-    {
-        m_primitives.m_Shared->unlock_one();
-        m_primitives.m_goWrite->unlock_one();
+    //    m_primitives.m_mutexCounter->lock();
+    //    (*m_primitives.m_counter)--;
+    //    if ((*m_primitives.m_counter) == 0)
+    //    {
+    //        m_primitives.m_Shared->unlock_one();
+    //        m_primitives.m_goWrite->unlock_one();
+    //    }
+    //    m_primitives.m_mutexCounter->unlock();
+}
+
+void FileForm::filter(const Filter& filter)
+{
+    switch (filter) {
+    case Filter::all:
+        m_mainTable->setRowHeight(m_myRow, 30);
+        on_SelectedButton_clicked();
+        break;
+
+    case Filter::download:
+        if(m_dowloadingFile.m_fileStatus == FileStatus::downloading)
+        {
+            m_mainTable->setRowHeight(m_myRow, 30);
+        }
+        else
+        {
+            m_mainTable->setRowHeight(m_myRow, 0);
+        }
+
+        break;
+
+    default:
+        break;
     }
-    m_primitives.m_mutexCounter->unlock();
+
+}
+
+void FileForm::slotSetFile(const DownloadingFile &newFile)
+{
+    m_dowloadingFile = newFile;
 }

@@ -42,7 +42,7 @@ private slots:
 
     void on_createFileBut_clicked();
 
-   // void on_sendButton_clicked();
+    // void on_sendButton_clicked();
 
     void slotDisplay(const std::string& str);
 
@@ -61,25 +61,25 @@ private slots:
     void on_searchEdit_returnPressed();
 
 
-  //  void on_MainWindow_toolButtonStyleChanged(const Qt::ToolButtonStyle &toolButtonStyle);
 
-    void on_pushButton_clicked();
-
-    void on_pushButton_4_clicked();
-
-    void on_pushButton_3_clicked();
-
-    void on_pushButton_2_clicked();
-
-    void on_pushButton_5_clicked();
-
-    void on_pushButton_6_clicked();
 
     void on_homeButton_clicked();
 
     void on_showAllButton_clicked();
 
     void on_pushButton_7_clicked();
+
+    void on_AllButton_clicked();
+
+    void on_downloadingButton_clicked();
+
+    void on_distributedButton_clicked();
+
+    void on_completedButton_clicked();
+
+    void on_activeButton_clicked();
+
+    void on_inactiveButton_clicked();
 
 signals:
 
@@ -107,7 +107,12 @@ private:
     DownloadingFileDialog *m_pNewFileDialog;
     std::string changeLocationStyle(const QString& QtStyleLocation);
 
-   void tableSetting(QTableWidget* table);
+    std::vector<FileForm*> m_fileForms;
+
+    void tableSetting(QTableWidget* table);
+
+void filter(const Filter& filter);
+
 
     //--------------------------
     TemDebuger* m_debuger;

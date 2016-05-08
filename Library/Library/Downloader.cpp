@@ -185,7 +185,7 @@ bool Downloader::createEmptyFile(const std::string& location, int sizeFile)
 {
 	enum
 	{
-		emptyLength = 32768
+		emptyLength = 32768 //
 	};
 
 	std::ofstream out(location, std::ios::out | std::ios::binary);

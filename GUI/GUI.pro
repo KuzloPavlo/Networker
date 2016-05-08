@@ -29,7 +29,8 @@ HEADERS  += mainwindow.h \
     status.h \
     fileform.h \
     descriptionform.h \
-    temdebuger.h
+    temdebuger.h \
+    filter.h
 
 FORMS    += mainwindow.ui \
     downloadingfiledialog.ui \

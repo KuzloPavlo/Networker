@@ -381,347 +381,7 @@
                  <number>0</number>
                 </property>
                 <item row="0" column="0">
-                 <widget class="QTableWidget" name="tableAll">
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="verticalScrollBarPolicy">
-                   <enum>Qt::ScrollBarAlwaysOff</enum>
-                  </property>
-                  <property name="rowCount">
-                   <number>0</number>
-                  </property>
-                  <attribute name="horizontalHeaderVisible">
-                   <bool>false</bool>
-                  </attribute>
-                  <attribute name="verticalHeaderVisible">
-                   <bool>false</bool>
-                  </attribute>
-                  <column>
-                   <property name="text">
-                    <string>№</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Name</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Status</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Size</string>
-                   </property>
-                  </column>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="Dowloading">
-             <layout class="QGridLayout" name="gridLayout_13">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <property name="spacing">
-               <number>0</number>
-              </property>
-              <item row="0" column="0">
-               <layout class="QGridLayout" name="gridLayout_12">
-                <property name="spacing">
-                 <number>0</number>
-                </property>
-                <item row="0" column="0">
-                 <widget class="QTableWidget" name="tableDownloading">
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="verticalScrollBarPolicy">
-                   <enum>Qt::ScrollBarAlwaysOff</enum>
-                  </property>
-                  <property name="rowCount">
-                   <number>0</number>
-                  </property>
-                  <attribute name="horizontalHeaderVisible">
-                   <bool>false</bool>
-                  </attribute>
-                  <attribute name="verticalHeaderVisible">
-                   <bool>false</bool>
-                  </attribute>
-                  <column>
-                   <property name="text">
-                    <string>№</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Name</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Status</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Size</string>
-                   </property>
-                  </column>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="Distributed">
-             <layout class="QGridLayout" name="gridLayout_15">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <property name="spacing">
-               <number>0</number>
-              </property>
-              <item row="0" column="0">
-               <layout class="QGridLayout" name="gridLayout_14">
-                <property name="spacing">
-                 <number>0</number>
-                </property>
-                <item row="0" column="0">
-                 <widget class="QTableWidget" name="tableDistributed">
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="verticalScrollBarPolicy">
-                   <enum>Qt::ScrollBarAlwaysOff</enum>
-                  </property>
-                  <property name="rowCount">
-                   <number>0</number>
-                  </property>
-                  <attribute name="horizontalHeaderVisible">
-                   <bool>false</bool>
-                  </attribute>
-                  <attribute name="verticalHeaderVisible">
-                   <bool>false</bool>
-                  </attribute>
-                  <column>
-                   <property name="text">
-                    <string>№</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Name</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Status</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Size</string>
-                   </property>
-                  </column>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="Complited">
-             <layout class="QGridLayout" name="gridLayout_17">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <property name="spacing">
-               <number>0</number>
-              </property>
-              <item row="0" column="0">
-               <layout class="QGridLayout" name="gridLayout_16">
-                <property name="spacing">
-                 <number>0</number>
-                </property>
-                <item row="0" column="0">
-                 <widget class="QTableWidget" name="tableCompleted">
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="verticalScrollBarPolicy">
-                   <enum>Qt::ScrollBarAlwaysOff</enum>
-                  </property>
-                  <property name="rowCount">
-                   <number>0</number>
-                  </property>
-                  <attribute name="horizontalHeaderVisible">
-                   <bool>false</bool>
-                  </attribute>
-                  <attribute name="verticalHeaderVisible">
-                   <bool>false</bool>
-                  </attribute>
-                  <column>
-                   <property name="text">
-                    <string>№</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Name</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Status</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Size</string>
-                   </property>
-                  </column>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="Active">
-             <layout class="QGridLayout" name="gridLayout_19">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <property name="spacing">
-               <number>0</number>
-              </property>
-              <item row="0" column="0">
-               <layout class="QGridLayout" name="gridLayout_18">
-                <property name="spacing">
-                 <number>0</number>
-                </property>
-                <item row="0" column="0">
-                 <widget class="QTableWidget" name="tableActive">
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="verticalScrollBarPolicy">
-                   <enum>Qt::ScrollBarAlwaysOff</enum>
-                  </property>
-                  <property name="rowCount">
-                   <number>0</number>
-                  </property>
-                  <attribute name="horizontalHeaderVisible">
-                   <bool>false</bool>
-                  </attribute>
-                  <attribute name="verticalHeaderVisible">
-                   <bool>false</bool>
-                  </attribute>
-                  <column>
-                   <property name="text">
-                    <string>№</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Name</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Status</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Size</string>
-                   </property>
-                  </column>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="Inactive">
-             <layout class="QGridLayout" name="gridLayout_21">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <property name="spacing">
-               <number>0</number>
-              </property>
-              <item row="0" column="0">
-               <layout class="QGridLayout" name="gridLayout_20">
-                <property name="spacing">
-                 <number>0</number>
-                </property>
-                <item row="0" column="0">
-                 <widget class="QTableWidget" name="tableInactive">
+                 <widget class="QTableWidget" name="tableDownloads">
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
@@ -942,7 +602,7 @@
                  </spacer>
                 </item>
                 <item row="1" column="0">
-                 <widget class="QPushButton" name="pushButton">
+                 <widget class="QPushButton" name="AllButton">
                   <property name="maximumSize">
                    <size>
                     <width>50</width>
@@ -984,7 +644,7 @@
                  </widget>
                 </item>
                 <item row="7" column="0">
-                 <widget class="QPushButton" name="pushButton_2">
+                 <widget class="QPushButton" name="completedButton">
                   <property name="maximumSize">
                    <size>
                     <width>100</width>
@@ -1074,7 +734,7 @@
                  </spacer>
                 </item>
                 <item row="11" column="0">
-                 <widget class="QPushButton" name="pushButton_6">
+                 <widget class="QPushButton" name="inactiveButton">
                   <property name="maximumSize">
                    <size>
                     <width>85</width>
@@ -1125,7 +785,7 @@
                  </widget>
                 </item>
                 <item row="3" column="0">
-                 <widget class="QPushButton" name="pushButton_4">
+                 <widget class="QPushButton" name="downloadingButton">
                   <property name="font">
                    <font>
                     <pointsize>10</pointsize>
@@ -1161,7 +821,7 @@
                  </widget>
                 </item>
                 <item row="9" column="0">
-                 <widget class="QPushButton" name="pushButton_5">
+                 <widget class="QPushButton" name="activeButton">
                   <property name="maximumSize">
                    <size>
                     <width>75</width>
@@ -1203,7 +863,7 @@
                  </widget>
                 </item>
                 <item row="5" column="0">
-                 <widget class="QPushButton" name="pushButton_3">
+                 <widget class="QPushButton" name="distributedButton">
                   <property name="maximumSize">
                    <size>
                     <width>105</width>

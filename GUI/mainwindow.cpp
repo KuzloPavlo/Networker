@@ -38,17 +38,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->showAllButton->setToolTip("Show All files");
     ui->refreshButton->setToolTip("Refresh Distribution");
 
-    tableSetting(ui->tableAll);
+    tableSetting(ui->tableDownloads);
 
-    tableSetting(ui->tableDownloading);
-
-    tableSetting(ui->tableDistributed);
-
-    tableSetting(ui->tableCompleted);
-
-    tableSetting(ui->tableActive);
-
-    tableSetting(ui->tableInactive);
 
     // ui->tableFilters->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
@@ -71,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //    ui->sendButton->setVisible(false);
     //    emit on_sendButton_clicked();
 
-   // this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    // this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
 
 
@@ -162,15 +153,6 @@ void MainWindow::on_createFileBut_clicked()
     m_pNewFileDialog->show();
 }
 
-//void MainWindow::on_sendButton_clicked()
-//{
-//    //ui->tableDownloading->setSpan(0,0,1,ui->tableDownloading->columnCount());
-//    FileInfo fi;
-//    emit slotDownloadFile(fi, "akdsjf");
-
-//}
-
-
 std::string MainWindow::changeLocationStyle(const QString& QtStyleLocation)
 {
     std::string windowsStyleLocation = QtStyleLocation.toStdString();
@@ -196,7 +178,27 @@ void MainWindow::slotCreateNewDownloadingFile(const QString &location, const QSt
     std::string windowsStyleLocation = changeLocationStyle(location);
     std::string specification = description.toStdString();
     emit slotDisplay("slotCreateNewDownloadingFile");
-    m_pClient->createNewDownloadingFile(windowsStyleLocation,specification);
+
+    std::string tempName;
+    tempName.assign(windowsStyleLocation, windowsStyleLocation.rfind("\\") + 1, windowsStyleLocation.size());
+
+    DownloadingFile emptyFile;
+
+    strcpy(emptyFile.m_fileInfo.m_fileDescription, specification.c_str());
+    strcpy(emptyFile.m_fileInfo.m_fileName, tempName.c_str());
+
+    emptyFile.m_fileStatus = FileStatus::creating;
+
+    FileForm* newFile = new FileForm(
+                emptyFile,
+                ui->tableDownloads);
+
+    m_fileForms.push_back(newFile);
+
+    m_pClient->createNewDownloadingFile(
+                windowsStyleLocation,
+                specification,newFile->setNewFile,newFile->changeFileStatus
+                );
 }
 
 void MainWindow::slotAddNewDownloadingFile(const DownloadingFile& newFile)
@@ -245,50 +247,14 @@ void MainWindow::slotDownloadFile(const FileInfo &foundFile, const QString &QtLo
 
     FileForm* newFile = new FileForm(
                 file,
-                ui->tableAll,
-                ui->tableDownloading,
-                ui->tableDistributed,
-                ui->tableCompleted,
-                ui->tableActive,
-                ui->tableInactive,
-                ui->tableDownloading);
+                ui->tableDownloads);
+
+    m_fileForms.push_back(newFile);
 
     m_pClient->downloadFile(file, newFile->changeFileStatus, newFile->changeDownloader,
                             newFile->getPrimitives(), newFile->getDownloaderStatus());
 
 }
-
-void MainWindow::on_pushButton_clicked()
-{
-    ui->stackedDownloads->setCurrentIndex(0);
-}
-
-void MainWindow::on_pushButton_4_clicked()
-{
-    ui->stackedDownloads->setCurrentIndex(1);
-}
-
-void MainWindow::on_pushButton_3_clicked()
-{
-    ui->stackedDownloads->setCurrentIndex(2);
-}
-
-void MainWindow::on_pushButton_2_clicked()
-{
-    ui->stackedDownloads->setCurrentIndex(3);
-}
-
-void MainWindow::on_pushButton_5_clicked()
-{
-    ui->stackedDownloads->setCurrentIndex(4
-                                          );
-}
-
-void MainWindow::on_pushButton_6_clicked()
-{
-    ui->stackedDownloads->setCurrentIndex(5);
-}
-
 
 void MainWindow::tableSetting(QTableWidget* table)
 {
@@ -321,4 +287,46 @@ void MainWindow::on_pushButton_7_clicked()
     {
         m_debuger->hide();
     }
+}
+
+
+void MainWindow::filter(const Filter& filter)
+{
+    std::vector<FileForm*>::iterator p = m_fileForms.begin();
+
+    while(p != m_fileForms.end())
+    {
+        (*p)->filter(filter);
+        p++;
+    }
+}
+
+void MainWindow::on_AllButton_clicked()
+{
+    filter(Filter::all);
+}
+
+void MainWindow::on_downloadingButton_clicked()
+{
+    filter(Filter::download);
+}
+
+void MainWindow::on_distributedButton_clicked()
+{
+    filter(Filter::distributed);
+}
+
+void MainWindow::on_completedButton_clicked()
+{
+    filter(Filter::complited);
+}
+
+void MainWindow::on_activeButton_clicked()
+{
+    filter(Filter::active);
+}
+
+void MainWindow::on_inactiveButton_clicked()
+{
+    filter(Filter::inactive);
 }
