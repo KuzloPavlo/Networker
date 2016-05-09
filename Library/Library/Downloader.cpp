@@ -20,20 +20,32 @@ Downloader::Downloader(
 	m_donnePercent(0)
 {
 	this->display = display;
-	dosmth();
+	//dosmth();
+	display("Downloader::Downloader Start");
+	display(m_downloadingFile.m_fileInfo.m_fileName);
+	display(m_downloadingFile.m_fileInfo.m_fileDescription);
+	display(std::to_string(m_downloadingFile.m_fileInfo.m_fileHash));
+	display(m_downloadingFile.m_fileLocation);
+	display(m_distributors[0].to_string());
 
 	changeDownloader = std::bind(&Downloader::changeDownloader, this, std::placeholders::_1);
 	this->changeFileStatus(downloadingFile.m_fileStatus, 0);
 
 	std::thread sessionsThread(&Downloader::start, this, creating);
 	sessionsThread.detach();
+	
 	work();
 }
 
 Downloader::~Downloader()
 {
 }
-
+//
+//void Downloader::dosmth()
+//{
+//
+//
+//}
 void Downloader::changeDownloader(const FileStatus& fileStatus)
 {
 }
@@ -46,15 +58,16 @@ void Downloader::start(bool creating)
 
 	if (creating)
 	{
+		changeFileStatus(FileStatus::creating, 0);
 		if (!createEmptyFile(allLocation, m_downloadingFile.m_fileInfo.m_fileSize))
 		{
-			display("Downloader::start cannot create an empty file");
-			return;
+			changeFileStatus(FileStatus::failing, 0);
+			throw std::exception("Downloader::start cannot create an empty file");	
 		}
+		changeFileStatus(FileStatus::downloading, 0);
+		display("Downloader::start created an empty file");
 	}
 
-	display("Downloader::start created an empty file");
-	
 	for (int i = 0; i < m_distributors.size() && 10; i++)
 	{
 		SessionStatus newStatus;

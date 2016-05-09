@@ -8,9 +8,9 @@ Client::Client() : m_countConnectedClients(0), m_clientWorking(true), m_mutexOut
 
 Client::~Client()
 {
-	m_mutexUserInteface.lock();
+	/*m_mutexUserInteface.lock();
 	this->m_clientWorking = false;
-	m_mutexUserInteface.unlock();
+	m_mutexUserInteface.unlock();*/
 }
 
 void Client::threadListen()
@@ -18,27 +18,18 @@ void Client::threadListen()
 	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 	try
 	{
-		display("Listener Thread Started1");
 		boost::asio::io_service io_service;
-		//std::shared_ptr<Listener> listener(new Listener(io_service, 77777, this->m_mutexOutgoingDistribution));
-		//this->m_Listener = listener;
-		display("Listener Thread Started2");
 		Listener listener(io_service, 77777, this->m_mutexOutgoingDistribution);
-		display("Listener Thread Started3");
 		listener.display = this->display;
 
-		m_mutexUserInteface.lock();
 		display("Listener Thread Started");
-		m_mutexUserInteface.unlock();
+
 		io_service.run();
-		display("Listener Thread Started4");
 	}
 	catch (const std::exception& ex)
 	{
-		m_mutexUserInteface.lock();
 		display("Listener Thread Not Started");
 		display(ex.what());
-		m_mutexUserInteface.unlock();
 	}
 }
 
@@ -49,10 +40,10 @@ void Client::downloadFile(
 	Synchronization primitives,
 	FileStatus* fileStatus)
 {
-	display("Client::downloadFile1 ");
+	display("Client::downloadFile Start");
 	FileDistributors adresses = getDistributors(downloadingFile.m_fileInfo);
 	std::thread downloadThread(&Client::threadDownload, this, downloadingFile, adresses, changeFileStatus, changeDownloader, primitives, fileStatus);
-	display("Client::downloadFile2 ");
+	display("Client::downloadFile Working");
 	downloadThread.detach();
 }
 
@@ -64,50 +55,33 @@ void Client::threadDownload(
 	Synchronization primitives,
 	FileStatus* fileStatus)
 {
-	display("Client::threadDownload1111");
-	//std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-	display("Client::threadDownload2");
 	try
 	{
 		boost::asio::io_service io_service;
-		display("Client::threadDownload2/1");
-		//-----------------------------------
-		display("");
+		display("Client::threadDownload Start");
 		display(downloadingFile.m_fileInfo.m_fileName);
 		display(downloadingFile.m_fileInfo.m_fileDescription);
 		display(std::to_string(downloadingFile.m_fileInfo.m_fileHash));
 		display(std::to_string(downloadingFile.m_fileInfo.m_fileSize));
 		display(std::to_string(downloadingFile.m_fileInfo.m_numberParts));
-		display("");
 		display(downloadingFile.m_fileLocation);
-		display("");
 
-		//----------------------------------
-		//io_service.run();
-		//std::shared_ptr<Downloader> downloader(new Downloader(io_service, downloadingFile, adresses/*, this->m_mutexListParts*/, changeFileStatus, changeDownloader,primitives,fileStatus, display));
-		Downloader downloader(io_service, downloadingFile, adresses/*, this->m_mutexListParts*/, changeFileStatus, changeDownloader, primitives, fileStatus, display);
-		//-----------------------
-		display("Client::threadDownload3");
-		//downloader->func(this->display);
-		downloader.dosmth();
-		//----------------------------	
+		Downloader downloader(io_service, downloadingFile, adresses, changeFileStatus, changeDownloader, primitives, fileStatus, display);
+		display("Client::threadDownload Finish");
 	}
 	catch (const std::exception& ex)
 	{
-		m_mutexUserInteface.lock();
-		display("Client::threadDownloadNot ");
+		changeFileStatus(FileStatus::failing, 100);
+		display("Client::threadDownload Not Work, Failing.");
 		display(ex.what());
-		m_mutexUserInteface.unlock();
 	}
 }
 
 void Client::threadServer(const std::string& IPaddress, const std::string& port)
 {
-	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
 	while (true)
 	{
-		display("Server Thread Started");
+		display("Client::threadServer Started");
 		display(IPaddress);
 		display(port);
 		try
@@ -124,49 +98,19 @@ void Client::threadServer(const std::string& IPaddress, const std::string& port)
 		}
 		catch (std::exception& e)
 		{
-			display("Client::threadServer Not Start");
+			display("Client::threadServer Failing");
 			display(e.what());
 		}
 		std::this_thread::sleep_for(std::chrono::minutes(1));
 	}
 }
 
-void Client::threadClient(void *arg)
-{
-
-}
-
-int Client::readClient(char * const reseiveBuffer, const int& receiveSize, const char* sendBuffer)
-{
-	char* pBuffer = reseiveBuffer;
-	char requestType = pBuffer[0];
-
-	switch (static_cast<MessageTypes>(requestType))
-	{
-	case MessageTypes::message:
-
-		break;
-
-	default:
-		break;
-	}
-
-	return 1;
-}
-
-void Client::connectToClient(const std::string& IPaddress, const std::string& port)
-{
-
-}
-
 void Client::connectToServer(const std::string& IPaddress, const std::string& port)
 {
-	m_mutexUserInteface.lock();
-	display("Connecting to server");
-	m_mutexUserInteface.unlock();
-
+	display("Client::connectToServer Start");
 	std::thread serverThread(&Client::threadServer, this, IPaddress, port);
 	serverThread.detach();
+	display("Client::connectToServer Working");
 }
 
 void Client::createNewDownloadingFile(std::string location, std::string description, ADDNEWFILE addNewFile, CHANGEFILESTATUS changeFileStatus)
@@ -316,8 +260,7 @@ void Client::sendOutgoingDistribution(tcp::socket* serverSocket)
 	std::ifstream in("OutgoingDistribution", std::ios::in | std::ios::binary);
 	if (!in)
 	{
-		// обработай
-		return;
+		throw std::exception("Client::sendOutgoingDistribution. Oops cannot open repository file");
 	}
 
 	in.seekg(0, in.end);
@@ -347,8 +290,8 @@ void Client::sendOutgoingDistribution(tcp::socket* serverSocket)
 		display(sendFile.m_fileName);
 		display(sendFile.m_fileDescription);
 		display(std::to_string(sendFile.m_fileHash));
-
 	}
+	display("Client::sendOutgoingDistribution Distribution Sended");
 }
 
 void Client::reciveDistribution(tcp::socket* serverSocket)
@@ -388,11 +331,11 @@ void Client::searchFile(const std::string& tockenFile)
 
 void Client::threadSearchFile(std::string tockenFile)
 {
-	m_mutexUserInteface.lock();
+//	m_mutexUserInteface.lock();
 	display("Client::threadSearchFile");
-	m_mutexUserInteface.unlock();
+	//m_mutexUserInteface.unlock();
 
-	m_mutexUserInteface.lock(); //!!
+	//m_mutexUserInteface.lock(); //!!
 	m_mutexDistribution.lock();
 
 	std::map<FileInfo, FileDistributors>::iterator p = m_distirbution.begin();
@@ -454,7 +397,7 @@ void Client::threadSearchFile(std::string tockenFile)
 			p++;
 		}
 	}
-	m_mutexUserInteface.unlock();
+//	m_mutexUserInteface.unlock();
 	m_mutexDistribution.unlock();
 }
 
@@ -496,50 +439,15 @@ int Client::getLargestCommonSubstring(/*std::string & result,*/ const std::strin
 		}
 		swap(previous, current);
 	}
-	//result = a.substr(result_index, max_length);
 	return max_length;
 }
-//
-//void Client::connnect()
-//{
-//	enum { max_length = 1024 };
-//
-//	try
-//	{
-//		boost::asio::io_service io_service;
-//
-//		tcp::socket s(io_service);
-//		tcp::resolver resolver(io_service);
-//		boost::asio::connect(s, resolver.resolve({ "127.0.0.1", "77777" }));
-//
-//		std::cout << "Enter message: ";
-//		char request[max_length];
-//		std::cin.getline(request, max_length);
-//		size_t request_length = std::strlen(request);
-//		boost::asio::write(s, boost::asio::buffer(request, request_length));
-//
-//		char reply[max_length];
-//		size_t reply_length = boost::asio::read(s,
-//			boost::asio::buffer(reply, request_length));
-//		std::cout << "Reply is: ";
-//		std::cout.write(reply, reply_length);
-//		std::cout << "\n";
-//	}
-//	catch (std::exception& e)
-//	{
-//		std::cerr << "Exception: " << e.what() << "\n";
-//	}
-//}
 
 void Client::addDistributeFile(const DistributeFile& distributeFile)
 {
-	//--------------------------------------
-	m_mutexUserInteface.lock();
-	display("Client::addDistributeFile");
-	m_mutexUserInteface.unlock();
-	//--------------------------------------
+	display("Client::addDistributeFile Start");
 
 	m_mutexDistribution.lock();
+
 	std::map<FileInfo, FileDistributors>::iterator p;
 
 	p = m_distirbution.find(distributeFile.m_fileInfo);
@@ -547,30 +455,21 @@ void Client::addDistributeFile(const DistributeFile& distributeFile)
 	{
 		bool i = p->second.addAdress(distributeFile.m_address);
 
-		//-------------------	--------------------
 		if (i)
 		{
-			display("Addres dodano");
+			display("Addres added");
 		}
 		else
 		{
-			display("Addres NE dodano");
+			display("Addres not added. This address is already there.");
 		}
-
-		m_mutexUserInteface.lock();
-		display("Client::addDistributeFile2");
-		m_mutexUserInteface.unlock();
-		//---------------------------------------
 	}
 	else
 	{
-		m_mutexUserInteface.lock();
-		display("Client::addDistributeFile3");
-		m_mutexUserInteface.unlock();
-
 		FileDistributors addres;
 		addres.addAdress(distributeFile.m_address);
 		m_distirbution.insert(std::pair<FileInfo, FileDistributors>(distributeFile.m_fileInfo, addres));
+		display("Client::addDistributeFile added a New file");
 	}
 	m_mutexDistribution.unlock();
 }

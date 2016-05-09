@@ -3,11 +3,6 @@
 #endif
 
 #pragma once
-//#include <windows.h>
-//#include <winsock2.h>
-//#include <ws2tcpip.h>
-//#include <Wincrypt.h>
-//#include <iphlpapi.h>
 #include "MessageTypes.h"
 #include <string>
 #include <functional>
@@ -34,12 +29,6 @@
 
 using boost::asio::ip::tcp;
 
-//
-//
-//#pragma comment(lib, "Ws2_32.lib")
-//#pragma comment (lib, "Mswsock.lib")
-//#pragma comment (lib, "AdvApi32.lib")
-
 #define	CHANGEFILESTATUS  std::function<void(const FileStatus& fileStatus, const int& filePercents)>
 #define CHANGEDOWNLOADER  std::function<void(const FileStatus& fileStatus)>
 #define ADDNEWFILE std::function<void (const DownloadingFile& newFile)>
@@ -51,9 +40,9 @@ public:
 	~Client();
 	//void connnect();
 	void readServer();
-	int readClient(char * const reseiveBuffer, const int& receiveSize, const char* sendBuffer);
+	//int readClient(char * const reseiveBuffer, const int& receiveSize, const char* sendBuffer);
 	void connectToServer(const std::string& IPaddress, const std::string& port);
-	void connectToClient(const std::string& IPaddress, const std::string& port);
+	//void connectToClient(const std::string& IPaddress, const std::string& port);
 	void createNewDownloadingFile(std::string location, std::string description, ADDNEWFILE addNewFile, CHANGEFILESTATUS changeFileStatus);
 	void searchFile(const std::string& tockenFile);
 
@@ -73,13 +62,13 @@ private://
 	int m_countConnectedClients;
 	bool m_clientWorking;
 
-	std::mutex m_mutexUserInteface;               //Only one thread is working with the interface
+	//std::mutex m_mutexUserInteface;               //Only one thread is working with the interface
 	std::shared_ptr<std::mutex>m_mutexOutgoingDistribution;
 	std::mutex m_mutexDistribution;
 	//std::shared_ptr<Listener> m_Listener;
 	void threadListen();
 	void threadServer(const std::string& IPaddress, const std::string& port);
-	void threadClient(void *arg);
+	//void threadClient(void *arg);
 
 	void threadDownload(
 		const DownloadingFile& downloadingFile,
