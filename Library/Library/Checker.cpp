@@ -22,8 +22,7 @@ void Checker::createNewFileParts()
 	std::ofstream out(std::to_string(m_fileInfo.m_fileHash), std::ios::out | std::ios::binary);
 	if (!out)
 	{
-		//
-		return;
+		throw std::exception("Cannot create Checker file.");
 	}
 
 	unsigned int zero = 0;
@@ -41,9 +40,7 @@ void Checker::openFileParts()
 	if (!m_fileParts)
 
 	{
-		//throw std::runtime_error("m_fileParts.open ne otkrilos");
-		// обработай
-		return;
+		throw std::exception("Cannot open Checker file.");
 	}
 }
 

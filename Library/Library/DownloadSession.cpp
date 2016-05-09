@@ -1,7 +1,5 @@
 #include "DownloadSession.h"
 
-#define DISPLAY display("");display("");
-
 DownloadSession::DownloadSession(
 	const boost::asio::ip::address& address,
 	boost::asio::io_service& io_service,
@@ -17,7 +15,6 @@ DownloadSession::DownloadSession(
 {
 	m_address = address;
 	this->display = display;
-
 
 	m_primitives.m_mutexCounter->lock();
 	if ((*m_primitives.m_counter) == 0)
@@ -41,6 +38,7 @@ DownloadSession::DownloadSession(
 	}
 	m_primitives.m_mutexCounter->unlock();
 
+	display("DownloadSession::DownloadSession Start. Her number:");
 	display(std::to_string(m_sessionNumber));
 	display(std::to_string(m_partNumber.m_fileHash));
 	display(std::to_string(m_partNumber.m_partNumber));
@@ -63,7 +61,7 @@ void DownloadSession::connectSeeder(const boost::system::error_code &err)
 {
 	if (err)
 	{
-		setEnd();
+		setEnd(StatusValue::notConnect); 
 		return;
 	}
 
@@ -71,7 +69,7 @@ void DownloadSession::connectSeeder(const boost::system::error_code &err)
 	if (!m_file)
 	{
 		display(std::to_string(GetLastError()));
-		setEnd();
+		setEnd(StatusValue::notOpen);
 		return;
 	}
 
@@ -94,7 +92,7 @@ void DownloadSession::writeHandler(const boost::system::error_code &err, std::si
 	}
 	else
 	{
-		setEnd();  // возможно надо что-то другое
+		setEnd(StatusValue::notWrite);
 		return;
 	}
 }
@@ -109,23 +107,34 @@ void DownloadSession::readHandler(const boost::system::error_code &err, std::siz
 {
 	if (!err)
 	{
-		//display(std::to_string(m_receivedPart.m_partNumber));
+		//-------------------------------------------
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		std::string size = std::to_string(m_receivedPart.m_partSize);
+		std::string str("RECEIVE: ");
+		str += size;
+		display(str);
+		//-------------------------------------------
+		
 		addPart(m_receivedPart);
+		
+		//----------------------
+		m_receivedPart.m_partSize = 0;
+		//----------------------
 	}
 	else
 	{
-		setEnd();
+		setEnd(StatusValue::notRead);
 		return;
 	}
 }
 
 void  DownloadSession::addPart(const PartFile& partFile)
 {
-	if (partFile.m_values == ReturnValues::good)// && partFile.m_partHash == calculatePartHash(partFile))
+	if (partFile.m_values == ReturnValues::good) //&& partFile.m_partHash == calculatePartHash(partFile))
 	{
 		if (!flushPart(partFile))
 		{
-			setEnd();
+			setEnd(StatusValue::notSave);
 			return;
 		}
 	}
@@ -135,7 +144,7 @@ void  DownloadSession::addPart(const PartFile& partFile)
 	}
 	else if (partFile.m_values == ReturnValues::noDistribution)
 	{
-		setEnd();
+		setEnd(StatusValue::notDistribution);
 		return;
 	}
 
@@ -162,7 +171,7 @@ bool  DownloadSession::flushPart(const PartFile& partFile)
 	return true;
 }
 
-void  DownloadSession::setEnd()
+void  DownloadSession::setEnd(const StatusValue& why)
 {
 	m_primitives.m_mutexCounter->lock();
 	if ((*m_primitives.m_counter) == 0)
@@ -174,6 +183,7 @@ void  DownloadSession::setEnd()
 	m_primitives.m_mutexCounter->unlock();
 
 	m_myStatus->m_work = StatusValue::end;
+	m_myStatus->m_why = why;
 
 	m_primitives.m_mutexCounter->lock();
 	(*m_primitives.m_counter)--;
@@ -184,7 +194,8 @@ void  DownloadSession::setEnd()
 	}
 	m_primitives.m_mutexCounter->unlock();
 
-	display("DownloadSession::setEnd()2");
+	display("DownloadSession::setEnd. Her number:");
+	display(std::to_string(m_sessionNumber));
 }
 
 void DownloadSession::setPart()
@@ -264,7 +275,7 @@ bool DownloadSession::getPart()
 
 			if (m_partNumber.m_partNumber == 0)
 			{
-				setEnd();
+				setEnd(StatusValue::done);
 				return false;
 			}
 			return true;

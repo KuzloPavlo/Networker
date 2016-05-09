@@ -68,7 +68,13 @@ void ClientSession::write(const ReturnValues& value)
 	{
 		if (!ec)
 		{
+			//-----------------------------------------------------
+			std::string size = std::to_string(m_sendPart.m_partSize);
+			std::string str("SEND: ");
+			str += size;
+			display(str);
 			display(std::to_string(m_sendPart.m_partNumber));
+			//------------------------------------------------------
 			read();
 		}
 	});

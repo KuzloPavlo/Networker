@@ -29,10 +29,8 @@ public:
 		);
 	~DownloadSession();
 	void start();
-	//------------------------------------------
 	std::function<void(const std::string& str)>display;
 private:
-	
 	void read();
 	void readHandler(const boost::system::error_code &err, std::size_t bytes);
 
@@ -42,7 +40,7 @@ private:
 	void addPart(const PartFile& partFile);
 	bool flushPart(const PartFile& partFile);
 	void connectSeeder(const boost::system::error_code &err);
-	void setEnd();
+	void setEnd(const StatusValue& why);
 	void setPart();
 	void unsetPart();
 	bool getPart();

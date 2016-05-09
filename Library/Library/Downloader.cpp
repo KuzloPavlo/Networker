@@ -20,7 +20,7 @@ Downloader::Downloader(
 	m_donnePercent(0)
 {
 	this->display = display;
-	//dosmth();
+	
 	display("Downloader::Downloader Start");
 	display(m_downloadingFile.m_fileInfo.m_fileName);
 	display(m_downloadingFile.m_fileInfo.m_fileDescription);
@@ -40,12 +40,7 @@ Downloader::Downloader(
 Downloader::~Downloader()
 {
 }
-//
-//void Downloader::dosmth()
-//{
-//
-//
-//}
+
 void Downloader::changeDownloader(const FileStatus& fileStatus)
 {
 }

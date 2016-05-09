@@ -21,7 +21,6 @@ public:
 		std::function<void(const std::string& str)>display);
 
 	void start();
-	//----------------------------------------------
 	std::function<void(const std::string& str)>display;
 private:
 	void read();
