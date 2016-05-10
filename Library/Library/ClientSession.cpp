@@ -1,7 +1,5 @@
 #include "ClientSession.h"
 
-#define DISPLAY display("");display("");
-
 ClientSession::ClientSession(tcp::socket clientSocket,
 	std::shared_ptr<std::mutex> mutexOutgoingDistribution,
 	std::function<void(const std::string& str)>display)
@@ -17,9 +15,8 @@ ClientSession::ClientSession(tcp::socket clientSocket,
 
 void ClientSession::start()
 {
-	display("ClientSession::start()1");
+	display("ClientSession::start Start");
 	read();
-	display("ClientSession::start()2");
 }
 
 void ClientSession::read()
@@ -30,24 +27,19 @@ void ClientSession::read()
 	{
 		if (!ec)
 		{
-			//display("ClientSession::read()11");
 			if (m_firstTime)
 			{
-				//display("ClientSession::read()2");
 				m_firstTime = false;
 
 				if (!getFileInfo(m_partNumber.m_fileHash))
 				{
-					//display("ClientSession::read()3");
 					write(ReturnValues::noDistribution);
-					//display("ClientSession::read()4");
 					return;
 				}
 			}
 
 			if (preparePart())
 			{
-				//display("ClientSession::read()2");
 				write(ReturnValues::good);
 			}
 			else
@@ -68,13 +60,12 @@ void ClientSession::write(const ReturnValues& value)
 	{
 		if (!ec)
 		{
-			//-----------------------------------------------------
-			std::string size = std::to_string(m_sendPart.m_partSize);
-			std::string str("SEND: ");
-			str += size;
-			display(str);
-			display(std::to_string(m_sendPart.m_partNumber));
-			//------------------------------------------------------
+			//--------------------------------------------------------
+			//std::string str("SEND: ");
+		//	str += std::to_string(m_sendPart.m_partSize) + "  " +  std::to_string(m_sendPart.m_partHash) + "  " + std::to_string(m_sendPart.m_partNumber);
+		//	str += std::to_string(m_sendPart.m_partSize);
+			//display(str);
+			//--------------------------------------------------------
 			read();
 		}
 	});
@@ -82,23 +73,18 @@ void ClientSession::write(const ReturnValues& value)
 
 bool ClientSession::getFileInfo(long int fileHash)
 {
-	//display("ClientSession::getFileInfo1");
 	int numberOutDistribution = 0;
 	int fileSize = 0;
 	char* buff = (char*)& m_downloadingFile;
 
 	m_mutexOutgoingDistribution->lock();
-	//display("ClientSession::getFileInfo2");
 	std::ifstream in("OutgoingDistribution", std::ios::in | std::ios::binary);
 	if (!in)
 	{
-		//display("ClientSession::getFileInfo3");
 		m_mutexOutgoingDistribution->unlock();
-		// обработать ошыбку
 		return false;
 	}
 
-	//display("ClientSession::getFileInfo4");
 	in.seekg(0, in.end);
 	fileSize = in.tellg();
 	in.seekg(0, in.beg);
@@ -111,9 +97,8 @@ bool ClientSession::getFileInfo(long int fileHash)
 
 		if (m_partNumber.m_fileHash == m_downloadingFile.m_fileInfo.m_fileHash)
 		{
-			//------------------------------------
 			display(m_downloadingFile.m_fileLocation);
-			//--------------------------------------
+
 			m_file.open(m_downloadingFile.m_fileLocation, std::ios::in | std::ios::binary);
 			if (!m_file)
 			{
@@ -121,6 +106,7 @@ bool ClientSession::getFileInfo(long int fileHash)
 				return false;
 			}
 			m_mutexOutgoingDistribution->unlock();
+			display("ClientSession::getFileInfo Info about file is founded.");
 			return true;
 		}
 	}
@@ -132,6 +118,11 @@ bool ClientSession::preparePart()
 {
 	try
 	{
+		std::fill(m_sendPart.m_part, m_sendPart.m_part + PARTSIZE, 0);
+		m_sendPart.m_partSize = 0;
+		m_sendPart.m_partHash = 0;
+		m_sendPart.m_partNumber = 0;
+
 		int shift = (m_partNumber.m_partNumber - 1) * PARTSIZE;
 		m_file.seekg(shift, std::ios::beg);
 
@@ -139,7 +130,7 @@ bool ClientSession::preparePart()
 
 		m_sendPart.m_partSize = m_file.gcount();
 
-		m_sendPart.m_partHash = calculatePartHash(m_sendPart);
+		m_sendPart.m_partHash = calculatePartHash(m_sendPart.m_part);
 
 		m_sendPart.m_partNumber = m_partNumber.m_partNumber;
 	}

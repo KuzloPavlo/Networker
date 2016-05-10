@@ -4,6 +4,7 @@ enum FileStatus
 {
 	creating,
 	downloading,
+	verification,
 	distribution,
 	downloaded,
 	pause,

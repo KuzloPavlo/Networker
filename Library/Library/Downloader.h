@@ -36,13 +36,6 @@ public:
 	void changeDownloader(const FileStatus& fileStatus);
 
 	std::function<void(const std::string& str)>display;
-	/*void dosmth()
-	{
-		
-	}*/
-//	void func(std::function<void(const std::string& str)>& fu){ this->display = fu; };
-	//-------------------------------------------------
-
 private:
 	std::function<void(const FileStatus& fileStatus, const int& filePercents)>changeFileStatus;
 	void start(bool creating);
@@ -50,7 +43,8 @@ private:
 	bool readSessioStatus(SessionStatus* status);
 	void readMyStatus();
 	void deleteSession(int number);
-	bool createEmptyFile(const std::string& location, int sizeFile);
+	bool createEmptyFile(const char fileLocation[MAX_PATH], int sizeFile);
+	bool recalculateHashfile();
 
 	Checker m_checkerParts;
 	FileStatus* m_myStatus; // pause/deleting/downloading
@@ -67,5 +61,5 @@ private:
 
 	boost::asio::io_service& m_io_service;
 	int m_lastDistributor = 0;
-	int m_donnePercent;
+	//int m_donnePercent;
 };

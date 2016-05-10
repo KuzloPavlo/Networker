@@ -126,7 +126,7 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 		display("Client::threadCreateDownloadingFile Started");
 
 		char filePart[PARTSIZE] = { 0 };
-		std::hash<std::string> hashFunction;
+	//	std::hash<std::string> hashFunction;
 
 		DownloadingFile newFile;
 		strcpy_s(newFile.m_fileInfo.m_fileDescription, description.c_str());
@@ -135,12 +135,12 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 
 		changeFileStatus(newFile.m_fileStatus, 0);
 
-		std::string tempName;
-		tempName.assign(location, location.rfind("\\") + 1, location.size());
+		std::string fileName;
+		fileName.assign(location, location.rfind("\\") + 1, location.size());
 
-		strcpy_s(newFile.m_fileInfo.m_fileName, tempName.c_str());
+		strcpy_s(newFile.m_fileInfo.m_fileName, fileName.c_str());
 
-		newFile.m_fileInfo.m_fileHash = (newFile.m_fileInfo.m_fileHash) ^ hashFunction(tempName);
+		newFile.m_fileInfo.m_fileHash = newFile.m_fileInfo.m_fileHash ^ calculateNameHash(newFile.m_fileInfo.m_fileName); //(newFile.m_fileInfo.m_fileHash) ^ hashFunction(tempName);
 
 		std::ifstream in(location, std::ios::in | std::ios::binary);
 		if (!in)
@@ -163,7 +163,9 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 			in.read(filePart, PARTSIZE);
 			newFile.m_fileInfo.m_numberParts++;
 			newFile.m_fileInfo.m_fileSize += in.gcount();
-			newFile.m_fileInfo.m_fileHash = (1 / 256) * (newFile.m_fileInfo.m_fileHash << 1) ^ hashFunction(filePart);
+			newFile.m_fileInfo.m_fileHash = (1 / 256) * (newFile.m_fileInfo.m_fileHash << 1) ^ calculatePartHash(filePart);
+
+			std::fill(filePart, filePart + PARTSIZE, 0);
 
 			if (((newFile.m_fileInfo.m_fileSize * 100) / inSize) > percent)
 			{

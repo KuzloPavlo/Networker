@@ -1,7 +1,16 @@
 #include "PartFile.h"
 
-int calculatePartHash(const PartFile& partFile)
+int calculatePartHash(const char partFile[PARTSIZE])
 {
 	std::hash<std::string> hashFunction;
-	return hashFunction(partFile.m_part);
+	return hashFunction(partFile);
 }
+
+
+int calculateNameHash(std::string fileName)
+{
+	std::hash<std::string> hashFunction;
+	return hashFunction(fileName);
+}
+
+

@@ -19,6 +19,7 @@ public:
 private:
     void changeStatusBar(const int& filePercents);
     void changeStatusLabel(const FileStatus& fileStatus);
+    void changeStatusFon(const QColor& color);
     Ui::Status *ui;
     int m_percent = 0;
     FileStatus m_status;

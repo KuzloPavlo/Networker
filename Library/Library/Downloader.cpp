@@ -16,11 +16,11 @@ Downloader::Downloader(
 	m_checkerParts(downloadingFile.m_fileInfo, creating),
 	m_io_service(io_service),
 	m_primitives(primitives),
-	m_myStatus(fileStatus),
-	m_donnePercent(0)
+	m_myStatus(fileStatus)//,
+	//m_donnePercent(0)
 {
 	this->display = display;
-	
+
 	display("Downloader::Downloader Start");
 	display(m_downloadingFile.m_fileInfo.m_fileName);
 	display(m_downloadingFile.m_fileInfo.m_fileDescription);
@@ -33,7 +33,7 @@ Downloader::Downloader(
 
 	std::thread sessionsThread(&Downloader::start, this, creating);
 	sessionsThread.detach();
-	
+
 	work();
 }
 
@@ -51,15 +51,21 @@ void Downloader::start(bool creating)
 	allLocation += "\\";
 	allLocation += m_downloadingFile.m_fileInfo.m_fileName;
 
+	strcpy_s(m_downloadingFile.m_fileLocation, allLocation.c_str());
+
 	if (creating)
 	{
-		changeFileStatus(FileStatus::creating, 0);
-		if (!createEmptyFile(allLocation, m_downloadingFile.m_fileInfo.m_fileSize))
+		m_downloadingFile.m_fileStatus = FileStatus::creating;
+		changeFileStatus(m_downloadingFile.m_fileStatus, 0);
+		if (!createEmptyFile(m_downloadingFile.m_fileLocation, m_downloadingFile.m_fileInfo.m_fileSize))
 		{
-			changeFileStatus(FileStatus::failing, 0);
-			throw std::exception("Downloader::start cannot create an empty file");	
+			m_downloadingFile.m_fileStatus = FileStatus::failing;
+			changeFileStatus(m_downloadingFile.m_fileStatus, 0);
+			throw std::exception("Downloader::start cannot create an empty file");
 		}
-		changeFileStatus(FileStatus::downloading, 0);
+
+		m_downloadingFile.m_fileStatus = FileStatus::downloading;
+		changeFileStatus(m_downloadingFile.m_fileStatus, 0);
 		display("Downloader::start created an empty file");
 	}
 
@@ -127,10 +133,29 @@ bool Downloader::readSessioStatus(SessionStatus* status)
 		{
 			int percent = m_checkerParts.setPart(status->m_part);
 
-			if (m_donnePercent < percent)
+			if (m_downloadingFile.m_counterPercents < percent)
 			{
-				m_donnePercent = percent;
-				changeFileStatus(FileStatus::failing, m_donnePercent);
+				m_downloadingFile.m_counterPercents = percent;
+
+				if (m_downloadingFile.m_counterPercents == 100)
+				{
+					if (recalculateHashfile())
+					{
+						m_downloadingFile.m_fileStatus = FileStatus::downloaded;
+						changeFileStatus(m_downloadingFile.m_fileStatus, m_downloadingFile.m_counterPercents);
+					}
+					else
+					{
+						m_downloadingFile.m_fileStatus = FileStatus::failing;
+						changeFileStatus(m_downloadingFile.m_fileStatus, m_downloadingFile.m_counterPercents);
+					}
+
+				}
+				else
+				{
+					m_downloadingFile.m_fileStatus = FileStatus::downloading;
+					changeFileStatus(m_downloadingFile.m_fileStatus, m_downloadingFile.m_counterPercents);
+				}
 			}
 
 			status->m_part = m_checkerParts.getPart();
@@ -146,7 +171,7 @@ bool Downloader::readSessioStatus(SessionStatus* status)
 
 	case StatusValue::end:
 		//deleteSession(status->m_sessionNumber); // 
-		return false;
+		return false;   //    ÂÎÒ ÇÄÅÑÜ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 	default:
 		//deleteSession(status->m_sessionNumber);
@@ -189,14 +214,14 @@ void Downloader::deleteSession(int number)
 	}
 }
 
-bool Downloader::createEmptyFile(const std::string& location, int sizeFile)
+bool Downloader::createEmptyFile(const char fileLocation[MAX_PATH], int sizeFile)
 {
 	enum
 	{
 		emptyLength = 32768 //
 	};
 
-	std::ofstream out(location, std::ios::out | std::ios::binary);
+	std::ofstream out(fileLocation, std::ios::out | std::ios::binary);
 	if (!out)
 	{
 		display(std::to_string(GetLastError()));
@@ -216,5 +241,36 @@ bool Downloader::createEmptyFile(const std::string& location, int sizeFile)
 	out.write(emptyBuff, sizeFile);
 	out.flush();
 
+	return true;
+}
+bool Downloader::recalculateHashfile()
+{
+	m_downloadingFile.m_fileStatus = FileStatus::verification;
+	changeFileStatus(m_downloadingFile.m_fileStatus, 100);
+
+	char filePart[PARTSIZE] = { 0 };
+	long int fileHash = 0;
+
+	fileHash = fileHash ^ calculateNameHash(m_downloadingFile.m_fileInfo.m_fileName);
+
+	std::ifstream in(m_downloadingFile.m_fileLocation, std::ios::in | std::ios::binary);
+	if (!in)
+	{
+		display("Downloader::recalculateHashfile Cannot open file for recalculate");
+		return false;
+	}
+
+	do
+	{
+		in.read(filePart, PARTSIZE);
+		fileHash = (1 / 256) * (fileHash << 1) ^ calculatePartHash(filePart);
+		std::fill(filePart, filePart + PARTSIZE, 0);
+	} while (in);
+
+	if (fileHash != m_downloadingFile.m_fileInfo.m_fileHash)
+	{
+		display("HASH FILE FALSE");
+		return false;
+	}
 	return true;
 }

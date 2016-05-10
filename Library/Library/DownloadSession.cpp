@@ -88,6 +88,12 @@ void DownloadSession::writeHandler(const boost::system::error_code &err, std::si
 {
 	if (!err)
 	{
+		std::fill(m_receivedPart.m_part, m_receivedPart.m_part + PARTSIZE, 0);
+		m_receivedPart.m_partSize = 0;
+		m_receivedPart.m_partHash = 0;
+		m_receivedPart.m_partNumber = 0;
+
+		//std::this_thread::sleep_for(std::chrono::microseconds(1));
 		read();
 	}
 	else
@@ -108,18 +114,14 @@ void DownloadSession::readHandler(const boost::system::error_code &err, std::siz
 	if (!err)
 	{
 		//-------------------------------------------
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
-		std::string size = std::to_string(m_receivedPart.m_partSize);
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		/*
 		std::string str("RECEIVE: ");
-		str += size;
-		display(str);
+		str += std::to_string(m_receivedPart.m_partSize) + "  " + std::to_string(m_receivedPart.m_partHash) + "  " + std::to_string(m_receivedPart.m_partNumber);
+		display(str);*/
 		//-------------------------------------------
 		
 		addPart(m_receivedPart);
-		
-		//----------------------
-		m_receivedPart.m_partSize = 0;
-		//----------------------
 	}
 	else
 	{
@@ -130,7 +132,15 @@ void DownloadSession::readHandler(const boost::system::error_code &err, std::siz
 
 void  DownloadSession::addPart(const PartFile& partFile)
 {
-	if (partFile.m_values == ReturnValues::good) //&& partFile.m_partHash == calculatePartHash(partFile))
+
+	//-----------------------------------------------------------
+	/*std::string parthash = std::to_string(partFile.m_partHash);
+	std::string realhash = std::to_string(calculatePartHash(partFile));
+	parthash += " = " + realhash;
+	display(parthash);*/
+	//-----------------------------------------------------------
+
+	if (partFile.m_values == ReturnValues::good)// && partFile.m_partHash == calculatePartHash(partFile))
 	{
 		if (!flushPart(partFile))
 		{
@@ -194,8 +204,9 @@ void  DownloadSession::setEnd(const StatusValue& why)
 	}
 	m_primitives.m_mutexCounter->unlock();
 
-	display("DownloadSession::setEnd. Her number:");
-	display(std::to_string(m_sessionNumber));
+	std::string str("DownloadSession::setEnd. Her number:");
+	str += std::to_string(m_sessionNumber);
+	display(str);
 }
 
 void DownloadSession::setPart()

@@ -60,34 +60,51 @@ void Status::changeStatusLabel(const FileStatus &fileStatus)
     {
     case FileStatus::creating:
         ui->status->setText("Creating");
+        changeStatusFon(Qt::darkGray);
         break;
 
     case FileStatus::downloading:
         ui->status->setText("Downloading");
+        changeStatusFon(QColor(0,0,0,0));
+        break;
+
+    case FileStatus::verification:
+        ui->status->setText("Verification");
+        changeStatusFon(QColor(200,0,0,150));
         break;
 
     case FileStatus::distribution:
         ui->status->setText("Distribution");
+        changeStatusFon(QColor(0,0,0,0));
         break;
 
     case FileStatus::downloaded:
         ui->status->setText("Downloaded");
+        changeStatusFon(QColor(0,0,0,0));
         break;
 
     case FileStatus::pause:
         ui->status->setText("Pause");
+        changeStatusFon(QColor(0,0,0,0));
         break;
 
     case FileStatus::deleting:
         ui->status->setText("Deleting");
+        changeStatusFon(QColor(200,0,0,150));
         break;
 
     case FileStatus::failing:
         ui->status->setText("Failing");
-        QPalette pall;
-        pall.setColor (ui->widget->backgroundRole (), QColor(200,0,0,150));
-        ui->widget->setPalette(pall);
-        ui->widget->setAutoFillBackground(true);
+        changeStatusFon(QColor(200,0,0,150));
         break;
     }
+}
+
+
+void Status::changeStatusFon(const QColor& color)
+{
+    QPalette pall;
+    pall.setColor (ui->widget->backgroundRole (), color);
+    ui->widget->setPalette(pall);
+    ui->widget->setAutoFillBackground(true);
 }

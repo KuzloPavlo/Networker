@@ -182,13 +182,77 @@ void FileForm::filter(const Filter& filter)
         if(m_dowloadingFile.m_fileStatus == FileStatus::downloading)
         {
             m_mainTable->setRowHeight(m_myRow, 30);
+            on_SelectedButton_clicked();
         }
         else
         {
             m_mainTable->setRowHeight(m_myRow, 0);
+            on_SelectedButton_clicked();
         }
 
         break;
+
+    case Filter::distributed:
+        if(m_dowloadingFile.m_fileStatus == FileStatus::distribution)
+        {
+            m_mainTable->setRowHeight(m_myRow, 30);
+            on_SelectedButton_clicked();
+        }
+        else
+        {
+            m_mainTable->setRowHeight(m_myRow, 0);
+            on_SelectedButton_clicked();
+        }
+        break;
+
+    case Filter::complited:
+        if(m_dowloadingFile.m_fileStatus == FileStatus::downloaded)
+        {
+            m_mainTable->setRowHeight(m_myRow, 30);
+            on_SelectedButton_clicked();
+        }
+        else
+        {
+            m_mainTable->setRowHeight(m_myRow, 0);
+            on_SelectedButton_clicked();
+        }
+        break;
+
+
+    case Filter::active:
+        if(
+                m_dowloadingFile.m_fileStatus == FileStatus::downloading ||
+                m_dowloadingFile.m_fileStatus == FileStatus::verification ||
+                m_dowloadingFile.m_fileStatus == FileStatus::distribution ||
+                m_dowloadingFile.m_fileStatus == FileStatus::creating ||
+                m_dowloadingFile.m_fileStatus == FileStatus::deleting
+                )
+        {
+            m_mainTable->setRowHeight(m_myRow, 30);
+            on_SelectedButton_clicked();
+        }
+        else
+        {
+            m_mainTable->setRowHeight(m_myRow, 0);
+            on_SelectedButton_clicked();
+        }
+        break;
+
+    case Filter::inactive:
+        if(
+                m_dowloadingFile.m_fileStatus == FileStatus::pause ||
+                m_dowloadingFile.m_fileStatus == FileStatus::failing )
+        {
+            m_mainTable->setRowHeight(m_myRow, 30);
+            on_SelectedButton_clicked();
+        }
+        else
+        {
+            m_mainTable->setRowHeight(m_myRow, 0);
+            on_SelectedButton_clicked();
+        }
+        break;
+
 
     default:
         break;
