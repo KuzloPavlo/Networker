@@ -2,12 +2,14 @@
 
 enum FileStatus
 {
-	creating,
-	downloading,
-	verification,
-	distribution,
-	downloaded,
-	pause,
-	deleting,
-	failing,
+        creating,
+        downloading,
+        verification,
+        downloaded,
+        distribution,
+        failing,
+        pause,
+        deleting,
+        outgoing,
+        incoming,
 };

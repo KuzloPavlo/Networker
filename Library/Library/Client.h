@@ -9,6 +9,7 @@
 #include <thread>
 #include <stdio.h>
 #include <chrono>
+#include <queue>
 #include <mutex>
 #include <iostream>
 #include "DownloadingFile.h"
@@ -26,6 +27,7 @@
 #include "PartFile.h"
 #include "Semaphore.h"
 #include "Synchronization.h"
+#include "Shared_lock.h"
 
 using boost::asio::ip::tcp;
 
@@ -38,14 +40,10 @@ class Client
 public:
 	Client();
 	~Client();
-	//void connnect();
 	void readServer();
-	//int readClient(char * const reseiveBuffer, const int& receiveSize, const char* sendBuffer);
 	void connectToServer(const std::string& IPaddress, const std::string& port);
-	//void connectToClient(const std::string& IPaddress, const std::string& port);
 	void createNewDownloadingFile(std::string location, std::string description, ADDNEWFILE addNewFile, CHANGEFILESTATUS changeFileStatus);
 	void searchFile(const std::string& tockenFile);
-
 	void downloadFile(
 		const DownloadingFile& downloadingFile,
 		CHANGEFILESTATUS changeFileStatus,
@@ -56,25 +54,23 @@ public:
 	std::function<void(const std::string& str)>display;
 	//std::function<void(const DownloadingFile& newFile)>addNewFile;
 	std::function<void(const FileInfo& foundFile)>showFoundFile;
-
+	void flushDownloadingFiles(std::vector<DownloadingFile> newFiles);
+	std::vector<DownloadingFile> getDowloadingFile();
 private://
 	std::map<FileInfo, FileDistributors> m_distirbution;
 	int m_countConnectedClients;
 	bool m_clientWorking;
 
-	//std::mutex m_mutexUserInteface;               //Only one thread is working with the interface
 	std::shared_ptr<std::mutex>m_mutexOutgoingDistribution;
-	std::mutex m_mutexDistribution;
-	//std::shared_ptr<Listener> m_Listener;
+	std::shared_ptr<std::mutex> m_mutexDistribution;
 	void threadListen();
 	void threadServer(const std::string& IPaddress, const std::string& port);
-	//void threadClient(void *arg);
 
 	void threadDownload(
 		const DownloadingFile& downloadingFile,
 		const FileDistributors& adresses,
 		CHANGEFILESTATUS changeFileStatus,
-		CHANGEDOWNLOADER changeDownloader, 
+		CHANGEDOWNLOADER changeDownloader,
 		Synchronization primitives,
 		FileStatus* fileStatus
 		);
@@ -86,5 +82,5 @@ private://
 	int getLargestCommonSubstring(const std::string & a, const std::string & b);
 	void addDistributeFile(const DistributeFile& distributeFile);
 	FileDistributors getDistributors(const FileInfo& fileInfo);//
+
 };
-//

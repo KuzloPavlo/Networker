@@ -94,6 +94,7 @@
     <ClInclude Include="ReturnValues.h" />
     <ClInclude Include="Semaphore.h" />
     <ClInclude Include="SessionStatus.h" />
+    <ClInclude Include="Shared_lock.h" />
     <ClInclude Include="Synchronization.h" />
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +107,7 @@
     <ClCompile Include="Listener.cpp" />
     <ClCompile Include="PartFile.cpp" />
     <ClCompile Include="Semaphore.cpp" />
+    <ClCompile Include="Shared_lock.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

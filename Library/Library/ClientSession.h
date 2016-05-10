@@ -9,6 +9,7 @@
 #include "PartFile.h"
 #include <fstream>
 #include "ReturnValues.h"
+#include "Shared_lock.h"
 
 using boost::asio::ip::tcp;
 

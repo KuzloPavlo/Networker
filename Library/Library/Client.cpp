@@ -1,6 +1,7 @@
 #include "Client.h"
 
-Client::Client() : m_countConnectedClients(0), m_clientWorking(true), m_mutexOutgoingDistribution(new std::mutex)
+Client::Client() : m_countConnectedClients(0), m_clientWorking(true), m_mutexOutgoingDistribution(new std::mutex),
+m_mutexDistribution(new std::mutex)
 {
 	std::thread listenThread(&Client::threadListen, this);
 	listenThread.detach();
@@ -8,9 +9,6 @@ Client::Client() : m_countConnectedClients(0), m_clientWorking(true), m_mutexOut
 
 Client::~Client()
 {
-	/*m_mutexUserInteface.lock();
-	this->m_clientWorking = false;
-	m_mutexUserInteface.unlock();*/
 }
 
 void Client::threadListen()
@@ -126,9 +124,10 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 		display("Client::threadCreateDownloadingFile Started");
 
 		char filePart[PARTSIZE] = { 0 };
-	//	std::hash<std::string> hashFunction;
+		//	std::hash<std::string> hashFunction;
 
 		DownloadingFile newFile;
+		newFile.m_fileType = FileStatus::outgoing;
 		strcpy_s(newFile.m_fileInfo.m_fileDescription, description.c_str());
 		strcpy_s(newFile.m_fileLocation, location.c_str());
 		newFile.m_fileStatus = FileStatus::creating;
@@ -182,6 +181,8 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 		display(std::to_string(newFile.m_fileInfo.m_fileSize));
 		display(newFile.m_fileLocation);
 
+		Shared_lock lock(m_mutexOutgoingDistribution);
+
 		std::ofstream out("OutgoingDistribution", std::ios::out | std::ios::app | std::ios::binary);
 		if (!out)
 		{
@@ -191,13 +192,16 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 		}
 
 		newFile.m_fileStatus = FileStatus::distribution;
+		changeFileStatus(newFile.m_fileStatus, 0);
 
 		char* outBuffer = (char*)&newFile;
 		out.write(outBuffer, sizeof(DownloadingFile));
 
-		changeFileStatus(newFile.m_fileStatus, 100);
-
 		out.close();
+
+		lock.unlock();
+
+		changeFileStatus(newFile.m_fileStatus, 100);
 
 		addNewFile(newFile);
 	}
@@ -216,6 +220,7 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 		int numberOutDistribution = 0;
 		int fileSize = 0;
 
+		Shared_lock lock(m_mutexOutgoingDistribution);
 		std::ifstream inn("OutgoingDistribution", std::ios::in | std::ios::binary);
 		if (!inn)
 		{
@@ -259,6 +264,7 @@ void Client::sendOutgoingDistribution(tcp::socket* serverSocket)
 	int numberOutDistribution = 0;
 	char* buffer = nullptr;
 
+	Shared_lock lock(m_mutexOutgoingDistribution);
 	std::ifstream in("OutgoingDistribution", std::ios::in | std::ios::binary);
 	if (!in)
 	{
@@ -333,12 +339,9 @@ void Client::searchFile(const std::string& tockenFile)
 
 void Client::threadSearchFile(std::string tockenFile)
 {
-//	m_mutexUserInteface.lock();
 	display("Client::threadSearchFile");
-	//m_mutexUserInteface.unlock();
 
-	//m_mutexUserInteface.lock(); //!!
-	m_mutexDistribution.lock();
+	Shared_lock lock(m_mutexDistribution);
 
 	std::map<FileInfo, FileDistributors>::iterator p = m_distirbution.begin();
 
@@ -399,8 +402,6 @@ void Client::threadSearchFile(std::string tockenFile)
 			p++;
 		}
 	}
-//	m_mutexUserInteface.unlock();
-	m_mutexDistribution.unlock();
 }
 
 int Client::getLargestCommonSubstring(/*std::string & result,*/ const std::string & a, const std::string & b)
@@ -448,7 +449,7 @@ void Client::addDistributeFile(const DistributeFile& distributeFile)
 {
 	display("Client::addDistributeFile Start");
 
-	m_mutexDistribution.lock();
+	Shared_lock lock(m_mutexDistribution);
 
 	std::map<FileInfo, FileDistributors>::iterator p;
 
@@ -473,14 +474,93 @@ void Client::addDistributeFile(const DistributeFile& distributeFile)
 		m_distirbution.insert(std::pair<FileInfo, FileDistributors>(distributeFile.m_fileInfo, addres));
 		display("Client::addDistributeFile added a New file");
 	}
-	m_mutexDistribution.unlock();
 }
 
 FileDistributors Client::getDistributors(const FileInfo& fileInfo)
 {
+	Shared_lock lock(m_mutexDistribution);
+
 	std::map<FileInfo, FileDistributors>::iterator p;
-
 	p = m_distirbution.find(fileInfo);
-
 	return (p->second);
+}
+
+void Client::flushDownloadingFiles(std::vector<DownloadingFile> newFiles)
+{
+	try{
+		DownloadingFile current;
+		char* buff = (char*)& current;
+
+		Shared_lock lock(m_mutexOutgoingDistribution);
+		std::remove("OutgoingDistribution");
+
+		std::this_thread::sleep_for(std::chrono::seconds(2));
+
+		std::ofstream out("OutgoingDistribution", std::ios::out | std::ios::app | std::ios::binary);
+		if (!out)
+		{
+			display("Client::flushDownloadingFiles Oops cannot open repository file");
+		}
+
+		for (int i = 0; i < newFiles.size(); i++)
+		{
+			current = newFiles[i];
+			if (current.m_fileStatus != FileStatus::deleting)
+			{
+				out.write(buff, sizeof(DownloadingFile));
+				out.flush();
+			}
+			else
+			{
+				if (current.m_fileType == FileStatus::incoming &&  current.m_wasFailing)
+				{
+					std::remove(current.m_fileLocation); // if deleting that's beocuse the failing was with the incoming file
+				}
+			}
+		}
+	}
+	catch (const std::exception& ex)
+	{
+		display("Client::flushDownloadingFiles Failing");
+		display(ex.what());
+	}
+}
+
+std::vector<DownloadingFile> Client::getDowloadingFile()
+{
+	DownloadingFile current;
+	std::vector<DownloadingFile> dowloadingFiles;
+	int fileSize = 0;
+	int numberOutDistribution = 0;
+	char* buff = (char*)& current;
+
+	try
+	{
+		Shared_lock lock(m_mutexOutgoingDistribution);
+		std::ifstream in("OutgoingDistribution", std::ios::in | std::ios::binary);
+		if (!in)
+		{
+			throw std::exception("Client::sendOutgoingDistribution. Oops cannot open repository file");
+		}
+		in.seekg(0, in.end);
+		fileSize = in.tellg();
+		in.seekg(0, in.beg);
+
+		numberOutDistribution = fileSize / sizeof(DownloadingFile);
+
+		for (int i = 0; i < numberOutDistribution; i++)
+		{
+			in.read(buff, sizeof(DownloadingFile));
+			dowloadingFiles.push_back(current);
+		}
+	}
+	catch (const std::exception& ex)
+	{
+		DownloadingFile empty;
+		dowloadingFiles.push_back(empty);
+		display("Client::getDowloadingFile Failing");
+		display(ex.what());
+	}
+	
+	return dowloadingFiles;
 }

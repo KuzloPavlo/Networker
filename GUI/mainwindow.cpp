@@ -109,9 +109,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    flushDownloadingFiles();
     delete ui;
 }
-
 
 void MainWindow::slotDisplay(const std::string& str)
 {
@@ -241,6 +241,7 @@ void MainWindow::slotDownloadFile(const FileInfo &foundFile, const QString &QtLo
     std::string location = changeLocationStyle(QtLocation);
 
     DownloadingFile file;
+    file.m_fileType = FileStatus::incoming;
     file.m_fileInfo = foundFile;
     strcpy_s(file.m_fileLocation,location.c_str());
     file.m_fileStatus = FileStatus::creating;
@@ -329,4 +330,18 @@ void MainWindow::on_activeButton_clicked()
 void MainWindow::on_inactiveButton_clicked()
 {
     filter(Filter::inactive);
+}
+
+void MainWindow::flushDownloadingFiles()
+{
+    std::vector<DownloadingFile> currentFiles;
+
+    std::vector<FileForm*>::iterator p = m_fileForms.begin();
+
+    while(p != m_fileForms.end())
+    {
+        currentFiles.push_back((*p)->getFile());
+        p++;
+    }
+    m_pClient->flushDownloadingFiles(currentFiles);
 }

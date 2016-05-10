@@ -1397,6 +1397,7 @@ release\moc_mainwindow.cpp: ..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QMainW
 		..\Library\Library\ClientSession.h \
 		..\Library\Library\PartFile.h \
 		..\Library\Library\ReturnValues.h \
+		..\Library\Library\Shared_lock.h \
 		..\Library\Library\DownloadSession.h \
 		..\Library\Library\SessionStatus.h \
 		..\Library\Library\Semaphore.h \
@@ -3443,6 +3444,7 @@ release\main.obj: ..\GUI\main.cpp ../GUI/mainwindow.h \
 		..\Library\Library\ClientSession.h \
 		..\Library\Library\PartFile.h \
 		..\Library\Library\ReturnValues.h \
+		..\Library\Library\Shared_lock.h \
 		..\Library\Library\DownloadSession.h \
 		..\Library\Library\SessionStatus.h \
 		..\Library\Library\Semaphore.h \
@@ -4632,6 +4634,7 @@ release\mainwindow.obj: ..\GUI\mainwindow.cpp ../GUI/mainwindow.h \
 		..\Library\Library\ClientSession.h \
 		..\Library\Library\PartFile.h \
 		..\Library\Library\ReturnValues.h \
+		..\Library\Library\Shared_lock.h \
 		..\Library\Library\DownloadSession.h \
 		..\Library\Library\SessionStatus.h \
 		..\Library\Library\Semaphore.h \

@@ -108,6 +108,7 @@ private:
     std::string changeLocationStyle(const QString& QtStyleLocation);
 
     std::vector<FileForm*> m_fileForms;
+    void flushDownloadingFiles();
 
     void tableSetting(QTableWidget* table);
 

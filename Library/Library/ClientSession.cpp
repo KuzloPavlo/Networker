@@ -62,8 +62,7 @@ void ClientSession::write(const ReturnValues& value)
 		{
 			//--------------------------------------------------------
 			//std::string str("SEND: ");
-		//	str += std::to_string(m_sendPart.m_partSize) + "  " +  std::to_string(m_sendPart.m_partHash) + "  " + std::to_string(m_sendPart.m_partNumber);
-		//	str += std::to_string(m_sendPart.m_partSize);
+			//str += std::to_string(m_sendPart.m_partSize) + "  " +  std::to_string(m_sendPart.m_partHash) + "  " + std::to_string(m_sendPart.m_partNumber);
 			//display(str);
 			//--------------------------------------------------------
 			read();
@@ -77,11 +76,10 @@ bool ClientSession::getFileInfo(long int fileHash)
 	int fileSize = 0;
 	char* buff = (char*)& m_downloadingFile;
 
-	m_mutexOutgoingDistribution->lock();
+	Shared_lock lock(m_mutexOutgoingDistribution);
 	std::ifstream in("OutgoingDistribution", std::ios::in | std::ios::binary);
 	if (!in)
 	{
-		m_mutexOutgoingDistribution->unlock();
 		return false;
 	}
 
@@ -101,16 +99,14 @@ bool ClientSession::getFileInfo(long int fileHash)
 
 			m_file.open(m_downloadingFile.m_fileLocation, std::ios::in | std::ios::binary);
 			if (!m_file)
-			{
-				m_mutexOutgoingDistribution->unlock();
+			{	
 				return false;
 			}
-			m_mutexOutgoingDistribution->unlock();
+		
 			display("ClientSession::getFileInfo Info about file is founded.");
 			return true;
 		}
 	}
-	m_mutexOutgoingDistribution->unlock();
 	return false;
 }
 

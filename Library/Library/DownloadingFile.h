@@ -22,5 +22,7 @@ struct DownloadingFile
         FileInfo m_fileInfo;
         char m_fileLocation[MAX_PATH];
         FileStatus m_fileStatus;
+		FileStatus m_fileType; // incoming/outging
+		bool m_wasFailing = false; // for filter when deleting 
         int m_counterPercents = 0;
 };

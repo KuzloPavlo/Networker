@@ -83,6 +83,10 @@ void FileForm::slotChangeFileStatus(const FileStatus& fileStatus,const int& file
 {
     m_status->changeStatus(fileStatus, filePercents);
     m_dowloadingFile.m_fileStatus = fileStatus;
+    if(fileStatus == FileStatus::failing)
+    {
+        m_dowloadingFile.m_wasFailing = true;
+    }
 }
 
 void FileForm::insertMy()
@@ -266,3 +270,8 @@ void FileForm::slotSetFile(const DownloadingFile &newFile)
     m_description->setFileInfo(newFile.m_fileInfo);
     showSize();
 }
+
+ DownloadingFile FileForm::getFile()
+ {
+     return m_dowloadingFile;
+ }

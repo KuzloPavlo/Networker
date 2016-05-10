@@ -34,6 +34,7 @@ public:
     Synchronization getPrimitives(){return m_primitives;}
     FileStatus* getDownloaderStatus(){return m_downloaderStatus;}
     void filter(const Filter& filter);
+    DownloadingFile getFile();
 private slots:
     void on_SelectButton_clicked();
     void slotChangeFileStatus(const FileStatus& fileStatus,const int& filePercents);

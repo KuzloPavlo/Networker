@@ -61,7 +61,7 @@ void DownloadSession::connectSeeder(const boost::system::error_code &err)
 {
 	if (err)
 	{
-		setEnd(StatusValue::notConnect); 
+		setEnd(StatusValue::notConnect);
 		return;
 	}
 
@@ -114,17 +114,18 @@ void DownloadSession::readHandler(const boost::system::error_code &err, std::siz
 	if (!err)
 	{
 		//-------------------------------------------
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
-		/*
 		std::string str("RECEIVE: ");
 		str += std::to_string(m_receivedPart.m_partSize) + "  " + std::to_string(m_receivedPart.m_partHash) + "  " + std::to_string(m_receivedPart.m_partNumber);
-		display(str);*/
+		display(str);
 		//-------------------------------------------
-		
+
 		addPart(m_receivedPart);
 	}
 	else
 	{
+		std::string str("RECEIVE FALSE: ");
+		str += std::to_string(m_receivedPart.m_partSize) + "  " + std::to_string(m_receivedPart.m_partHash) + "  " + std::to_string(m_receivedPart.m_partNumber);
+		display(str);
 		setEnd(StatusValue::notRead);
 		return;
 	}
@@ -132,14 +133,6 @@ void DownloadSession::readHandler(const boost::system::error_code &err, std::siz
 
 void  DownloadSession::addPart(const PartFile& partFile)
 {
-
-	//-----------------------------------------------------------
-	/*std::string parthash = std::to_string(partFile.m_partHash);
-	std::string realhash = std::to_string(calculatePartHash(partFile));
-	parthash += " = " + realhash;
-	display(parthash);*/
-	//-----------------------------------------------------------
-
 	if (partFile.m_values == ReturnValues::good)// && partFile.m_partHash == calculatePartHash(partFile))
 	{
 		if (!flushPart(partFile))
@@ -183,6 +176,8 @@ bool  DownloadSession::flushPart(const PartFile& partFile)
 
 void  DownloadSession::setEnd(const StatusValue& why)
 {
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
 	m_primitives.m_mutexCounter->lock();
 	if ((*m_primitives.m_counter) == 0)
 	{
@@ -206,7 +201,7 @@ void  DownloadSession::setEnd(const StatusValue& why)
 
 	std::string str("DownloadSession::setEnd. Her number:");
 	str += std::to_string(m_sessionNumber);
-	display(str);
+	display(str);	
 }
 
 void DownloadSession::setPart()
@@ -274,7 +269,7 @@ bool DownloadSession::getPart()
 		{
 		case StatusValue::work:
 			m_partNumber.m_partNumber = m_myStatus->m_part; // geting a new part
-		
+
 			m_primitives.m_mutexCounter->lock();
 			(*m_primitives.m_counter)--;
 			if ((*m_primitives.m_counter) == 0)
