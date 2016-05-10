@@ -124,7 +124,6 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 		display("Client::threadCreateDownloadingFile Started");
 
 		char filePart[PARTSIZE] = { 0 };
-		//	std::hash<std::string> hashFunction;
 
 		DownloadingFile newFile;
 		newFile.m_fileType = FileStatus::outgoing;
@@ -187,12 +186,12 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 		if (!out)
 		{
 			newFile.m_fileStatus = FileStatus::failing;
-			changeFileStatus(newFile.m_fileStatus, 0);
+			changeFileStatus(newFile.m_fileStatus, percent);
 			throw std::exception("Client::threadCreateDownloadingFile. Oops cannot open repository file");
 		}
 
 		newFile.m_fileStatus = FileStatus::distribution;
-		changeFileStatus(newFile.m_fileStatus, 0);
+		changeFileStatus(newFile.m_fileStatus, percent);
 
 		char* outBuffer = (char*)&newFile;
 		out.write(outBuffer, sizeof(DownloadingFile));
@@ -201,7 +200,8 @@ void Client::threadCreateDownloadingFile(std::string location, std::string descr
 
 		lock.unlock();
 
-		changeFileStatus(newFile.m_fileStatus, 100);
+		newFile.m_counterPercents = percent;
+		changeFileStatus(newFile.m_fileStatus, newFile.m_counterPercents);
 
 		addNewFile(newFile);
 	}
@@ -556,11 +556,10 @@ std::vector<DownloadingFile> Client::getDowloadingFile()
 	}
 	catch (const std::exception& ex)
 	{
-		DownloadingFile empty;
-		dowloadingFiles.push_back(empty);
+		dowloadingFiles.clear();
 		display("Client::getDowloadingFile Failing");
 		display(ex.what());
 	}
-	
+
 	return dowloadingFiles;
 }

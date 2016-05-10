@@ -17,6 +17,7 @@
 #include "temdebuger.h"    // will delete
 #include "Semaphore.h"
 #include "descriptionform.h"
+#include <QMessageBox>
 Q_DECLARE_METATYPE(std::string)
 Q_DECLARE_METATYPE(DownloadingFile)
 Q_DECLARE_METATYPE(FileInfo)
@@ -111,8 +112,9 @@ private:
     void flushDownloadingFiles();
 
     void tableSetting(QTableWidget* table);
+    void setFileForms();
 
-void filter(const Filter& filter);
+    void filter(const Filter& filter);
 
 
     //--------------------------

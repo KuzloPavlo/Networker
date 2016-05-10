@@ -54,6 +54,8 @@ FileForm::FileForm(
             SIGNAL(signalSetFile(const DownloadingFile &)),
             this,
             SLOT(slotSetFile(const DownloadingFile &)));
+
+            signalChangeFileStatus(m_dowloadingFile.m_fileStatus,m_dowloadingFile.m_counterPercents);
 }
 
 FileForm::~FileForm()
@@ -83,6 +85,7 @@ void FileForm::slotChangeFileStatus(const FileStatus& fileStatus,const int& file
 {
     m_status->changeStatus(fileStatus, filePercents);
     m_dowloadingFile.m_fileStatus = fileStatus;
+    m_dowloadingFile.m_counterPercents = filePercents;
     if(fileStatus == FileStatus::failing)
     {
         m_dowloadingFile.m_wasFailing = true;

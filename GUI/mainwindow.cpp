@@ -49,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->searchEdit->setVisible(false);
     ui->showAllButton->setVisible(false);
     ui->refreshButton->setVisible(false);
+
     //-----------------------------------------------------------+
     // Section for experements                                   |
     //-----------------------------------------------------------+
@@ -104,7 +105,7 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(slotDownloadFile(const FileInfo&, const QString&))
             );
 
-
+    setFileForms();
 }
 
 MainWindow::~MainWindow()
@@ -178,6 +179,17 @@ void MainWindow::slotCreateNewDownloadingFile(const QString &location, const QSt
     std::string windowsStyleLocation = changeLocationStyle(location);
     std::string specification = description.toStdString();
     emit slotDisplay("slotCreateNewDownloadingFile");
+
+    for(int i = 0; i < m_fileForms.size(); i++)
+    {
+        std::string currentLocatin = m_fileForms[i]->getFile().m_fileLocation;
+
+        if(currentLocatin == windowsStyleLocation)
+        {
+            QMessageBox::information(this,"Already", "You already distribute this file");
+            return;
+        }
+    }
 
     std::string tempName;
     tempName.assign(windowsStyleLocation, windowsStyleLocation.rfind("\\") + 1, windowsStyleLocation.size());
@@ -344,4 +356,18 @@ void MainWindow::flushDownloadingFiles()
         p++;
     }
     m_pClient->flushDownloadingFiles(currentFiles);
+}
+
+void MainWindow::setFileForms()
+{
+    std::vector<DownloadingFile> downloadingFile = m_pClient->getDowloadingFile();
+
+    for(int i = 0; i < downloadingFile.size(); i++)
+    {
+        FileForm* newFile = new FileForm(
+                    downloadingFile[i],
+                    ui->tableDownloads);
+
+        m_fileForms.push_back(newFile);
+    }
 }

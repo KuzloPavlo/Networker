@@ -1412,6 +1412,8 @@ debug\moc_mainwindow.cpp: ..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QMainWin
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\QString \
 		..\GUI\Filter.h \
 		..\GUI\temdebuger.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QMessageBox \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qmessagebox.h \
 		..\GUI\mainwindow.h
 	C:\newQt\5.5\msvc2013\bin\moc.exe $(DEFINES) -D_MSC_VER=1800 -D_WIN32 -IC:/newQt/5.5/msvc2013/mkspecs/win32-msvc2013 -IC:/projects_Qt/peep-to-peer-network/GUI -IC:/projects_Qt/peep-to-peer-network/Library/Library -IC:/boost/VC/boost_1_60_0/boost_1_60_0 -IC:/newQt/5.5/msvc2013/include -IC:/newQt/5.5/msvc2013/include/QtWidgets -IC:/newQt/5.5/msvc2013/include/QtGui -IC:/newQt/5.5/msvc2013/include/QtANGLE -IC:/newQt/5.5/msvc2013/include/QtCore -I. ..\GUI\mainwindow.h -o debug\moc_mainwindow.cpp
 
@@ -3459,6 +3461,8 @@ debug\main.obj: ..\GUI\main.cpp ../GUI/mainwindow.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\QString \
 		..\GUI\Filter.h \
 		../GUI/temdebuger.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QMessageBox \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qmessagebox.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QApplication \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qapplication.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\qcoreapplication.h \
@@ -4649,6 +4653,8 @@ debug\mainwindow.obj: ..\GUI\mainwindow.cpp ../GUI/mainwindow.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\QString \
 		..\GUI\Filter.h \
 		../GUI/temdebuger.h \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QMessageBox \
+		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\qmessagebox.h \
 		ui_mainwindow.h \
 		..\..\..\newQt\5.5\msvc2013\include\QtCore\QVariant \
 		..\..\..\newQt\5.5\msvc2013\include\QtWidgets\QAction \
