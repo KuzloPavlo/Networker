@@ -64,6 +64,7 @@ void ClientSession::write(const ReturnValues& value)
 			//std::string str("SEND: ");
 			//str += std::to_string(m_sendPart.m_partSize) + "  " +  std::to_string(m_sendPart.m_partHash) + "  " + std::to_string(m_sendPart.m_partNumber);
 			//display(str);
+			display(std::to_string(m_sendPart.m_partNumber));
 			//--------------------------------------------------------
 			read();
 		}

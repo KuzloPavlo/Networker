@@ -93,7 +93,6 @@ void DownloadSession::writeHandler(const boost::system::error_code &err, std::si
 		m_receivedPart.m_partHash = 0;
 		m_receivedPart.m_partNumber = 0;
 
-		//std::this_thread::sleep_for(std::chrono::microseconds(1));
 		read();
 	}
 	else
@@ -114,9 +113,10 @@ void DownloadSession::readHandler(const boost::system::error_code &err, std::siz
 	if (!err)
 	{
 		//-------------------------------------------
-		std::string str("RECEIVE: ");
-		str += std::to_string(m_receivedPart.m_partSize) + "  " + std::to_string(m_receivedPart.m_partHash) + "  " + std::to_string(m_receivedPart.m_partNumber);
-		display(str);
+		//std::string str("RECEIVE: ");
+		//str += std::to_string(m_receivedPart.m_partSize) + "  " + std::to_string(m_receivedPart.m_partHash) + "  " + std::to_string(m_receivedPart.m_partNumber);
+		//display(str);
+		display(std::to_string(m_receivedPart.m_partNumber));
 		//-------------------------------------------
 
 		addPart(m_receivedPart);

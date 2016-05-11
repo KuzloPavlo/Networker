@@ -43,6 +43,10 @@
     <IncludePath>C:\boost\VC\boost_1_60_0\boost_1_60_0;$(IncludePath)</IncludePath>
     <LibraryPath>C:\VC\boost_lib\boost\bin.v2\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\boost\VC\boost_1_60_0\boost_1_60_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\VC\boost_lib\boost\bin.v2\libs;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>

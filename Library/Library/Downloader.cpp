@@ -109,9 +109,8 @@ void Downloader::work()
 			if (!readSessioStatus(&(*p)))
 			{
 				m_statusHolder.erase(p);
-				//			m_mutexStatus->unlock();
-				//	work();
-				return;
+				p = m_statusHolder.begin();
+				continue;
 			}
 			p++;
 		}
@@ -170,12 +169,7 @@ bool Downloader::readSessioStatus(SessionStatus* status)
 		break;
 
 	case StatusValue::end:
-		//deleteSession(status->m_sessionNumber); // 
-		return false;   //    ÂÎÒ ÇÄÅÑÜ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-	default:
-		//deleteSession(status->m_sessionNumber);
-		return false;
+		return false;   //
 	}
 	return true;
 }
