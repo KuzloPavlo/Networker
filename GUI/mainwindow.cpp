@@ -51,21 +51,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->refreshButton->setVisible(false);
 
     //-----------------------------------------------------------+
-    // Section for experements                                   |
-    //-----------------------------------------------------------+
-
-    // 0,127,255,100
-
-    // Status* newStatus = new Status(this);
-
-    //    ui->textDisplay->setVisible(false);
-    //    ui->textinput->setVisible(false);
-    //    ui->sendButton->setVisible(false);
-    //    emit on_sendButton_clicked();
-
-    // this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-
-
 
     m_pClient->display = std::bind(&MainWindow::signalDisplay, this, std::placeholders::_1);
 
@@ -74,9 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
             this,
             SLOT(slotDisplay(const std::string&)));
 
-
-    //-----------------------------------------------------------+
-    // Section for experements                                   |
+    ui->refreshButton->setVisible(false);
     //-----------------------------------------------------------+
 
     m_pClient->showFoundFile = std::bind(&MainWindow::signalShowFoundFile, this, std::placeholders::_1);
@@ -131,7 +114,7 @@ void MainWindow::on_searchBut_clicked()
     ui->stackedWidgetLeft->setCurrentIndex(1);
     ui->homeButton->setVisible(true);
     ui->searchBut->setVisible(false);
-    ui->refreshButton->setVisible(true);
+    ui->refreshButton->setVisible(false); //
 }
 
 void MainWindow::on_homeButton_clicked()

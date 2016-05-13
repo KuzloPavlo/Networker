@@ -176,7 +176,7 @@ bool  DownloadSession::flushPart(const PartFile& partFile)
 
 void  DownloadSession::setEnd(const StatusValue& why)
 {
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
 	m_primitives.m_mutexCounter->lock();
 	if ((*m_primitives.m_counter) == 0)
@@ -198,6 +198,8 @@ void  DownloadSession::setEnd(const StatusValue& why)
 		m_primitives.m_goWrite->unlock_one();
 	}
 	m_primitives.m_mutexCounter->unlock();
+
+	m_file.close(); //
 
 	std::string str("DownloadSession::setEnd. Her number:");
 	str += std::to_string(m_sessionNumber);

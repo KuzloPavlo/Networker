@@ -28,6 +28,7 @@ void Status::changeStatus(const FileStatus& fileStatus,const int& filePercents)
 
 void Status::changeStatusBar(const int &filePercents)
 {
+
     while (m_percent < filePercents && m_percent < 100)
     {
         QWidget* part = new QWidget(this);
@@ -50,6 +51,31 @@ void Status::changeStatusBar(const int &filePercents)
 
         ui->value->setText(std::to_string(m_percent).c_str());
     }
+
+    if(filePercents == 99)
+    {
+     m_percent++;
+
+     QWidget* part = new QWidget(this);
+
+        QPalette pall;
+
+        pall.setColor (part->backgroundRole(), QColor(0,127,255,100));
+
+        part->setPalette(pall);
+
+        part->resize(2,30);
+
+        part->move(m_percent*2,0);
+
+        part->setAutoFillBackground(true);
+
+        part->show();
+
+        ui->value->setText(std::to_string(m_percent).c_str());
+    }
+
+
 }
 
 void Status::changeStatusLabel(const FileStatus &fileStatus)

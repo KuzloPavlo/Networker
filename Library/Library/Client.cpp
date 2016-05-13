@@ -505,7 +505,7 @@ void Client::flushDownloadingFiles(std::vector<DownloadingFile> newFiles)
 		for (int i = 0; i < newFiles.size(); i++)
 		{
 			current = newFiles[i];
-			if (current.m_fileStatus != FileStatus::deleting)
+			if (current.m_fileStatus != FileStatus::deleting && current.m_fileStatus != FileStatus::failing)
 			{
 				out.write(buff, sizeof(DownloadingFile));
 				out.flush();

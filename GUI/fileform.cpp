@@ -114,20 +114,6 @@ void FileForm::insertMy()
 
     showSize();
 
-    //    float forSize = 0;
-    //    QString sizeType;
-
-    //    FoundedFileForm::changeSizeStyle(m_dowloadingFile.m_fileInfo.m_fileSize, &forSize,&sizeType);
-
-    //    std::string sizeFile = std::to_string(forSize);
-
-    //    sizeFile.erase( sizeFile.end()-4, sizeFile.end());
-
-    //    sizeFile += " " + sizeType.toStdString();
-
-    //    QTableWidgetItem* size = new QTableWidgetItem(tr("%1").arg(sizeFile.c_str()));
-
-    //    m_mainTable->setItem(m_myRow,3,size);
 }
 
 void FileForm::showSize()
@@ -152,9 +138,10 @@ void FileForm::showSize()
 void FileForm::slotSetFileStatus(const FileStatus& fileStatus)
 {
     //------------------
-    static int i = 2;
-    i++;
-    signalChangeFileStatus(fileStatus,i);
+  //  static int i = 2;
+  //  i++;
+    signalChangeFileStatus(fileStatus,100);
+    m_dowloadingFile.m_fileStatus = fileStatus;
     //----------
     //    m_primitives.m_mutexCounter->lock();
     //    if ((*m_primitives.m_counter) == 0)

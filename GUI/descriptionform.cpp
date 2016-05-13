@@ -31,13 +31,13 @@ void DescriptionForm::showDescription()
     ui->DeleteButton->setVisible(true);
     ui->Description->setVisible(true);
     ui->DescriptionLabel->setVisible(true);
-    ui->DowloadButton->setVisible(true);
+    ui->DowloadButton->setVisible(false);
     ui->Hash->setVisible(true);
     ui->label->setVisible(true);
     ui->label_2->setVisible(true);
     //ui->label_3->setVisible(true);
     ui->Parts->setVisible(true);
-    ui->PauseButton->setVisible(true);
+    ui->PauseButton->setVisible(false);
     //ui->Status->setVisible(true);
 }
 
@@ -81,6 +81,8 @@ void DescriptionForm::on_DeleteButton_clicked()
     setFilseStatus(FileStatus::deleting);
 
     //--------------
-    ui->Hash->setText("escriptionForm::on_DeleteButton_clicked()");
+   // ui->Hash->setText("escriptionForm::on_DeleteButton_clicked()");
     //---------
+
+
 }
